@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NbtTools
+namespace NbtTools.Geography
 {
     public class Region
     {

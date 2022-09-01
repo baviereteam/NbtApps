@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace NbtTools
+namespace NbtTools.Geography
 {
     public class Cuboid
     {
