@@ -15,6 +15,11 @@ namespace NbtTools.Geography
             Z = z;
         }
 
+        public bool ContainedIn(Cuboid c)
+        {
+            return c.Contains(this);
+        }
+
         public override string ToString()
         {
             return $"Point({X},{Y},{Z})";

@@ -9,8 +9,8 @@ namespace NbtTools.Mca
         public const int HEADER_ENTRIES = 1024;
 
         public string Path { get; private set; }
-        private IDictionary<int, HeaderEntry> header;
-        private IDictionary<int, ChunkEntry> chunks;
+        private IDictionary<long, HeaderEntry> header;
+        private IDictionary<long, ChunkEntry> chunks;
         public long Length { 
             get 
             {
@@ -22,10 +22,10 @@ namespace NbtTools.Mca
         {
             Path = path;
             header = null;
-            chunks = new Dictionary<int, ChunkEntry>();
+            chunks = new Dictionary<long, ChunkEntry>();
         }
 
-        public IDictionary<int, HeaderEntry> GetHeader()
+        public IDictionary<long, HeaderEntry> GetHeader()
         {
             if (header == null)
             {
@@ -35,7 +35,7 @@ namespace NbtTools.Mca
             return header;
         }
 
-        public ChunkEntry GetChunk(int id)
+        public ChunkEntry GetChunk(long id)
         {
             if (!chunks.ContainsKey(id))
             {
@@ -52,7 +52,7 @@ namespace NbtTools.Mca
                 throw new FileNotFoundException($"File {Path} was not found.");
             }
 
-            header = new Dictionary<int, HeaderEntry>();
+            header = new Dictionary<long, HeaderEntry>();
 
             using (var stream = new FileStream(Path, FileMode.Open))
             {
@@ -63,17 +63,18 @@ namespace NbtTools.Mca
                     // 4th byte: length of chunk
                     for (int i = 0; i < HEADER_ENTRIES; i++)
                     {
+                        long currentPos = reader.BaseStream.Position;
                         HeaderEntry entry = new HeaderEntry(i);
                         entry.Offset = BytesToInt(reader.ReadBytes(3)) * 4096; // value from the file is a 4KiB offset.
                         entry.Length = reader.ReadByte();
 
-                        header.Add(i, entry);
+                        header.Add(currentPos, entry);
                     }
 
                     // Parse timestamps (1024 entries: 4-byte big-endian integers; last chunk modification timestamp)
                     for (int i = 0; i < HEADER_ENTRIES; i++)
                     {
-                        header[i].Timestamp = BytesToInt(reader.ReadBytes(4));
+                        header[i * 4].Timestamp = BytesToInt(reader.ReadBytes(4));
                     }
 
                     Console.Write($"Header finished at position {reader.BaseStream.Position} bytes.");
@@ -81,7 +82,7 @@ namespace NbtTools.Mca
             }
         }
 
-        private void ReadChunk(int id)
+        private void ReadChunk(long id)
         {
             if (header == null)
             {
@@ -105,7 +106,10 @@ namespace NbtTools.Mca
                     // read data
                     chunk.Length = BytesToInt(reader.ReadBytes(4)); // total length = compression type (1 byte) + data (length-1 bytes)
                     chunk.CompressionType = reader.ReadByte();
-                    chunk.Data = reader.ReadBytes(chunk.Length - 1);
+                    if (chunk.Length > 0)
+                    {
+                        chunk.Data = reader.ReadBytes(chunk.Length - 1);
+                    }
                 }
             }
 

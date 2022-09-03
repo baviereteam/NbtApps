@@ -4,8 +4,8 @@ namespace NbtTools.Geography
 {
     public class Chunk
     {
-        public double X { get; private set; }
-        public double Z { get; private set; }
+        public long X { get; private set; }
+        public long Z { get; private set; }
         public Region Region { get; private set; }
 
         public Chunk()
@@ -13,7 +13,7 @@ namespace NbtTools.Geography
 
         }
 
-        public Chunk(double x, double z)
+        public Chunk(long x, long z)
         {
             X = x;
             Z = z;
@@ -24,8 +24,8 @@ namespace NbtTools.Geography
         {
             return new Chunk
             {
-                X = Math.Floor(p.X / 16.0),
-                Z = Math.Floor(p.Z / 16.0),
+                X = (long) Math.Floor(p.X / 16.0),
+                Z = (long) Math.Floor(p.Z / 16.0),
                 Region = Region.FromPoint(p)
             };
         }
@@ -45,6 +45,11 @@ namespace NbtTools.Geography
         public override int GetHashCode()
         {
             return HashCode.Combine(X, Z);
+        }
+
+        public long GetChunkId()
+        {
+            return (4 * ((X & 31) + (Z & 31) * 32));
         }
     }
 }

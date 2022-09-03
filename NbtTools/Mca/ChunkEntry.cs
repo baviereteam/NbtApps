@@ -8,12 +8,16 @@ namespace NbtTools.Mca
 {
     public class ChunkEntry
     {
-        public int Id { get; private set; }
+        /// <summary>
+        /// ID of the chunk.
+        /// It is equal to its header offset, and to  (4 * ((x & 31) + (z & 31) * 32)).
+        /// </summary>
+        public long Id { get; private set; }
         public int Length { get; set; }
         public int CompressionType { get; set; }
         public byte[] Data { get; set; }
 
-        public ChunkEntry(int id)
+        public ChunkEntry(long id)
         {
             Id = id;
         }

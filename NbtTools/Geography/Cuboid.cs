@@ -23,6 +23,16 @@ namespace NbtTools.Geography
             End = new Point(biggerX, biggerY, biggerZ);
         }
 
+        public bool Contains(Point p)
+        {
+            return p.X >= Start.X
+                && p.X <= End.X
+                && p.Y >= Start.Y
+                && p.Y <= End.Y
+                && p.Z >= Start.Z
+                && p.Z <= End.Z;
+        }
+
         public ICollection<Chunk> GetAllChunks()
         {
             var startChunk = Chunk.FromPoint(Start);
