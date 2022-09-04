@@ -1,0 +1,80 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@model McMerchants.Models.ShopModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Trades</title>
+</head>
+<body>
+
+    <div>
+        <h1>Shop</h1>
+        <!--Zone: @Html.DisplayFor(x => Model.Shop.Start) to @Html.DisplayFor(x => Model.Shop.End) -->
+        <h1>Trades</h1>
+        @foreach (var jobGroup in Model.Villagers)
+        {
+            <h2>@Localizer[jobGroup.Key] (@Html.DisplayFor(modelItem => jobGroup.Value.Count))</h2>
+            <table>
+                @foreach (var villager in jobGroup.Value)
+                {
+                    @foreach (var trade in villager.Trades)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(x => trade.Buy1.Quantity) @Localizer[trade.Buy1.Item]
+                                @if(trade.Buy1.Metadata.Count > 0)
+                                {
+                                <ul>
+                                    @foreach (var tag in trade.Buy1.Metadata)
+                                    {
+                                        <li>@Localizer[tag]</li>
+                                    }
+                                </ul>
+                                }
+                            </td>
+                            <td>
+                                @if (trade.Buy2 != null)
+                                {
+                                    <span>+</span>
+                                    @Html.DisplayFor(x => trade.Buy2.Quantity) @Localizer[trade.Buy2.Item]
+                                    @if (trade.Buy2.Metadata.Count > 0)
+                                    {
+                                        <ul>
+                                            @foreach (var tag in trade.Buy2.Metadata)
+                                            {
+                                                <li>@Localizer[tag]</li>
+                                            }
+                                        </ul>
+                                    }
+                                }
+                            </td>
+                            <td>-></td>
+                            <td>
+                                @Html.DisplayFor(x => trade.Sell.Quantity) @Localizer[trade.Sell.Item]
+                                @if (trade.Sell.Metadata.Count > 0)
+                                {
+                                    <ul>
+                                        @foreach (var tag in trade.Sell.Metadata)
+                                        {
+                                            <li>@Localizer[tag]</li>
+                                        }
+                                    </ul>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+            </table>
+        }
+    </div>
+</body>
+</html>

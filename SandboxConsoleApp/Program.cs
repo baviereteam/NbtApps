@@ -13,11 +13,6 @@ namespace SandboxConsoleApp
 {
     class Program
     {
-        private static IDictionary<long, HeaderEntry> headers;
-        private static McaFile file;
-        private static NbtReader nbtReader;
-        private static NbtFilter nbtFilter;
-
         static void Main(string[] args)
         {
             Console.WriteLine("Press ENTER to start.");

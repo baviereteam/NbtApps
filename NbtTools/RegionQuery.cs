@@ -32,7 +32,7 @@ namespace NbtTools
 
             var data = new List<CompoundTag>();
 
-            var file = new McaFile($@"C:\Users\Cycy\Downloads\map\home\minecraft\server\partywoop\entities\{region}");
+            var file = new McaFile(region.GetFileName());
             var headers = file.GetHeader();
 
             foreach (Chunk c in chunks)

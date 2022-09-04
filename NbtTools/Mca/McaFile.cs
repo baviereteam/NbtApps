@@ -8,6 +8,8 @@ namespace NbtTools.Mca
     {
         public const int HEADER_ENTRIES = 1024;
 
+        public static string RootPath { get; set; }
+
         public string Path { get; private set; }
         private IDictionary<long, HeaderEntry> header;
         private IDictionary<long, ChunkEntry> chunks;
@@ -20,7 +22,7 @@ namespace NbtTools.Mca
 
         public McaFile(string path)
         {
-            Path = path;
+            Path = System.IO.Path.Combine(RootPath, path);
             header = null;
             chunks = new Dictionary<long, ChunkEntry>();
         }
@@ -76,8 +78,6 @@ namespace NbtTools.Mca
                     {
                         header[i * 4].Timestamp = BytesToInt(reader.ReadBytes(4));
                     }
-
-                    Console.Write($"Header finished at position {reader.BaseStream.Position} bytes.");
                 }
             }
         }
