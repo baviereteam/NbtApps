@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using NbtTools.Entities;
 using NbtTools.Geography;
 using NbtTools.Mca;
+using System;
 
 namespace McMerchants.Controllers
 {
@@ -25,6 +26,11 @@ namespace McMerchants.Controllers
             var startPoint = new Point(fromX, fromY, fromZ);
             var endPoint = new Point(toX, toY, toZ);
             var shopZone = new Cuboid(startPoint, endPoint);
+
+            if (shopZone.Size > 1000000)
+            {
+                throw new Exception("Zone too large.");
+            }
 
             var villagers = villagerService.OrderByJob(villagerService.GetVillagers(shopZone));
 

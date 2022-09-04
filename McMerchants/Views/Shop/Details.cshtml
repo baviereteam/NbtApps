@@ -4,7 +4,7 @@
 @model McMerchants.Models.ShopModel
 
 @{
-    Layout = null;
+    Layout = "_Layout";
 }
 
 <!DOCTYPE html>
@@ -23,54 +23,30 @@
         @foreach (var jobGroup in Model.Villagers)
         {
             <h2>@Localizer[jobGroup.Key] (@Html.DisplayFor(modelItem => jobGroup.Value.Count))</h2>
-            <table>
-                @foreach (var villager in jobGroup.Value)
-                {
-                    @foreach (var trade in villager.Trades)
+            <table class="trades">
+                @{
+                    foreach (var villager in jobGroup.Value)
                     {
-                        <tr>
-                            <td>
-                                @Html.DisplayFor(x => trade.Buy1.Quantity) @Localizer[trade.Buy1.Item]
-                                @if(trade.Buy1.Metadata.Count > 0)
-                                {
-                                <ul>
-                                    @foreach (var tag in trade.Buy1.Metadata)
-                                    {
-                                        <li>@Localizer[tag]</li>
-                                    }
-                                </ul>
-                                }
-                            </td>
-                            <td>
-                                @if (trade.Buy2 != null)
-                                {
-                                    <span>+</span>
-                                    @Html.DisplayFor(x => trade.Buy2.Quantity) @Localizer[trade.Buy2.Item]
-                                    @if (trade.Buy2.Metadata.Count > 0)
-                                    {
-                                        <ul>
-                                            @foreach (var tag in trade.Buy2.Metadata)
+                        foreach (var trade in villager.Trades)
+                        {
+                                <tr>
+                                    <td>
+                                        @await Html.PartialAsync("./TradeComponent", trade.Buy1)
+                                    </td>
+                                    <td>
+                                        @{
+                                            if (trade.Buy2 != null)
                                             {
-                                                <li>@Localizer[tag]</li>
+                                                await Html.PartialAsync("./TradeComponent", trade.Buy2);
                                             }
-                                        </ul>
-                                    }
-                                }
-                            </td>
-                            <td>-></td>
-                            <td>
-                                @Html.DisplayFor(x => trade.Sell.Quantity) @Localizer[trade.Sell.Item]
-                                @if (trade.Sell.Metadata.Count > 0)
-                                {
-                                    <ul>
-                                        @foreach (var tag in trade.Sell.Metadata)
-                                        {
-                                            <li>@Localizer[tag]</li>
                                         }
-                                    </ul>
-                                }
-                            </td>
-                        </tr>
+                                    </td>
+                                    <td>►</td>
+                                    <td>
+                                        @await Html.PartialAsync("./TradeComponent", trade.Sell)
+                                    </td>
+                                </tr>
+                        }
                     }
                 }
             </table>

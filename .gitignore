@@ -361,3 +361,7 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+/McMerchants/Properties/launchSettings.json
+/McMerchants/.config/dotnet-tools.json
+appsettings.*.json

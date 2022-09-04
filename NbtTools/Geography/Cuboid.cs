@@ -8,6 +8,13 @@ namespace NbtTools.Geography
         public Point Start { get; }
         public Point End { get; }
 
+        public double Size { 
+            get
+            {
+                return (End.X - Start.X) * (End.Y - Start.Y) * (End.Z - Start.Z);
+            } 
+        }
+
         public Cuboid(Point start, Point end)
         {
             var smallerX = Math.Min(start.X, end.X);

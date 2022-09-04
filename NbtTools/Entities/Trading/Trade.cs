@@ -15,6 +15,7 @@ namespace NbtTools.Entities.Trading
             Metadata = metadata;
         }
     }
+
     public class Trade
     {
         public TradeComponent Buy1 { get; private set; }
