@@ -11,9 +11,8 @@ namespace NbtTools
     {
         private NbtReader reader = new NbtReader();
 
-        public ICollection<CompoundTag> GetEntitiesDataSource(Cuboid zone)
+        private Region getRegionFromChunks(ICollection<Chunk> chunks)
         {
-            var chunks = zone.GetAllChunks();
             Region region = null;
 
             foreach (Chunk c in chunks)
@@ -30,6 +29,44 @@ namespace NbtTools
                 }
             }
 
+            return region;
+        }
+
+        public ICollection<CompoundTag> GetEntitiesDataSource(Cuboid zone)
+        {
+            var chunks = zone.GetAllChunks();
+            var region = getRegionFromChunks(chunks);
+
+            var data = new List<CompoundTag>();
+
+            var file = new McaFile(region.GetFileName());
+            var headers = file.GetHeader();
+
+            foreach (Chunk c in chunks)
+            {
+                var chunk = file.GetChunk(c.GetChunkId());
+                if (chunk.Length > 0)
+                {
+                    var chunkMainTag = reader.ReadChunk(chunk);
+                    var chunkEntitiesCollection = chunkMainTag["Entities"];
+                    if (chunkEntitiesCollection is ListTag)
+                    {
+                        foreach (var entity in (ListTag) chunkEntitiesCollection)
+                        {
+                            data.Add((CompoundTag) entity);
+                        }
+                    }
+                }
+            }
+
+            return data;
+        }
+
+        public ICollection<CompoundTag> GetRegionsDataSource(Cuboid zone)
+        {
+            var chunks = zone.GetAllChunks();
+            var region = getRegionFromChunks(chunks);
+
             var data = new List<CompoundTag>();
 
             var file = new McaFile(region.GetFileName());
@@ -44,9 +81,9 @@ namespace NbtTools
                     var chunkEntitiesCollection = chunkMainTag["Entities"];
                     if (chunkEntitiesCollection != null && chunkEntitiesCollection is ListTag)
                     {
-                        foreach (var entity in (ListTag) chunkEntitiesCollection)
+                        foreach (var entity in (ListTag)chunkEntitiesCollection)
                         {
-                            data.Add((CompoundTag) entity);
+                            data.Add((CompoundTag)entity);
                         }
                     }
                 }

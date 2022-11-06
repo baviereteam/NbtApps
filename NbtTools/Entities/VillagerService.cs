@@ -6,11 +6,8 @@ using System.Collections.Generic;
 
 namespace NbtTools.Entities
 {
-    public class VillagerService
+    public class VillagerService : NbtService
     {
-        private NbtFilter nbtFilter = new NbtFilter();
-        private RegionQuery regionQuery = new RegionQuery();
-
         public ICollection<Villager> GetVillagers(Cuboid zone)
         {
             var dataSource = regionQuery.GetEntitiesDataSource(zone);
