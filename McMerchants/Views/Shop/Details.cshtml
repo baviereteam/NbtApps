@@ -34,12 +34,12 @@
                                         @await Html.PartialAsync("./TradeComponent", trade.Buy1)
                                     </td>
                                     <td>
-                                        @{
-                                            if (trade.Buy2 != null)
-                                            {
-                                                await Html.PartialAsync("./TradeComponent", trade.Buy2);
-                                            }
+                                    @{
+                                        if (trade.Buy2 != null)
+                                        {
+                                            await Html.RenderPartialAsync("./TradeComponent", trade.Buy2);
                                         }
+                                    }
                                     </td>
                                     <td>►</td>
                                     <td>

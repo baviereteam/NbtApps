@@ -14,6 +14,11 @@ namespace NbtTools.Entities.Trading
             Quantity = quantity;
             Metadata = metadata;
         }
+
+        public override string ToString()
+        {
+            return $"{Quantity} {Item}" + (Metadata.Count > 0 ? " (with metadata)" : "");
+        }
     }
 
     public class Trade
@@ -27,6 +32,11 @@ namespace NbtTools.Entities.Trading
             Buy1 = buy1;
             Buy2 = buy2;
             Sell = sell;
+        }
+
+        public override string ToString()
+        {
+            return $"{Buy1} + {Buy2} -> {Sell}";
         }
     }
 }
