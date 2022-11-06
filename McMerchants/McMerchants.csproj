@@ -5,6 +5,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="appsettings.json.dist" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="appsettings.json.dist" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\NbtTools\NbtTools.csproj" />
   </ItemGroup>
 

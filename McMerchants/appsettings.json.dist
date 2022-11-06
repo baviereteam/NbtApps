@@ -8,6 +8,7 @@
   },
   "AllowedHosts": "*",
   "MapPaths": {
-    "Entities": "C:\\Users\\Cycy\\Downloads\\map\\home\\minecraft\\server\\partywoop\\entities"
+    "Entities": "/path/to/your/world/entities",
+    "Regions":  "/path/to/your/world/region"
   }
 }
