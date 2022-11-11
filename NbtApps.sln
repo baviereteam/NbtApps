@@ -1,19 +1,24 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.32802.440
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33103.184
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "McMerchants", "McMerchants\McMerchants.csproj", "{C0F1E049-BA33-4EE5-B10A-26AFE397E465}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "McMerchants", "McMerchants\McMerchants.csproj", "{C0F1E049-BA33-4EE5-B10A-26AFE397E465}"
 	ProjectSection(ProjectDependencies) = postProject
 		{CFB62B28-EC13-4073-A221-2D739CFC713D} = {CFB62B28-EC13-4073-A221-2D739CFC713D}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NbtTools", "NbtTools\NbtTools.csproj", "{CFB62B28-EC13-4073-A221-2D739CFC713D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NbtTools", "NbtTools\NbtTools.csproj", "{CFB62B28-EC13-4073-A221-2D739CFC713D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{79395DC1-FE5D-441C-A58F-C4389876954F} = {79395DC1-FE5D-441C-A58F-C4389876954F}
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SandboxConsoleApp", "SandboxConsoleApp\SandboxConsoleApp.csproj", "{8EFD8D96-B4AD-44A1-8B49-89AA44F81B56}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SandboxConsoleApp", "SandboxConsoleApp\SandboxConsoleApp.csproj", "{8EFD8D96-B4AD-44A1-8B49-89AA44F81B56}"
 	ProjectSection(ProjectDependencies) = postProject
 		{CFB62B28-EC13-4073-A221-2D739CFC713D} = {CFB62B28-EC13-4073-A221-2D739CFC713D}
 	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpNBT", "..\SharpNBT\SharpNBT\SharpNBT.csproj", "{79395DC1-FE5D-441C-A58F-C4389876954F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +38,10 @@ Global
 		{8EFD8D96-B4AD-44A1-8B49-89AA44F81B56}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8EFD8D96-B4AD-44A1-8B49-89AA44F81B56}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8EFD8D96-B4AD-44A1-8B49-89AA44F81B56}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79395DC1-FE5D-441C-A58F-C4389876954F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79395DC1-FE5D-441C-A58F-C4389876954F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79395DC1-FE5D-441C-A58F-C4389876954F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79395DC1-FE5D-441C-A58F-C4389876954F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
