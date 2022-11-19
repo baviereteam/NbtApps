@@ -1,0 +1,38 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@model McMerchants.Models.ItemModel
+
+@{
+    Layout = "_Layout";
+}
+
+    <div>
+        <h1>@Localizer[Model.ItemId]</h1>
+        
+        <h2>Stocks</h2>
+
+        <template id="stock">
+            <li>
+                <h3 class="storeName"></h3>
+                <span class="itemCount"></span> @Localizer[Model.ItemId]
+            </li>
+        </template>
+
+        <ul id="stocks" data-itemid="@Model.ItemId">
+            
+        </ul>
+
+        <div id="status">
+            <img id="spinner" src="~/spinner.gif" alt="Loading..." />
+            <span id="alert">💣</span>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        document.onreadystatechange = () => {
+            if (document.readyState === "complete") {
+                queryStock();
+            }
+        };   
+    </script>

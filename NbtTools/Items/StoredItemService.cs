@@ -20,6 +20,18 @@ namespace NbtTools.Items
             };
         }
 
+        public IDictionary<string, IDictionary<Point, int>> FindItemInAllStores(string searchedItem, IDictionary<string, Cuboid> stores)
+        {
+            IDictionary<string, IDictionary<Point, int>> results = new Dictionary<string, IDictionary<Point, int>>();
+            
+            foreach (var store in stores)
+            {
+                results.Add(store.Key, FindStoredItems(searchedItem, store.Value));
+            }
+
+            return results;
+        }
+
         public IDictionary<Point, int> FindStoredItems(string searchedItem, Cuboid zone)
         {
             var dataSource = regionQuery.GetBlockEntitiesDataSource(zone, false);
@@ -40,6 +52,10 @@ namespace NbtTools.Items
                 );
 
                 var itemsTag = blockEntity["Items"] as ListTag;
+                if (itemsTag == null)
+                {
+                    continue;
+                }
 
                 foreach(Tag t in itemsTag)
                 {

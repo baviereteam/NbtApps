@@ -59,10 +59,18 @@ namespace McMerchants
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                    name: "default",
+                endpoints
+                .MapControllerRoute(
+                    name: "trades",
                     pattern: "{controller=Shop}/{action=Details}/{fromX}/{fromY}/{fromZ}/{toX}/{toY}/{toZ}"
                 );
+                endpoints
+                .MapControllerRoute(
+                    name: "item",
+                    pattern: "{controller=Item}/{action=Details}/{id}"
+                );
+
+                endpoints.MapControllers();
             });
         }
     }
