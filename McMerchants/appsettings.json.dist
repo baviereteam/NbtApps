@@ -9,6 +9,9 @@
   "AllowedHosts": "*",
   "MapPaths": {
     "Entities": "/path/to/your/world/entities",
-    "Regions":  "/path/to/your/world/region"
+    "Regions": "/path/to/your/world/region"
+  },
+  "ConnectionStrings": {
+    "NbtDatabase": "Filename=/path/to/nbt.db"
   }
 }

@@ -14,3 +14,25 @@
     text-align: left;
     font-style: italic;
 }
+
+#status {
+    width: 64px;
+    height: 64px;
+}
+
+#spinner {
+    display: none;
+}
+
+#alert {
+    font-size: 48px;
+    display: none;
+}
+
+#stocks li {
+    padding: 10px 0;
+}
+
+#stocks h3 {
+    margin: 0 0 5px 0;
+}

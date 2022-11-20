@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Localization;
+using NbtTools.Database;
 
 namespace McMerchants
 {
@@ -26,6 +28,12 @@ namespace McMerchants
                 .AddViewLocalization();
 
             services.AddTransient<IStringLocalizerFactory, MinecraftIdLocalizerFactory>();
+            services.AddDbContext<NbtDbContext>(
+                options => options.UseSqlite(
+                    Configuration.GetConnectionString("NbtDatabase"),
+                    sqLiteOptions => sqLiteOptions.MigrationsAssembly("NbtTools")
+                )
+            );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -59,10 +67,18 @@ namespace McMerchants
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                    name: "default",
+                endpoints
+                .MapControllerRoute(
+                    name: "trades",
                     pattern: "{controller=Shop}/{action=Details}/{fromX}/{fromY}/{fromZ}/{toX}/{toY}/{toZ}"
                 );
+                endpoints
+                .MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Item}/{action=Details}/{id?}"
+                );
+
+                endpoints.MapControllers();
             });
         }
     }
