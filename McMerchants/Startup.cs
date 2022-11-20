@@ -74,8 +74,8 @@ namespace McMerchants
                 );
                 endpoints
                 .MapControllerRoute(
-                    name: "item",
-                    pattern: "{controller=Item}/{action=Details}/{id}"
+                    name: "default",
+                    pattern: "{controller=Item}/{action=Details}/{id?}"
                 );
 
                 endpoints.MapControllers();

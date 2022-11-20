@@ -8,12 +8,17 @@ namespace McMerchants.Controllers
         // GET: ItemController
         public ActionResult Index()
         {
-            return View();
+            return View("Details", null);
         }
 
         // GET: item/Details/minecraft:spruce_sapling
-        public ActionResult Details(string id)
+        public ActionResult Details(string? id)
         {
+            if (id == null)
+            {
+                Index();
+            }
+
             return View(new ItemModel
             {
                 ItemId = id,

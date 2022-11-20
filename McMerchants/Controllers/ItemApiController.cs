@@ -21,11 +21,11 @@ namespace McMerchants.Controllers
             _context = context;
         }
 
-        // GET: api/items/cia%20bo
-        [HttpGet("{search}")]
-        public async Task<ActionResult<IEnumerable<Item>>> SearchItems(string search)
+        // GET: api/items?term=cia%20bo
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Item>>> SearchItems([FromQuery] string term)
         {
-            return await _context.Items.Where(item => item.Name.ToLower().Contains(search.ToLower())).ToListAsync();
+            return await _context.Items.Where(item => item.Name.ToLower().Contains(term.ToLower())).ToListAsync();
         }
     }
 }
