@@ -16,10 +16,4 @@
     <Folder Include="Migrations\" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="Database\nbt.db">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>

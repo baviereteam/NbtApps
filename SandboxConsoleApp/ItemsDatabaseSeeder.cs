@@ -20,7 +20,7 @@ namespace SandboxConsoleApp
         {
             var options = new DbContextOptionsBuilder<NbtDbContext>()
             .UseSqlite(
-                "Filename=C:\\Users\\Cycy\\Downloads\\map\\nbt.db",
+                "Filename=C:\\Users\\Cycy\\Source\\Repos\\NbtApps\\NbtTools\\Database\\nbt.db",
                 sqLiteOptions => sqLiteOptions.MigrationsAssembly("NbtTools")
             )
             .Options;
