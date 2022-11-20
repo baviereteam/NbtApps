@@ -29,7 +29,7 @@ namespace McMerchants.Controllers
         public string Get(string id)
         {
             McaFile.RootPath = Configuration["MapPaths:Regions"];
-            var results = StoredItemService.FindItemInAllStores(id, TemporaryStoreList.GetStores());
+            var results = StoredItemService.FindItemInAllZones(id, TemporaryStoreList.GetStores());
             var json = ResultsToJson(results);
             return json;
         }

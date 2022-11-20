@@ -1,0 +1,37 @@
+﻿using Microsoft.EntityFrameworkCore;
+using NbtTools.Items;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace NbtTools.Database
+{
+    /**
+     * In order to generate migrations, a terminal must be opened in the McMerchants project.
+     * Use the --project switch to target the NbtTools as migration target:
+     * PS C:\NbtApps\McMerchants> dotnet ef migrations add InitialCreate --project ../NbtTools
+     **/
+
+    public class NbtDbContext : DbContext
+    {
+        public DbSet<Item> Items { get; set; }
+
+        public NbtDbContext(DbContextOptions<NbtDbContext> options) : base(options)
+        {
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Item>().ToTable("items");
+            modelBuilder.Entity<Item>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.HasIndex(e => e.Name);
+            });
+
+            base.OnModelCreating(modelBuilder);
+        }
+    }
+}

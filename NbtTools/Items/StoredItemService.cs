@@ -20,13 +20,13 @@ namespace NbtTools.Items
             };
         }
 
-        public IDictionary<string, IDictionary<Point, int>> FindItemInAllStores(string searchedItem, IDictionary<string, Cuboid> stores)
+        public IDictionary<string, IDictionary<Point, int>> FindItemInAllZones(string searchedItem, IDictionary<string, Cuboid> zones)
         {
             IDictionary<string, IDictionary<Point, int>> results = new Dictionary<string, IDictionary<Point, int>>();
             
-            foreach (var store in stores)
+            foreach (var zone in zones)
             {
-                results.Add(store.Key, FindStoredItems(searchedItem, store.Value));
+                results.Add(zone.Key, FindStoredItems(searchedItem, zone.Value));
             }
 
             return results;

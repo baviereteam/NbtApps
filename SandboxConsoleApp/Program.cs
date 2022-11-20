@@ -19,28 +19,8 @@ namespace SandboxConsoleApp
             Console.WriteLine("Press ENTER to start.");
             Console.ReadLine();
 
-            var startPoint = new Point(-248, 76, -2164);
-            var endPoint = new Point(-247, 74, -2164);
-
-            Console.Write("Start point: ");
-            Console.WriteLine(startPoint);
-
-            Console.Write("End point: ");
-            Console.WriteLine(endPoint);
-
-            Cuboid cuboid = new Cuboid(startPoint, endPoint);
-
-            Console.WriteLine();
-
-            McaFile.RootPath = @"C:\Users\Cycy\Downloads\map\home\minecraft\server\partywoop\region";
-
-            var searchService = new StoredItemService();
-            var results = searchService.FindStoredItems("minecraft:cobblestone", cuboid);
-
-            foreach (var storeditem in results)
-            {
-                Console.WriteLine(storeditem);
-            }
+            var task = new ItemsDatabaseSeeder();
+            task.Run();
 
             Console.WriteLine("\nPress ENTER to exit.");
             Console.ReadLine();
