@@ -7,19 +7,19 @@
     Layout = "_Layout";
 }
 <div id="top-bar">
-    <input type="text" id="search" />
+    <input type="text" id="search" placeholder="🔍 What are you looking for ?"/>
 </div>
 
 
 @if (Model.ItemId == null)
 {
-    <div>
+    <div id="details">
         <p>Search an item to start.</p>
     </div>
 } 
 else
 {
-    <div>
+    <div id="details">
         <h1>@Localizer[Model.ItemId]</h1>
 
         <h2>Stocks</h2>
@@ -58,7 +58,6 @@ else
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"
         integrity="sha256-lSjKY0/srUM9BE3dPm+c4fBo1dky2v27Gdjm2uoZaL0="
         crossorigin="anonymous"></script>
-<script type="text/javascript" src="~/js/search.js"></script>
 
 <script type="text/javascript">
     $( "#search" ).autocomplete({
