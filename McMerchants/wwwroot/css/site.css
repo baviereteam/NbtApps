@@ -63,3 +63,12 @@ body > div {
 #stocks h3 {
     margin: 0 0 5px 0;
 }
+
+#stocks .repartition {
+    font-size: 12px;
+    font-style: italic;
+}
+
+.hidden {
+    display: none;
+}

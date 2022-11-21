@@ -1,10 +1,19 @@
 ﻿using McMerchants.Models;
 using Microsoft.AspNetCore.Mvc;
+using NbtTools.Database;
+using System.Linq;
 
 namespace McMerchants.Controllers
 {
     public class ItemController : Controller
     {
+        private readonly NbtDbContext _context;
+
+        public ItemController(NbtDbContext context)
+        {
+            _context = context;
+        }
+
         // GET: ItemController
         public ActionResult Index()
         {
@@ -21,7 +30,7 @@ namespace McMerchants.Controllers
 
             return View(new ItemModel
             {
-                ItemId = id,
+                Item = _context.Items.First(item => item.Id == id),
             });
         }
     }

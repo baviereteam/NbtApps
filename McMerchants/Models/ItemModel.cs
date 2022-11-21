@@ -1,5 +1,6 @@
 ﻿using NbtTools.Entities;
 using NbtTools.Geography;
+using NbtTools.Items;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace McMerchants.Models
 {
     public class ItemModel
     {
-        public string ItemId { get; set; }
+        public Item Item { get; set; }
     }
 }
