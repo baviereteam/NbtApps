@@ -25,7 +25,7 @@ namespace McMerchants.Controllers
         {
             if (id == null)
             {
-                Index();
+                return Index();
             }
 
             return View(new ItemModel

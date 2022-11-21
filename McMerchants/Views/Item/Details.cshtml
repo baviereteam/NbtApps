@@ -8,7 +8,7 @@
 </div>
 
 
-@if (Model.Item == null)
+@if (Model == null)
 {
     <div id="details">
         <p>Search an item to start.</p>
@@ -64,7 +64,7 @@ else
       source: "/api/items",
       minLength: 3,
       select: function( event, ui ) {
-        window.location.href = `/Item/Details/minecraft:${ui.item.value}`;
+        window.location.href = `/Item/Details/${ui.item.value}`;
       }
     });
 </script>
