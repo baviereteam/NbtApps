@@ -1,4 +1,5 @@
-﻿using NbtTools.Geography;
+﻿using McMerchants.Models;
+using NbtTools.Geography;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,21 +8,22 @@ using System.Text.Json.Serialization;
 
 namespace McMerchants.Json
 {
-    public class StoreItemCountConverter : JsonConverter<IDictionary<string, IDictionary<Point, int>>>
+    public class StoreItemCountConverter : JsonConverter<IDictionary<Store, IDictionary<Point, int>>>
     {
-        public override IDictionary<string, IDictionary<Point, int>> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override IDictionary<Store, IDictionary<Point, int>> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             throw new NotImplementedException();
         }
 
-        public override void Write(Utf8JsonWriter writer, IDictionary<string, IDictionary<Point, int>> value, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, IDictionary<Store, IDictionary<Point, int>> value, JsonSerializerOptions options)
         {
             writer.WriteStartArray();
 
-            foreach (KeyValuePair<string, IDictionary<Point, int>> storeResult in value)
+            foreach (KeyValuePair<Store, IDictionary<Point, int>> storeResult in value)
             {
                 writer.WriteStartObject();
-                writer.WriteString("name", storeResult.Key);
+                writer.WriteString("name", storeResult.Key.Name);
+                writer.WriteString("logo", storeResult.Key.Logo);
 
                 writer.WritePropertyName("results");
                 writer.WriteStartArray();

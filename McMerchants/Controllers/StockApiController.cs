@@ -29,12 +29,19 @@ namespace McMerchants.Controllers
         public string Get(string id)
         {
             McaFile.RootPath = Configuration["MapPaths:Regions"];
-            var results = StoredItemService.FindItemInAllZones(id, TemporaryStoreList.GetStores());
+
+            IEnumerable<Store> stores = TemporaryStoreList.GetStores();
+            var results = new Dictionary<Store, IDictionary<Point, int>>();
+            foreach (var store in stores)
+            {
+                results.Add(store, StoredItemService.FindStoredItems(id, store.Coordinates));
+            }
+
             var json = ResultsToJson(results);
             return json;
         }
 
-        private string ResultsToJson(IDictionary<string, IDictionary<Point, int>> source)
+        private string ResultsToJson(IDictionary<Store, IDictionary<Point, int>> source)
         {
             var options = new JsonSerializerOptions();
             options.Converters.Add(new StoreItemCountConverter());

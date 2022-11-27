@@ -28,7 +28,7 @@ namespace McMerchants.Controllers
                 return Index();
             }
 
-            return View(new ItemModel
+            return View(new ItemViewModel
             {
                 Item = _context.Items.First(item => item.Id == id),
             });

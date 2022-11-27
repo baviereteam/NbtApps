@@ -1,4 +1,4 @@
-﻿@model McMerchants.Models.ItemModel
+﻿@model McMerchants.Models.ItemViewModel
 
 @{
     Layout = "_Layout";
@@ -18,15 +18,17 @@ else
 {
     <div id="details">
         <h1>@Model.Item.Name</h1>
-
         <h2>Stocks</h2>
 
         <template id="stock">
             <li>
-                <h3 class="storeName"></h3>
-                <span class="itemCount"></span> @Model.Item.Name
-                <div class="repartition">
-                    (<span class="stackCount"></span> stacks, <span class="remainderCount"></span> items)
+                <img class="storeLogo" src="~/img/stores/" />
+                <div>
+                    <h3 class="storeName"></h3>
+                    <span class="itemCount"></span> @Model.Item.Name
+                    <div class="repartition">
+                        (<span class="stackCount"></span> stacks, <span class="remainderCount"></span> items)
+                    </div>
                 </div>
             </li>
         </template>
@@ -36,7 +38,7 @@ else
         </ul>
 
         <div id="status">
-            <img id="spinner" src="~/spinner.gif" alt="Loading..." />
+            <img id="spinner" src="~/img/spinner.gif" alt="Loading..." />
             <span id="alert">💣</span>
         </div>
     </div>

@@ -1,6 +1,5 @@
 ﻿using NbtTools.Entities;
 using NbtTools.Geography;
-using NbtTools.Items;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,8 +7,10 @@ using System.Threading.Tasks;
 
 namespace McMerchants.Models
 {
-    public class ItemModel
+    public class ShopViewModel
     {
-        public Item Item { get; set; }
+        public Cuboid Shop { get; set; }
+
+        public IDictionary<string, ICollection<Villager>> Villagers { get; set; }
     }
 }

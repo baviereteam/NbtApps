@@ -58,6 +58,11 @@ body > div {
 
 #stocks li {
     padding: 10px 0;
+    display: flex;
+}
+
+#stocks li > img {
+    margin-right: 10px;
 }
 
 #stocks h3 {

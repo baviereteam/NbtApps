@@ -28,14 +28,15 @@ const fillResults = (results, stackSize) => {
     }
 
     results.forEach(item => {
-        parseStore(item.name, item.results, stackSize);
+        parseStore(item, stackSize);
     });
 };
 
-const parseStore = (name, data, stackSize) => {
+const parseStore = (data, stackSize) => {
+    const { name, logo, results } = data;
     let count = 0;
 
-    for (const entry of data) {
+    for (const entry of results) {
         count += entry.count;
     }
 
@@ -48,6 +49,12 @@ const parseStore = (name, data, stackSize) => {
     } else {
         storeNode.querySelector('.stackCount').textContent = Math.floor(count / stackSize);
         storeNode.querySelector('.remainderCount').textContent = count % stackSize;
+    }
+
+    if (logo === '') {
+        storeNode.querySelector('.storeLogo').remove();
+    } else {
+        storeNode.querySelector('.storeLogo').src += logo;
     }
 
     container.appendChild(storeNode);

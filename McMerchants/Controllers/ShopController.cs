@@ -34,7 +34,7 @@ namespace McMerchants.Controllers
 
             var villagers = villagerService.OrderByJob(villagerService.GetVillagers(shopZone));
 
-            return View(new ShopModel { 
+            return View(new ShopViewModel { 
                 Shop = shopZone,
                 Villagers = villagers
             });

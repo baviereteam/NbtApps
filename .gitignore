@@ -368,4 +368,4 @@ appsettings.json
 appsettings.*.json
 /NbtTools/Database/nbt.db-wal
 /NbtTools/Database/nbt.db-shm
-/McMerchants/wwwroot/img/stores/lilblossoms.png
+/McMerchants/wwwroot/img/stores/*.png
