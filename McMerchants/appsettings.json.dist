@@ -8,8 +8,10 @@
   },
   "AllowedHosts": "*",
   "MapPaths": {
-    "Entities": "/path/to/your/world/entities",
-    "Regions": "/path/to/your/world/region"
+    "overworld": "",
+    "nether": "",
+    "end": "",
+    "custom_map_name": ""
   },
   "ConnectionStrings": {
     "NbtDatabase": "Filename=/path/to/nbt.db"

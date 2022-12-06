@@ -5,6 +5,7 @@ namespace NbtTools.Geography
 {
     public class Cuboid
     {
+        public string Dimension { get; }
         public Point Start { get; }
         public Point End { get; }
 
@@ -15,7 +16,7 @@ namespace NbtTools.Geography
             } 
         }
 
-        public Cuboid(Point start, Point end)
+        public Cuboid(string Dimension, Point start, Point end)
         {
             var smallerX = Math.Min(start.X, end.X);
             var smallerY = Math.Min(start.Y, end.Y);
@@ -73,12 +74,12 @@ namespace NbtTools.Geography
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Start, End);
+            return HashCode.Combine(Dimension, Start, End);
         }
 
         public override string ToString()
         {
-            return $"Cuboid from {Start} to {End}";
+            return $"Cuboid from {Start} to {End} in {Dimension}";
         }
     }
 }
