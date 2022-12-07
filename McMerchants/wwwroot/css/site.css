@@ -42,18 +42,23 @@ body > div {
     font-style: italic;
 }
 
-#status {
+#spinner {
+    display: none;
     width: 64px;
     height: 64px;
 }
 
-#spinner {
+#alert {
     display: none;
 }
 
-#alert {
+#alert .icon {
     font-size: 48px;
-    display: none;
+}
+
+#alert .stamp {
+    color: darkred;
+    font-family: cursive;
 }
 
 #stocks li {

@@ -13,7 +13,11 @@ namespace SandboxConsoleApp
     {
         public void Run()
         {
-            var startPoint = new Point(-248, 76, -2164);
+            throw new Exception("This is broken for now.");
+            //TODO: figure out how to do DI here, so I can inject config into the McaFileFactory
+            // Maybe completely throw out this project and start a new project with the HostBuilder thing?
+
+            /*var startPoint = new Point(-248, 76, -2164);
             var endPoint = new Point(-247, 74, -2164);
 
             Console.Write("Start point: ");
@@ -34,7 +38,7 @@ namespace SandboxConsoleApp
             foreach (var storeditem in results)
             {
                 Console.WriteLine(storeditem);
-            }
+            }*/
         }
     }
 }

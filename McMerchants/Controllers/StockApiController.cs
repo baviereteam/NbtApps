@@ -18,18 +18,16 @@ namespace McMerchants.Controllers
         private readonly StoredItemService StoredItemService;
         private readonly IConfiguration Configuration;
 
-        public StockApiController(IConfiguration configuration)
+        public StockApiController(IConfiguration configuration, StoredItemService storedItemService)
         {
             Configuration = configuration;
-            StoredItemService = new StoredItemService();
+            StoredItemService = storedItemService;
         }
 
         // GET api/<StockController>/5
         [HttpGet("{id}")]
         public string Get(string id)
         {
-            McaFile.RootPath = Configuration["MapPaths:Regions"];
-
             IEnumerable<Store> stores = TemporaryStoreList.GetStores();
             var results = new Dictionary<Store, IDictionary<Point, int>>();
             foreach (var store in stores)

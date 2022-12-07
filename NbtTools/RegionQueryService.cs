@@ -7,9 +7,15 @@ using System.Collections.Generic;
 
 namespace NbtTools
 {
-    public class RegionQuery
+    public class RegionQueryService
     {
-        private NbtReader reader = new NbtReader();
+        private readonly NbtReader reader = new NbtReader();
+        private readonly McaFileFactory McaFileFactory;
+
+        public RegionQueryService(McaFileFactory mcaFileFactory)
+        {
+            McaFileFactory = mcaFileFactory;
+        }
 
         private Region getRegionFromChunks(ICollection<Chunk> chunks)
         {
@@ -39,7 +45,7 @@ namespace NbtTools
 
             var data = new List<CompoundTag>();
 
-            var file = new McaFile(region.GetFileName());
+            var file = McaFileFactory.GetEntitiesFile(zone.Dimension, region.GetFileName());
 
             foreach (Chunk c in chunks)
             {
@@ -68,7 +74,7 @@ namespace NbtTools
 
             var data = new List<CompoundTag>();
 
-            var file = new McaFile(region.GetFileName());
+            var file = McaFileFactory.GetRegionFile(zone.Dimension, region.GetFileName());
             var headers = file.GetHeader();
 
             foreach (Chunk c in chunks)

@@ -8,7 +8,7 @@
   },
   "AllowedHosts": "*",
   "MapPaths": {
-    "overworld": "",
+    "overworld": "/path/to/the/directory/that/contains/region/and/entities/folders",
     "nether": "",
     "end": "",
     "custom_map_name": ""

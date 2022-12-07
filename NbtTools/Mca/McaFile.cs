@@ -8,11 +8,9 @@ namespace NbtTools.Mca
     {
         public const int HEADER_ENTRIES = 1024;
 
-        public static string RootPath { get; set; }
-
         public string Path { get; private set; }
         private IDictionary<long, HeaderEntry> header;
-        private IDictionary<long, ChunkEntry> chunks;
+        private readonly IDictionary<long, ChunkEntry> chunks;
         public long Length { 
             get 
             {
@@ -20,9 +18,9 @@ namespace NbtTools.Mca
             }
         }
 
-        public McaFile(string path)
+        internal McaFile(string path)
         {
-            Path = System.IO.Path.Combine(RootPath, path);
+            Path = path;
             header = null;
             chunks = new Dictionary<long, ChunkEntry>();
         }

@@ -10,7 +10,7 @@ namespace NbtTools.Items
     {
         private readonly string[] StorageIds;
 
-        public StoredItemService()
+        public StoredItemService(RegionQueryService regionQuery) : base(regionQuery)
         {
             StorageIds = new string[]
             {

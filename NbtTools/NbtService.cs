@@ -10,6 +10,11 @@ namespace NbtTools
     public class NbtService
     {
         protected NbtFilter nbtFilter = new NbtFilter();
-        protected RegionQuery regionQuery = new RegionQuery();
+        protected RegionQueryService regionQuery;
+
+        public NbtService(RegionQueryService regionQuery)
+        {
+            this.regionQuery = regionQuery;
+        }
     }
 }

@@ -4,11 +4,11 @@ namespace McMerchants.Models
 {
     public class Store
     {
-        public Store(string name, string logo, Point start, Point end)
+        public Store(string name, string logo, string dimension, Point start, Point end)
         {
             Name = name;
             Logo = logo;
-            Coordinates = new Cuboid(start, end);
+            Coordinates = new Cuboid(dimension, start, end);
         }
 
         public string Name { get; set; }

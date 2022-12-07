@@ -10,29 +10,30 @@ namespace McMerchants.Controllers
 {
     public class ShopController : Controller
     {
-        private VillagerService villagerService = new VillagerService();
+        private VillagerService VillagerService;
         private readonly IConfiguration Configuration;
 
-        public ShopController(IConfiguration conf)
+        public ShopController(IConfiguration conf, VillagerService villagerService)
         {
             Configuration = conf;
+            VillagerService = villagerService;
         }
 
         // GET: TradeController/Details/5
         public ActionResult Details(int fromX, int fromY, int fromZ, int toX, int toY, int toZ)
         {
-            McaFile.RootPath = Configuration["MapPaths:Entities"];
-
+            //TODO: Rewrite this controller to only use a "shop zone" ID and pull the coordinates (including dimension) from a database
             var startPoint = new Point(fromX, fromY, fromZ);
             var endPoint = new Point(toX, toY, toZ);
-            var shopZone = new Cuboid(startPoint, endPoint);
+            //TODO: once shop zone informations are in a database, use the actual dimension from the data to allow shop zones in other worlds.
+            var shopZone = new Cuboid("overworld", startPoint, endPoint);
 
             if (shopZone.Size > 1000000)
             {
                 throw new Exception("Zone too large.");
             }
 
-            var villagers = villagerService.OrderByJob(villagerService.GetVillagers(shopZone));
+            var villagers = VillagerService.OrderByJob(VillagerService.GetVillagers(shopZone));
 
             return View(new ShopViewModel { 
                 Shop = shopZone,
