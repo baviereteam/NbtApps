@@ -14,6 +14,7 @@
     "custom_map_name": ""
   },
   "ConnectionStrings": {
-    "NbtDatabase": "Filename=/path/to/nbt.db"
+    "NbtDatabase": "Filename=/path/to/nbt.db",
+    "McMerchantsDatabase": "Filename=/path/to/mcmerchants.db"
   }
 }

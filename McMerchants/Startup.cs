@@ -7,6 +7,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Localization;
 using NbtTools.Extensions.DependencyInjection;
 using NbtTools.Database;
+using Microsoft.Extensions.Options;
+using McMerchants.Database;
 
 namespace McMerchants
 {
@@ -34,6 +36,13 @@ namespace McMerchants
                 .AddViewLocalization();
 
             services.AddTransient<IStringLocalizerFactory, MinecraftIdLocalizerFactory>();
+
+            services.AddDbContext<McMerchantsDbContext>(
+            dbOptions => dbOptions.UseSqlite(
+                    Configuration.GetConnectionString("McMerchantsDatabase"),
+                    sqLiteOptions => sqLiteOptions.MigrationsAssembly("McMerchants")
+                )
+            );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

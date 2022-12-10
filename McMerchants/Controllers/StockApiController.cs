@@ -1,5 +1,5 @@
 ﻿using McMerchants.Json;
-using McMerchants.Models;
+using McMerchants.Models.Database;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using NbtTools.Geography;
@@ -28,8 +28,8 @@ namespace McMerchants.Controllers
         [HttpGet("{id}")]
         public string Get(string id)
         {
-            IEnumerable<Store> stores = TemporaryStoreList.GetStores();
-            var results = new Dictionary<Store, IDictionary<Point, int>>();
+            IEnumerable<StorageRegion> stores = TemporaryStoreList.GetStores();
+            var results = new Dictionary<StorageRegion, IDictionary<Point, int>>();
             foreach (var store in stores)
             {
                 results.Add(store, StoredItemService.FindStoredItems(id, store.Coordinates));
@@ -39,7 +39,7 @@ namespace McMerchants.Controllers
             return json;
         }
 
-        private string ResultsToJson(IDictionary<Store, IDictionary<Point, int>> source)
+        private string ResultsToJson(IDictionary<StorageRegion, IDictionary<Point, int>> source)
         {
             var options = new JsonSerializerOptions();
             options.Converters.Add(new StoreItemCountConverter());

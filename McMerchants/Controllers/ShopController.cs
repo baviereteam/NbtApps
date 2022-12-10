@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using NbtTools.Entities;
 using NbtTools.Geography;
-using NbtTools.Mca;
 using System;
 
 namespace McMerchants.Controllers
@@ -11,11 +10,9 @@ namespace McMerchants.Controllers
     public class ShopController : Controller
     {
         private VillagerService VillagerService;
-        private readonly IConfiguration Configuration;
 
-        public ShopController(IConfiguration conf, VillagerService villagerService)
+        public ShopController( VillagerService villagerService)
         {
-            Configuration = conf;
             VillagerService = villagerService;
         }
 
