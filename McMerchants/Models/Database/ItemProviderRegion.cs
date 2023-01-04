@@ -13,7 +13,7 @@ namespace McMerchants.Models.Database
     {
         private Cuboid _coordinates;
 
-        public string Type { get; set; }
+        public string Type { get; }
         public int Id { get; set; }
         public string Name { get; set; }
         public string Logo { get; set; }

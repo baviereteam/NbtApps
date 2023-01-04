@@ -5,8 +5,8 @@ namespace McMerchants.Database
 {
     public class McMerchantsDbContext : DbContext
     {
-        public DbSet<StorageRegion> Stores { get; set; }
-        public DbSet<TradingRegion> Shops { get; set; }
+        public DbSet<StorageRegion> StorageRegions { get; set; }
+        public DbSet<TradingRegion> TradingRegions { get; set; }
 
         public McMerchantsDbContext(DbContextOptions<McMerchantsDbContext> options) : base(options)
         {

@@ -1,4 +1,5 @@
-﻿using McMerchants.Json;
+﻿using McMerchants.Database;
+using McMerchants.Json;
 using McMerchants.Models.Database;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -17,18 +18,20 @@ namespace McMerchants.Controllers
     {
         private readonly StoredItemService StoredItemService;
         private readonly IConfiguration Configuration;
+        private readonly McMerchantsDbContext Context;
 
-        public StockApiController(IConfiguration configuration, StoredItemService storedItemService)
+        public StockApiController(IConfiguration configuration, StoredItemService storedItemService, McMerchantsDbContext context)
         {
             Configuration = configuration;
             StoredItemService = storedItemService;
+            Context = context;
         }
 
         // GET api/<StockController>/5
         [HttpGet("{id}")]
         public string Get(string id)
         {
-            IEnumerable<StorageRegion> stores = TemporaryStoreList.GetStores();
+            IEnumerable<StorageRegion> stores = Context.StorageRegions;
             var results = new Dictionary<StorageRegion, IDictionary<Point, int>>();
             foreach (var store in stores)
             {
