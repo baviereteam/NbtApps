@@ -15,22 +15,21 @@ namespace McMerchants.Controllers
         }
 
         // GET: ItemController
+        [Route("")]
+        [Route("Item")]
+        [Route("Item/Details")]
         public ActionResult Index()
         {
             return View("Details", null);
         }
 
         // GET: item/Details/minecraft:spruce_sapling
-        public ActionResult Details(string? id)
+        [Route("Item/Details/{itemId}")]
+        public ActionResult Details(string itemId)
         {
-            if (id == null)
-            {
-                return Index();
-            }
-
             return View(new ItemViewModel
             {
-                Item = _context.Items.First(item => item.Id == id),
+                Item = _context.Items.First(item => item.Id == itemId),
             });
         }
     }

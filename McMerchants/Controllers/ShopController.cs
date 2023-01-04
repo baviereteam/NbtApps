@@ -20,6 +20,7 @@ namespace McMerchants.Controllers
         }
 
         // GET: TradeController/Details/5
+        [Route("Shop/Details/{shopId}")]
         public ActionResult Details(int shopId)
         {
             TradingRegion shop = Context.TradingRegions.Find(shopId);

@@ -9,6 +9,9 @@ using NbtTools.Extensions.DependencyInjection;
 using NbtTools.Database;
 using Microsoft.Extensions.Options;
 using McMerchants.Database;
+using System;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 
 namespace McMerchants
 {
@@ -72,21 +75,17 @@ namespace McMerchants
 
             app.UseRouting();
 
+            app.Use(next => context =>
+            {
+                Console.WriteLine($"Endpoint: {context.GetEndpoint()}");
+                Console.WriteLine($"RouteData: {context.GetRouteData()}");
+                return next(context);
+            });
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints
-                .MapControllerRoute(
-                    name: "trades",
-                    pattern: "{controller=Shop}/{action=Details}/{shopId}"
-                );
-                endpoints
-                .MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Item}/{action=Details}/{id?}"
-                );
-
                 endpoints.MapControllers();
             });
         }
