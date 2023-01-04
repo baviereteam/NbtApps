@@ -79,7 +79,7 @@ namespace McMerchants
                 endpoints
                 .MapControllerRoute(
                     name: "trades",
-                    pattern: "{controller=Shop}/{action=Details}/{fromX}/{fromY}/{fromZ}/{toX}/{toY}/{toZ}"
+                    pattern: "{controller=Shop}/{action=Details}/{shopId}"
                 );
                 endpoints
                 .MapControllerRoute(

@@ -15,11 +15,8 @@
     <title>Trades</title>
 </head>
 <body>
-
     <div>
-        <h1>Shop</h1>
-        <!--Zone: @Html.DisplayFor(x => Model.Shop.Start) to @Html.DisplayFor(x => Model.Shop.End) -->
-        <h1>Trades</h1>
+        <h1>@Html.DisplayFor(x => Model.Shop.Name) : Trades</h1>
         @foreach (var jobGroup in Model.Villagers)
         {
             <h2>@Localizer[jobGroup.Key] (@Html.DisplayFor(modelItem => jobGroup.Value.Count))</h2>
