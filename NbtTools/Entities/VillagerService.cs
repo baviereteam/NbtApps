@@ -8,6 +8,10 @@ namespace NbtTools.Entities
 {
     public class VillagerService : NbtService
     {
+        public VillagerService(RegionQueryService regionQuery) : base(regionQuery)
+        {
+        }
+
         public ICollection<Villager> GetVillagers(Cuboid zone)
         {
             var dataSource = regionQuery.GetEntitiesDataSource(zone);

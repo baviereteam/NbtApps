@@ -2,6 +2,7 @@
 const container = document.getElementById('stocks');
 const template = document.getElementById('stock');
 const spinner = document.getElementById('spinner');
+const alert = document.getElementById('alert');
 
 const queryStock = () => {
     setSpinnerDisplayed(true);
@@ -11,7 +12,11 @@ const queryStock = () => {
     fetch(api.replace('%s', item))
         .then(response => response.json())
         .then(response => fillResults(response, stackSize))
-        .then(() => setSpinnerDisplayed(false));
+        .then(() => setSpinnerDisplayed(false))
+        .catch(() => {
+            setSpinnerDisplayed(false);
+            setAlertDisplayed(true);
+        });
 };
 
 const setSpinnerDisplayed = displayed => {

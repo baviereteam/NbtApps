@@ -5,7 +5,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Localization;
+using NbtTools.Extensions.DependencyInjection;
 using NbtTools.Database;
+using Microsoft.Extensions.Options;
+using McMerchants.Database;
+using System;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 
 namespace McMerchants
 {
@@ -21,6 +27,11 @@ namespace McMerchants
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddNbtTools(new NbtToolsOptions
+            {
+                DatabaseConnectionString = Configuration.GetConnectionString("NbtDatabase")
+            });
+
             services.AddLocalization();
 
             services
@@ -28,10 +39,11 @@ namespace McMerchants
                 .AddViewLocalization();
 
             services.AddTransient<IStringLocalizerFactory, MinecraftIdLocalizerFactory>();
-            services.AddDbContext<NbtDbContext>(
-                options => options.UseSqlite(
-                    Configuration.GetConnectionString("NbtDatabase"),
-                    sqLiteOptions => sqLiteOptions.MigrationsAssembly("NbtTools")
+
+            services.AddDbContext<McMerchantsDbContext>(
+            dbOptions => dbOptions.UseSqlite(
+                    Configuration.GetConnectionString("McMerchantsDatabase"),
+                    sqLiteOptions => sqLiteOptions.MigrationsAssembly("McMerchants")
                 )
             );
         }
@@ -63,21 +75,17 @@ namespace McMerchants
 
             app.UseRouting();
 
+            app.Use(next => context =>
+            {
+                Console.WriteLine($"Endpoint: {context.GetEndpoint()}");
+                Console.WriteLine($"RouteData: {context.GetRouteData()}");
+                return next(context);
+            });
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints
-                .MapControllerRoute(
-                    name: "trades",
-                    pattern: "{controller=Shop}/{action=Details}/{fromX}/{fromY}/{fromZ}/{toX}/{toY}/{toZ}"
-                );
-                endpoints
-                .MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Item}/{action=Details}/{id?}"
-                );
-
                 endpoints.MapControllers();
             });
         }

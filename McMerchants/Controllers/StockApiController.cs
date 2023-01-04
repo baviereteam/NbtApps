@@ -1,5 +1,6 @@
-﻿using McMerchants.Json;
-using McMerchants.Models;
+﻿using McMerchants.Database;
+using McMerchants.Json;
+using McMerchants.Models.Database;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using NbtTools.Geography;
@@ -17,21 +18,21 @@ namespace McMerchants.Controllers
     {
         private readonly StoredItemService StoredItemService;
         private readonly IConfiguration Configuration;
+        private readonly McMerchantsDbContext Context;
 
-        public StockApiController(IConfiguration configuration)
+        public StockApiController(IConfiguration configuration, StoredItemService storedItemService, McMerchantsDbContext context)
         {
             Configuration = configuration;
-            StoredItemService = new StoredItemService();
+            StoredItemService = storedItemService;
+            Context = context;
         }
 
         // GET api/<StockController>/5
         [HttpGet("{id}")]
         public string Get(string id)
         {
-            McaFile.RootPath = Configuration["MapPaths:Regions"];
-
-            IEnumerable<Store> stores = TemporaryStoreList.GetStores();
-            var results = new Dictionary<Store, IDictionary<Point, int>>();
+            IEnumerable<StorageRegion> stores = Context.StorageRegions;
+            var results = new Dictionary<StorageRegion, IDictionary<Point, int>>();
             foreach (var store in stores)
             {
                 results.Add(store, StoredItemService.FindStoredItems(id, store.Coordinates));
@@ -41,7 +42,7 @@ namespace McMerchants.Controllers
             return json;
         }
 
-        private string ResultsToJson(IDictionary<Store, IDictionary<Point, int>> source)
+        private string ResultsToJson(IDictionary<StorageRegion, IDictionary<Point, int>> source)
         {
             var options = new JsonSerializerOptions();
             options.Converters.Add(new StoreItemCountConverter());

@@ -1,41 +1,38 @@
-﻿using McMerchants.Models;
+﻿using McMerchants.Database;
+using McMerchants.Models;
+using McMerchants.Models.Database;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using NbtTools.Entities;
 using NbtTools.Geography;
-using NbtTools.Mca;
 using System;
 
 namespace McMerchants.Controllers
 {
     public class ShopController : Controller
     {
-        private VillagerService villagerService = new VillagerService();
-        private readonly IConfiguration Configuration;
+        private readonly VillagerService VillagerService;
+        private readonly McMerchantsDbContext Context;
 
-        public ShopController(IConfiguration conf)
+        public ShopController(VillagerService villagerService, McMerchantsDbContext context)
         {
-            Configuration = conf;
+            VillagerService = villagerService;
+            Context = context;
         }
 
         // GET: TradeController/Details/5
-        public ActionResult Details(int fromX, int fromY, int fromZ, int toX, int toY, int toZ)
+        [Route("Shop/Details/{shopId}")]
+        public ActionResult Details(int shopId)
         {
-            McaFile.RootPath = Configuration["MapPaths:Entities"];
-
-            var startPoint = new Point(fromX, fromY, fromZ);
-            var endPoint = new Point(toX, toY, toZ);
-            var shopZone = new Cuboid(startPoint, endPoint);
-
-            if (shopZone.Size > 1000000)
+            TradingRegion shop = Context.TradingRegions.Find(shopId);
+            if (shop == null)
             {
-                throw new Exception("Zone too large.");
+                return View("NotFound");
             }
 
-            var villagers = villagerService.OrderByJob(villagerService.GetVillagers(shopZone));
+            var villagers = VillagerService.OrderByJob(VillagerService.GetVillagers(shop.Coordinates));
 
             return View(new ShopViewModel { 
-                Shop = shopZone,
+                Shop = shop,
                 Villagers = villagers
             });
         }

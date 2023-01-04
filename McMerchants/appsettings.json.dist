@@ -8,10 +8,13 @@
   },
   "AllowedHosts": "*",
   "MapPaths": {
-    "Entities": "/path/to/your/world/entities",
-    "Regions": "/path/to/your/world/region"
+    "overworld": "/path/to/the/directory/that/contains/region/and/entities/folders",
+    "nether": "",
+    "end": "",
+    "custom_map_name": ""
   },
   "ConnectionStrings": {
-    "NbtDatabase": "Filename=/path/to/nbt.db"
+    "NbtDatabase": "Filename=/path/to/nbt.db",
+    "McMerchantsDatabase": "Filename=/path/to/mcmerchants.db"
   }
 }

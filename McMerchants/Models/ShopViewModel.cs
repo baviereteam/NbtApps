@@ -1,15 +1,12 @@
-﻿using NbtTools.Entities;
-using NbtTools.Geography;
-using System;
+﻿using McMerchants.Models.Database;
+using NbtTools.Entities;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace McMerchants.Models
 {
     public class ShopViewModel
     {
-        public Cuboid Shop { get; set; }
+        public TradingRegion Shop { get; set; }
 
         public IDictionary<string, ICollection<Villager>> Villagers { get; set; }
     }
