@@ -1,7 +1,20 @@
-﻿html {
+﻿:root {
+    --background-color: #FFF;
+    --text-color: #000;
+}
+
+[data-theme="dark"] {
+    --background-color: #363636;
+    --text-color: #FFF;
+    --searchbar-background-color: #151515;
+}
+
+html {
   font-size: 16px;
   font-family: sans-serif;
   display: flex;
+  background-color: var(--background-color);
+  color: var(--text-color);
 }
 
 body {
@@ -24,6 +37,13 @@ body > div {
     margin: auto;
     width: 100%;
     height: 1.5em;
+    background-color: var(--searchbar-background-color);
+    color: var(--text-color);
+}
+
+.ui-autocomplete {
+    background-color: var(--searchbar-background-color);
+    color: var(--text-color);
 }
 
 #details h1 {
@@ -81,4 +101,11 @@ body > div {
 
 .hidden {
     display: none;
+}
+
+#buttons {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    text-align: right;
 }
