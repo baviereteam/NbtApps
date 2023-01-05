@@ -84,6 +84,8 @@ namespace McMerchants
 
             app.UseAuthorization();
 
+            // Use [Route()] annotations in controllers to manage routing.
+            // Prevents conflicts when multiple routes match when using endpoints.MapControllerRoute().
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
