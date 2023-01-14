@@ -8,6 +8,10 @@ namespace McMerchants.Database
         public DbSet<StorageRegion> StorageRegions { get; set; }
         public DbSet<TradingRegion> TradingRegions { get; set; }
 
+        public DbSet<FactoryRegion> FactoryRegions { get; set; }
+
+        public DbSet<FactoryProduct> FactoryProducts { get; set; }
+
         public McMerchantsDbContext(DbContextOptions<McMerchantsDbContext> options) : base(options)
         {
         }
@@ -22,7 +26,8 @@ namespace McMerchants.Database
                 .Ignore(region => region.Coordinates)
                 .HasDiscriminator(i => i.Type)
                 .HasValue<StorageRegion>("storage")
-                .HasValue<TradingRegion>("trading");
+                .HasValue<TradingRegion>("trading")
+                .HasValue<FactoryRegion>("factory");
 
             modelBuilder.Entity<ItemProviderRegion>(entity =>
             {
@@ -57,6 +62,31 @@ namespace McMerchants.Database
                 entity.Property(e => e.EndX).HasColumnName("endX");
                 entity.Property(e => e.EndY).HasColumnName("endY");
                 entity.Property(e => e.EndZ).HasColumnName("endZ");
+            });
+
+            modelBuilder.Entity<FactoryRegion>(entity =>
+            {
+                entity.HasBaseType(typeof(ItemProviderRegion));
+                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Name).HasColumnName("name");
+                entity.Property(e => e.Logo).HasColumnName("logo");
+                entity.Property(e => e.Dimension).HasColumnName("dimension");
+                entity.Property(e => e.StartX).HasColumnName("startX");
+                entity.Property(e => e.StartY).HasColumnName("startY");
+                entity.Property(e => e.StartZ).HasColumnName("startZ");
+                entity.Property(e => e.EndX).HasColumnName("endX");
+                entity.Property(e => e.EndY).HasColumnName("endY");
+                entity.Property(e => e.EndZ).HasColumnName("endZ");
+            });
+
+            modelBuilder.Entity<FactoryProduct>(entity =>
+            {
+                entity
+                    .ToTable("factory_products")
+                    .HasKey(e => e.Id);
+                entity
+                    .HasOne(p => p.Factory)
+                    .WithMany(f => f.Products);
             });
 
             base.OnModelCreating(modelBuilder);
