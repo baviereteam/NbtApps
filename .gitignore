@@ -366,7 +366,7 @@ FodyWeavers.xsd
 /McMerchants/.config/dotnet-tools.json
 appsettings.json
 appsettings.*.json
-/NbtTools/Database/nbt.db-wal
-/NbtTools/Database/nbt.db-shm
+*.db-wal
+*.db-shm
 /McMerchants/wwwroot/img/stores/*.png
 /McMerchants/Database/mcmerchants.db
