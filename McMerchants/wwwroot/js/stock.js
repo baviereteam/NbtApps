@@ -1,19 +1,22 @@
 ﻿const api = '/api/stock/%s';
-const container = document.getElementById('stocks');
+const detailsSection = document.getElementById('details');
+const storesContainer = document.getElementById('store-stocks');
+const factoriesContainer = document.getElementById('factory-stocks');
 const template = document.getElementById('stock');
 const spinner = document.getElementById('spinner');
 const alert = document.getElementById('alert');
 
 const queryStock = () => {
     setSpinnerDisplayed(true);
-    const item = container.dataset.itemid;
-    let stackSize = parseInt(container.dataset.stacksize);
+    const item = detailsSection.dataset.itemid;
+    let stackSize = parseInt(detailsSection.dataset.stacksize);
 
     fetch(api.replace('%s', item))
         .then(response => response.json())
-        .then(response => fillResults(response, stackSize))
+        .then(response => handleResponse(response, stackSize))
         .then(() => setSpinnerDisplayed(false))
-        .catch(() => {
+        .catch((e) => {
+            console.error(e);
             setSpinnerDisplayed(false);
             setAlertDisplayed(true);
         });
@@ -27,17 +30,22 @@ const setAlertDisplayed = displayed => {
     alert.style.display = (displayed ? 'block' : 'none');
 }
 
-const fillResults = (results, stackSize) => {
+const handleResponse = (response, stackSize) => {
+    fillResults(response.stores, storesContainer, stackSize, parseStore);
+    fillResults(response.factories, factoriesContainer, stackSize, parseStore);
+}
+
+const fillResults = (results, container, stackSize, itemParsingFunction) => {
     while (container.firstChild) {
         container.removeChild(container.firstChild);
     }
 
     results.forEach(item => {
-        parseStore(item, stackSize);
+        itemParsingFunction(item, container, stackSize);
     });
 };
 
-const parseStore = (data, stackSize) => {
+const parseStore = (data, container, stackSize) => {
     const { name, logo, results } = data;
     let count = 0;
 
@@ -56,7 +64,7 @@ const parseStore = (data, stackSize) => {
         storeNode.querySelector('.remainderCount').textContent = count % stackSize;
     }
 
-    if (logo === '') {
+    if (logo === null) {
         storeNode.querySelector('.storeLogo').remove();
     } else {
         storeNode.querySelector('.storeLogo').src += logo;

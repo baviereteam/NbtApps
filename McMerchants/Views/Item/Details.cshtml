@@ -16,25 +16,29 @@
 } 
 else
 {
-    <div id="details">
-        <h1>@Model.Item.Name</h1>
-        <h2>Stocks</h2>
-
-        <template id="stock">
-            <li>
-                <img class="storeLogo" src="~/img/stores/" />
-                <div>
-                    <h3 class="storeName"></h3>
-                    <span class="itemCount"></span> @Model.Item.Name
-                    <div class="repartition">
-                        (<span class="stackCount"></span> stacks, <span class="remainderCount"></span> items)
-                    </div>
+    <template id="stock">
+        <li>
+            <img class="storeLogo" src="~/img/stores/" />
+            <div>
+                <h3 class="storeName"></h3>
+                <span class="itemCount"></span> @Model.Item.Name
+                <div class="repartition">
+                    (<span class="stackCount"></span> stacks, <span class="remainderCount"></span> items)
                 </div>
-            </li>
-        </template>
+            </div>
+        </li>
+    </template>
 
-        <ul id="stocks" data-itemid="@Model.Item.Id" data-stacksize="@Model.Item.StackSize">
+    <div id="details" data-itemid="@Model.Item.Id" data-stacksize="@Model.Item.StackSize">
+        <h1>@Model.Item.Name</h1>
 
+        <h2 class="accordion-header"><button type="button"></button> Stores</h2>
+        <ul id="store-stocks" class="accordion-content stocks-list">
+
+        </ul>
+
+        <h2 class="accordion-header"><button type="button"></button> Factories</h2>
+        <ul id="factory-stocks" class="accordion-content stocks-list">
         </ul>
 
         <img id="spinner" src="~/img/spinner.gif" alt="Loading..." />
@@ -47,11 +51,11 @@ else
     <script type="text/javascript" src="~/js/stock.js"></script>
 
     <script type="text/javascript">
-        document.onreadystatechange = () => {
+        document.addEventListener('readystatechange', () => {
             if (document.readyState === "complete") {
                 queryStock();
             }
-        };
+        });
     </script>
 }
 

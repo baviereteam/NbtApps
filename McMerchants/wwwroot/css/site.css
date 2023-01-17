@@ -1,7 +1,23 @@
-﻿html {
+﻿/* Theming */
+:root {
+    --background-color: #FFF;
+    --text-color: #000;
+    --searchbar-background-color: #FFF;
+}
+
+[data-theme="dark"] {
+    --background-color: #36393F;
+    --text-color: #EEE;
+    --searchbar-background-color: #151515;
+}
+
+/* Main */
+html {
   font-size: 16px;
   font-family: sans-serif;
   display: flex;
+  background-color: var(--background-color);
+  color: var(--text-color);
 }
 
 body {
@@ -24,12 +40,45 @@ body > div {
     margin: auto;
     width: 100%;
     height: 1.5em;
+    background-color: var(--searchbar-background-color);
+    color: var(--text-color);
+}
+
+.ui-autocomplete {
+    background-color: var(--searchbar-background-color);
+    color: var(--text-color);
 }
 
 #details h1 {
     margin-top: 0;
 }
 
+.hidden {
+    display: none;
+}
+
+#buttons {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    text-align: right;
+}
+
+/* Accordions */
+.accordion-header button {
+    background-color: transparent;
+    color: var(--text-color);
+    border: 0;
+}
+.accordion-header button:focus {
+    border: 2px dashed var(--text-color);
+}
+.accordion-content.closed {
+    display: none;
+    overflow: hidden;
+}
+
+/* Trades */
 .trades td {
     text-align: center;
     vertical-align: middle;
@@ -42,6 +91,7 @@ body > div {
     font-style: italic;
 }
 
+/* Stocks */
 #spinner {
     display: none;
     width: 64px;
@@ -61,24 +111,20 @@ body > div {
     font-family: cursive;
 }
 
-#stocks li {
+.stocks-list li {
     padding: 10px 0;
     display: flex;
 }
 
-#stocks li > img {
+.stocks-list li > img {
     margin-right: 10px;
 }
 
-#stocks h3 {
+.stocks-list h3 {
     margin: 0 0 5px 0;
 }
 
-#stocks .repartition {
+.stocks-list .repartition {
     font-size: 12px;
     font-style: italic;
-}
-
-.hidden {
-    display: none;
 }
