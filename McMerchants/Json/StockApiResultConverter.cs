@@ -1,25 +1,37 @@
 ﻿using McMerchants.Models.Database;
+using McMerchants.Models.Json;
 using NbtTools.Geography;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace McMerchants.Json
 {
-    public class StoreItemCountConverter : JsonConverter<IDictionary<StorageRegion, IDictionary<Point, int>>>
+    public class StockApiResultConverter : JsonConverter<StockApiResult>
     {
-        public override IDictionary<StorageRegion, IDictionary<Point, int>> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override StockApiResult Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             throw new NotImplementedException();
         }
 
-        public override void Write(Utf8JsonWriter writer, IDictionary<StorageRegion, IDictionary<Point, int>> value, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, StockApiResult value, JsonSerializerOptions options) {
+            writer.WriteStartObject();
+
+            writer.WritePropertyName("stores");
+            WriteDictionary(writer, value.Stores, options);
+
+            writer.WritePropertyName("factories");
+            WriteDictionary(writer, value.Factories, options);
+
+            writer.WriteEndObject();
+        }
+
+        private void WriteDictionary(Utf8JsonWriter writer, IDictionary<ItemProviderRegion, IDictionary<Point, int>> value, JsonSerializerOptions options)
         {
             writer.WriteStartArray();
 
-            foreach (KeyValuePair<StorageRegion, IDictionary<Point, int>> storeResult in value)
+            foreach (KeyValuePair<ItemProviderRegion, IDictionary<Point, int>> storeResult in value)
             {
                 writer.WriteStartObject();
                 writer.WriteString("name", storeResult.Key.Name);

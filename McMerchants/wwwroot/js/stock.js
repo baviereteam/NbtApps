@@ -13,7 +13,8 @@ const queryStock = () => {
         .then(response => response.json())
         .then(response => fillResults(response, stackSize))
         .then(() => setSpinnerDisplayed(false))
-        .catch(() => {
+        .catch((e) => {
+            console.error(e);
             setSpinnerDisplayed(false);
             setAlertDisplayed(true);
         });
@@ -32,7 +33,7 @@ const fillResults = (results, stackSize) => {
         container.removeChild(container.firstChild);
     }
 
-    results.forEach(item => {
+    results.stores.forEach(item => {
         parseStore(item, stackSize);
     });
 };
@@ -56,7 +57,7 @@ const parseStore = (data, stackSize) => {
         storeNode.querySelector('.remainderCount').textContent = count % stackSize;
     }
 
-    if (logo === '') {
+    if (logo !== null) {
         storeNode.querySelector('.storeLogo').remove();
     } else {
         storeNode.querySelector('.storeLogo').src += logo;
