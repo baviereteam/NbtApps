@@ -75,13 +75,6 @@ namespace McMerchants
 
             app.UseRouting();
 
-            app.Use(next => context =>
-            {
-                Console.WriteLine($"Endpoint: {context.GetEndpoint()}");
-                Console.WriteLine($"RouteData: {context.GetRouteData()}");
-                return next(context);
-            });
-
             app.UseAuthorization();
 
             // Use [Route()] annotations in controllers to manage routing.
