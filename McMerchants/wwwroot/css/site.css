@@ -1,4 +1,5 @@
-﻿:root {
+﻿/* Theming */
+:root {
     --background-color: #FFF;
     --text-color: #000;
     --searchbar-background-color: #FFF;
@@ -10,6 +11,7 @@
     --searchbar-background-color: #151515;
 }
 
+/* Main */
 html {
   font-size: 16px;
   font-family: sans-serif;
@@ -51,6 +53,24 @@ body > div {
     margin-top: 0;
 }
 
+.hidden {
+    display: none;
+}
+
+#buttons {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    text-align: right;
+}
+
+/* Accordions */
+.accordion-content.closed {
+    display: none;
+    overflow: hidden;
+}
+
+/* Trades */
 .trades td {
     text-align: center;
     vertical-align: middle;
@@ -63,6 +83,7 @@ body > div {
     font-style: italic;
 }
 
+/* Stocks */
 #spinner {
     display: none;
     width: 64px;
@@ -98,15 +119,4 @@ body > div {
 .stocks-list .repartition {
     font-size: 12px;
     font-style: italic;
-}
-
-.hidden {
-    display: none;
-}
-
-#buttons {
-    position: fixed;
-    bottom: 0;
-    right: 0;
-    text-align: right;
 }

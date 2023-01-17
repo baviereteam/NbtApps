@@ -31,14 +31,14 @@ else
 
     <div id="details" data-itemid="@Model.Item.Id" data-stacksize="@Model.Item.StackSize">
         <h1>@Model.Item.Name</h1>
-        
-        <h2>Stores</h2>
-        <ul id="store-stocks" class="stocks-list">
+
+        <h2 class="accordion-header"><button type="button"></button> Stores</h2>
+        <ul id="store-stocks" class="accordion-content stocks-list">
 
         </ul>
 
-        <h2>Factories</h2>
-        <ul id="factory-stocks" class="stocks-list">
+        <h2 class="accordion-header"><button type="button"></button> Factories</h2>
+        <ul id="factory-stocks" class="accordion-content stocks-list">
         </ul>
 
         <img id="spinner" src="~/img/spinner.gif" alt="Loading..." />
@@ -51,11 +51,11 @@ else
     <script type="text/javascript" src="~/js/stock.js"></script>
 
     <script type="text/javascript">
-        document.onreadystatechange = () => {
+        document.addEventListener('readystatechange', () => {
             if (document.readyState === "complete") {
                 queryStock();
             }
-        };
+        });
     </script>
 }
 

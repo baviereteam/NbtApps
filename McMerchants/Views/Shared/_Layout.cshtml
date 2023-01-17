@@ -10,9 +10,17 @@
 <body>
     @RenderBody()
     <div id="buttons">
-        <label for="light-switch">🌗</label>
+        <label for="light-switch">🌗 Change theme</label>
         <input type="checkbox" name="light-switch" />
     </div>
     <script type="text/javascript" src="~/js/main.js"></script>
+    <script type="text/javascript" src="~/js/accordion.js"></script>
+    <script type="text/javascript">
+        document.addEventListener('readystatechange', () => {
+            if (document.readyState === "complete") {
+                initAccordions();
+            }
+        });
+    </script>
 </body>
 </html>

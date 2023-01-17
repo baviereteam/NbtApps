@@ -12,7 +12,7 @@ const changeTheme = function (isDarkTheme) {
     }
 }
 
-const onLoad = function (e) {
+const initThemes = function (e) {
     const currentTheme = localStorage.getItem('theme');
     if (currentTheme != null) {
         changeTheme(currentTheme === 'dark');
@@ -30,8 +30,7 @@ const onLoad = function (e) {
 
 const onLightSwitchChange = function (e) {
     changeTheme(e.target.checked);
-    console.log(`checkbox checked: ${e.target.checked}`);
 }
 
 lightSwitch.addEventListener('change', onLightSwitchChange, false);
-onLoad();
+initThemes();
