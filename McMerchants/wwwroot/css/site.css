@@ -65,6 +65,14 @@ body > div {
 }
 
 /* Accordions */
+.accordion-header button {
+    background-color: transparent;
+    color: var(--text-color);
+    border: 0;
+}
+.accordion-header button:focus {
+    border: 2px dashed var(--text-color);
+}
 .accordion-content.closed {
     display: none;
     overflow: hidden;
