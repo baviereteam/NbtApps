@@ -82,20 +82,20 @@ body > div {
     font-family: cursive;
 }
 
-#stocks li {
+.stocks-list li {
     padding: 10px 0;
     display: flex;
 }
 
-#stocks li > img {
+.stocks-list li > img {
     margin-right: 10px;
 }
 
-#stocks h3 {
+.stocks-list h3 {
     margin: 0 0 5px 0;
 }
 
-#stocks .repartition {
+.stocks-list .repartition {
     font-size: 12px;
     font-style: italic;
 }
