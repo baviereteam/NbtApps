@@ -1,6 +1,7 @@
 ﻿:root {
     --background-color: #FFF;
     --text-color: #000;
+    --searchbar-background-color: #FFF;
 }
 
 [data-theme="dark"] {
