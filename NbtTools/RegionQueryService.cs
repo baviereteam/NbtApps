@@ -2,8 +2,8 @@
 using NbtTools.Mca;
 using NbtTools.Nbt;
 using SharpNBT;
-using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace NbtTools
 {
@@ -17,48 +17,31 @@ namespace NbtTools
             McaFileFactory = mcaFileFactory;
         }
 
-        private Region getRegionFromChunks(ICollection<Chunk> chunks)
-        {
-            Region region = null;
-
-            foreach (Chunk c in chunks)
-            {
-                // Verifies all chunks are in the same region
-                if (region == null)
-                {
-                    region = c.Region;
-                }
-                if (!region.Equals(c.Region))
-                {
-                    //TODO: support multi-region
-                    throw new NotImplementedException($"This zone extends on multiple Minecraft regions ({region}, {c.Region}). This is not supported yet.");
-                }
-            }
-
-            return region;
-        }
-
         public ICollection<CompoundTag> GetEntitiesDataSource(Cuboid zone)
         {
             var chunks = zone.GetAllChunks();
-            var region = getRegionFromChunks(chunks);
+            var regions = chunks.Select(c => c.Region).Distinct();
 
             var data = new List<CompoundTag>();
 
-            var file = McaFileFactory.GetEntitiesFile(zone.Dimension, region.GetFileName());
-
-            foreach (Chunk c in chunks)
+            foreach (var region in regions)
             {
-                var chunk = file.GetChunk(c.GetChunkId());
-                if (chunk.Length > 0)
+                var file = McaFileFactory.GetEntitiesFile(zone.Dimension, region.GetFileName());
+                var regionChunks = chunks.Where(c => c.Region.Equals(region));
+
+                foreach (Chunk c in regionChunks)
                 {
-                    var chunkMainTag = reader.ReadChunk(chunk);
-                    var chunkEntitiesCollection = chunkMainTag["Entities"] as ListTag;
-                    if (chunkEntitiesCollection != null)
+                    var chunk = file.GetChunk(c.GetChunkId());
+                    if (chunk.Length > 0)
                     {
-                        foreach (var entity in chunkEntitiesCollection)
+                        var chunkMainTag = reader.ReadChunk(chunk);
+                        var chunkEntitiesCollection = chunkMainTag["Entities"] as ListTag;
+                        if (chunkEntitiesCollection != null)
                         {
-                            data.Add((CompoundTag) entity);
+                            foreach (var entity in chunkEntitiesCollection)
+                            {
+                                data.Add((CompoundTag)entity);
+                            }
                         }
                     }
                 }
@@ -70,28 +53,32 @@ namespace NbtTools
         public ICollection<CompoundTag> GetBlockEntitiesDataSource(Cuboid zone, bool includeProtoChunks)
         {
             var chunks = zone.GetAllChunks();
-            var region = getRegionFromChunks(chunks);
+            var regions = chunks.Select(c => c.Region).Distinct();
 
             var data = new List<CompoundTag>();
 
-            var file = McaFileFactory.GetRegionFile(zone.Dimension, region.GetFileName());
-            var headers = file.GetHeader();
-
-            foreach (Chunk c in chunks)
+            foreach (var region in regions)
             {
-                var chunk = file.GetChunk(c.GetChunkId());
-                if (chunk.Length > 0)
+                var file = McaFileFactory.GetRegionFile(zone.Dimension, region.GetFileName());
+                var headers = file.GetHeader();
+                var regionChunks = chunks.Where(c => c.Region.Equals(region)).ToList();
+
+                foreach (Chunk c in regionChunks)
                 {
-                    var chunkMainTag = reader.ReadChunk(chunk);
-                    var status = chunkMainTag["Status"] as StringTag;
-                    if (status != null && status == "full")
+                    var chunk = file.GetChunk(c.GetChunkId());
+                    if (chunk.Length > 0)
                     {
-                        var blockEntities = chunkMainTag["block_entities"] as ListTag;
-                        foreach (var blockEntity in blockEntities)
+                        var chunkMainTag = reader.ReadChunk(chunk);
+                        var status = chunkMainTag["Status"] as StringTag;
+                        if (status != null && status == "full")
                         {
-                            data.Add(blockEntity as CompoundTag);
+                            var blockEntities = chunkMainTag["block_entities"] as ListTag;
+                            foreach (var blockEntity in blockEntities)
+                            {
+                                data.Add(blockEntity as CompoundTag);
+                            }
+
                         }
-                        
                     }
                 }
             }
