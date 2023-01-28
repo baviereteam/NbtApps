@@ -27,7 +27,7 @@ namespace NbtTools
             foreach (var region in regions)
             {
                 var file = McaFileFactory.GetEntitiesFile(zone.Dimension, region.GetFileName());
-                var regionChunks = chunks.Where(c => c.Region == region);
+                var regionChunks = chunks.Where(c => c.Region.Equals(region));
 
                 foreach (Chunk c in regionChunks)
                 {
@@ -61,7 +61,7 @@ namespace NbtTools
             {
                 var file = McaFileFactory.GetRegionFile(zone.Dimension, region.GetFileName());
                 var headers = file.GetHeader();
-                var regionChunks = chunks.Where(c => c.Region == region);
+                var regionChunks = chunks.Where(c => c.Region.Equals(region)).ToList();
 
                 foreach (Chunk c in regionChunks)
                 {
