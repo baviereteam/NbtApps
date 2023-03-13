@@ -20,6 +20,16 @@ namespace NbtTools.Items
             };
         }
 
+        /// <summary>
+        /// Indicates whether an item ID designates a shulker box, regardless of its color.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        private bool IsShulkerBox(string id)
+        {
+            return id.Contains("shulker_box");
+        }
+
         public IDictionary<Point, int> FindStoredItems(string searchedItem, Cuboid zone)
         {
             var dataSource = regionQuery.GetBlockEntitiesDataSource(zone, false);
@@ -39,31 +49,64 @@ namespace NbtTools.Items
                     (blockEntity["z"] as IntTag).Value
                 );
 
-                var itemsTag = blockEntity["Items"] as ListTag;
-                if (itemsTag == null)
+                if (results.ContainsKey(position))
                 {
-                    continue;
+                    results[position] += CountItemsIn(blockEntity, searchedItem);
                 }
-
-                foreach(Tag t in itemsTag)
+                else
                 {
-                    var itemTag = t as CompoundTag;
-                    var itemIdTag = itemTag["id"] as StringTag;
-                    if (itemIdTag.Value == searchedItem)
-                    {
-                        if (results.ContainsKey(position))
-                        {
-                            results[position] += (itemTag["Count"] as ByteTag).Value;
-                        }
-                        else
-                        {
-                            results[position] = (itemTag["Count"] as ByteTag).Value;
-                        }
-                    }
+                    results[position] = CountItemsIn(blockEntity, searchedItem);
                 }
             }
             
             return results;
+        }
+
+        private int CountItemsIn(CompoundTag storage, string searchedItem)
+        {
+            var itemsTag = storage["Items"] as ListTag;
+            if (itemsTag == null)
+            {
+                return 0;
+            }
+
+            int count = 0;
+
+            // each non-empty slot in the container
+            foreach (Tag t in itemsTag)
+            {
+                var itemTag = t as CompoundTag;
+                var itemIdTag = itemTag["id"] as StringTag;
+
+                if (itemIdTag.Value == searchedItem)
+                {
+                    count += (itemTag["Count"] as ByteTag).Value;
+                }
+
+                else if (IsShulkerBox(itemIdTag))
+                {
+                    count += CountItemsInShulkerBox(itemTag, searchedItem);
+                }
+            }
+
+            return count;
+        }
+
+        private int CountItemsInShulkerBox(CompoundTag shulkerBox, string searchedItem)
+        {
+            var tagTag = shulkerBox["tag"] as CompoundTag;
+            if (tagTag == null)
+            {
+                return 0;
+            }
+
+            var blockEntityTag = tagTag["BlockEntityTag"] as CompoundTag;
+            if (blockEntityTag == null)
+            {
+                return 0;
+            }
+
+            return CountItemsIn(blockEntityTag, searchedItem);
         }
     }
 }
