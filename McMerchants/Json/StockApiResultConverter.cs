@@ -35,7 +35,7 @@ namespace McMerchants.Json
             {
                 writer.WriteStartObject();
                 writer.WriteString("name", storeResult.Key.Name);
-                writer.WriteString("logo", storeResult.Key.Logo);
+                writer.WriteString("logo", storeResult.Key.Logo == "" ? null : storeResult.Key.Logo);
 
                 writer.WritePropertyName("results");
                 writer.WriteStartArray();
