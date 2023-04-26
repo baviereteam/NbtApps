@@ -6,6 +6,8 @@ namespace McMerchants.Database
     public class McMerchantsDbContext : DbContext
     {
         public DbSet<StorageRegion> StorageRegions { get; set; }
+        public DbSet<Alley> Alleys { get; set; }
+
         public DbSet<TradingRegion> TradingRegions { get; set; }
 
         public DbSet<FactoryRegion> FactoryRegions { get; set; }
@@ -47,6 +49,11 @@ namespace McMerchants.Database
                 entity.Property(e => e.EndX).HasColumnName("endX");
                 entity.Property(e => e.EndY).HasColumnName("endY");
                 entity.Property(e => e.EndZ).HasColumnName("endZ");
+
+                entity.HasMany(s => s.Alleys)
+                    .WithOne(a => a.Store)
+                    .HasForeignKey(a => a.StoreId)
+                    .IsRequired();
             });
 
             modelBuilder.Entity<TradingRegion>(entity =>
@@ -87,6 +94,15 @@ namespace McMerchants.Database
                 entity
                     .HasOne(p => p.Factory)
                     .WithMany(f => f.Products);
+            });
+
+            modelBuilder.Entity<Alley>(entity =>
+            {
+                entity
+                    .ToTable("alleys")
+                    .HasKey(e => e.Id);
+                entity.HasOne(a => a.Store)
+                    .WithMany(s => s.Alleys);
             });
 
             base.OnModelCreating(modelBuilder);
