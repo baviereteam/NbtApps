@@ -32,7 +32,7 @@ const setAlertDisplayed = displayed => {
 
 const handleResponse = (response, stackSize) => {
     fillResults(response.stores, storesContainer, stackSize, parseStore);
-    fillResults(response.factories, factoriesContainer, stackSize, parseStore);
+    fillResults(response.factories, factoriesContainer, stackSize, parseFactory);
 }
 
 const fillResults = (results, container, stackSize, itemParsingFunction) => {
@@ -46,6 +46,41 @@ const fillResults = (results, container, stackSize, itemParsingFunction) => {
 };
 
 const parseStore = (data, container, stackSize) => {
+    const { name, logo, count, alleys } = data;
+
+    const storeNode = template.content.cloneNode(true);
+    storeNode.querySelector('.storeName').textContent = name;
+    storeNode.querySelector('.itemCount').textContent = count.toString();
+
+    if (logo === null) {
+        storeNode.querySelector('.storeLogo').remove();
+    } else {
+        storeNode.querySelector('.storeLogo').src += logo;
+    }
+
+    if (Number.isNaN(stackSize) || count < stackSize) {
+        storeNode.querySelector('.repartition').className = 'hidden';
+    } else {
+        storeNode.querySelector('.stackCount').textContent = Math.floor(count / stackSize);
+        storeNode.querySelector('.remainderCount').textContent = count % stackSize;
+    }
+
+    if (Array.isArray(alleys) && alleys.length > 0) {
+        const alleysContainer = storeNode.querySelector('.alleys ul');
+
+        alleys.forEach(alley => {
+            const alleyItem = document.createElement('li');
+            alleyItem.textContent = alley;
+            alleysContainer.appendChild(alleyItem);
+        })
+    } else {
+        storeNode.querySelector('.alleys').remove();
+    }
+    
+    container.appendChild(storeNode);
+};
+
+const parseFactory = (data, container, stackSize) => {
     const { name, logo, results } = data;
     let count = 0;
 
