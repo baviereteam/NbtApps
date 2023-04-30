@@ -79,7 +79,6 @@ namespace McMerchants.Controllers
 
         private bool IsPointInAlley(Point p, Alley a)
         {
-            Console.WriteLine($"Looking for point {p} in alley {a.Name}");
             if (a.Direction == Alley.AlleyDirection.X && a.Coordinate == p.X && a.LowBoundary <= p.Z && p.Z <= a.HighBoundary)
             {
                 return true;
