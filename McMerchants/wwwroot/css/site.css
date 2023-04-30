@@ -128,3 +128,28 @@ body > div {
     font-size: 12px;
     font-style: italic;
 }
+
+.stocks-list .alleys {
+    display: flex;
+}
+
+.stocks-list .alleys h4 {
+    font-size: 14px;
+    margin: auto 0;
+    margin-right: 5px;
+}
+
+.stocks-list .alleys ul {
+    display: flex;
+    padding-inline-start: 0;
+    margin-top: 5px;
+}
+
+.stocks-list .alleys ul li {
+    background-color: darkred;
+    color: white;
+    padding: 5px;
+    border-radius: 20px;
+    font-weight: bold;
+    margin-right: 5px;
+}

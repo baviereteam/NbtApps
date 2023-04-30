@@ -19,19 +19,46 @@ namespace McMerchants.Json
             writer.WriteStartObject();
 
             writer.WritePropertyName("stores");
-            WriteDictionary(writer, value.Stores, options);
+            WriteStoresDictionary(writer, value.Stores, options);
 
             writer.WritePropertyName("factories");
-            WriteDictionary(writer, value.Factories, options);
+            WriteFactoriesDictionary(writer, value.Factories, options);
 
             writer.WriteEndObject();
         }
 
-        private void WriteDictionary(Utf8JsonWriter writer, IDictionary<ItemProviderRegion, IDictionary<Point, int>> value, JsonSerializerOptions options)
+        private void WriteStoresDictionary(Utf8JsonWriter writer, IList<StoreStockResult> value, JsonSerializerOptions options)
         {
             writer.WriteStartArray();
 
-            foreach (KeyValuePair<ItemProviderRegion, IDictionary<Point, int>> storeResult in value)
+            foreach (StoreStockResult storeResult in value)
+            {
+                writer.WriteStartObject();
+                writer.WriteString("name", storeResult.Store.Name);
+                writer.WriteString("logo", storeResult.Store.Logo == "" ? null : storeResult.Store.Logo);
+
+                writer.WriteNumber("count", storeResult.Count);
+
+                writer.WritePropertyName("alleys");
+                writer.WriteStartArray();
+
+                foreach (Alley a in storeResult.AlleysContaining)
+                {
+                    writer.WriteStringValue(a.Name);
+                }
+
+                writer.WriteEndArray();
+                writer.WriteEndObject();
+            }
+
+            writer.WriteEndArray();
+        }
+
+        private void WriteFactoriesDictionary(Utf8JsonWriter writer, IDictionary<FactoryRegion, IDictionary<Point, int>> value, JsonSerializerOptions options)
+        {
+            writer.WriteStartArray();
+
+            foreach (KeyValuePair<FactoryRegion, IDictionary<Point, int>> storeResult in value)
             {
                 writer.WriteStartObject();
                 writer.WriteString("name", storeResult.Key.Name);
@@ -56,6 +83,5 @@ namespace McMerchants.Json
 
             writer.WriteEndArray();
         }
-
     }
 }

@@ -6,13 +6,13 @@ namespace McMerchants.Models.Json
 {
     public class StockApiResult
     {
-        public IDictionary<ItemProviderRegion, IDictionary<Point, int>> Stores { get; set; }
-        public IDictionary<ItemProviderRegion, IDictionary<Point, int>> Factories { get; set; }
+        public IList<StoreStockResult> Stores { get; set; }
+        public IDictionary<FactoryRegion, IDictionary<Point, int>> Factories { get; set; }
 
         public StockApiResult()
         {
-            Stores = new Dictionary<ItemProviderRegion, IDictionary<Point, int>>();
-            Factories = new Dictionary<ItemProviderRegion, IDictionary<Point, int>>();
+            Stores = new List<StoreStockResult>();
+            Factories = new Dictionary<FactoryRegion, IDictionary<Point, int>>();
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using NbtTools.Geography;
+﻿using System.Collections.Generic;
 
 namespace McMerchants.Models.Database
 {
@@ -7,6 +7,6 @@ namespace McMerchants.Models.Database
     /// </summary>
     public class StorageRegion : ItemProviderRegion
     {
-        
+        public ICollection<Alley> Alleys { get; set; }
     }
 }
