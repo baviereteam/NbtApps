@@ -146,7 +146,7 @@ body > div {
 }
 
 .stocks-list .alleys ul li {
-    background-color: darkred;
+    background-color: #fc6303;
     color: white;
     padding: 5px;
     border-radius: 20px;
