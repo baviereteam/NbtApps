@@ -118,6 +118,7 @@ body > div {
 
 .stocks-list li > img {
     margin-right: 10px;
+    max-height: 45px;
 }
 
 .stocks-list h3 {
