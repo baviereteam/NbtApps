@@ -70,7 +70,7 @@ namespace NbtTools
                     {
                         var chunkMainTag = reader.ReadChunk(chunk);
                         var status = chunkMainTag["Status"] as StringTag;
-                        if (status != null && status == "full")
+                        if (status != null && status == "minecraft:full")
                         {
                             var blockEntities = chunkMainTag["block_entities"] as ListTag;
                             foreach (var blockEntity in blockEntities)
