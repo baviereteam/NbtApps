@@ -3,6 +3,7 @@
     public enum StorageType
     {
         CHEST,
+        TRAPPED_CHEST,
         BARREL,
         SHULKERBOX
     }
@@ -15,6 +16,8 @@
             {
                 case "minecraft:chest":
                     return StorageType.CHEST;
+                case "minecraft:trapped_chest":
+                    return StorageType.TRAPPED_CHEST;
                 case "minecraft:barrel":
                     return StorageType.BARREL;
 
@@ -32,6 +35,7 @@
             {
                 StorageType.BARREL => "minecraft:barrel",
                 StorageType.CHEST => "minecraft:chest",
+                StorageType.TRAPPED_CHEST => "minecraft:trapped_chest",
                 StorageType.SHULKERBOX => "minecraft:shulker_box",
                 _ => throw new System.Exception($"Unsupported storage type {type}")
             };

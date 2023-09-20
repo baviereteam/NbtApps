@@ -16,6 +16,7 @@ namespace NbtTools.Items
             {
                 StorageType.BARREL.GetId(),
                 StorageType.CHEST.GetId(),
+                StorageType.TRAPPED_CHEST.GetId(),
                 StorageType.SHULKERBOX.GetId()
             };
         }
