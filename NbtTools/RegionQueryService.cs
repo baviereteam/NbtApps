@@ -73,11 +73,23 @@ namespace NbtTools
                         if (status != null && status == "minecraft:full")
                         {
                             var blockEntities = chunkMainTag["block_entities"] as ListTag;
-                            foreach (var blockEntity in blockEntities)
+                            foreach (var element in blockEntities)
                             {
-                                data.Add(blockEntity as CompoundTag);
-                            }
+                                var blockEntity = element as CompoundTag;
 
+                                // Ignore entities that are in the chunk, but outside of the selection
+                                // (in chunks containing the selection limits)
+                                Point position = new Point(
+                                    (blockEntity["x"] as IntTag).Value,
+                                    (blockEntity["y"] as IntTag).Value,
+                                    (blockEntity["z"] as IntTag).Value
+                                );
+
+                                if (zone.Contains(position))
+                                {
+                                    data.Add(blockEntity);
+                                }
+                            }
                         }
                     }
                 }
