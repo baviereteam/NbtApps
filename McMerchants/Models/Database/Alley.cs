@@ -33,6 +33,9 @@
         /// </summary>
         public int HighBoundary { get; set; }
 
+        public int StartY { get; set; }
+        public int EndY { get; set; }
+
         public string Name { get; set; }
     }
 }
