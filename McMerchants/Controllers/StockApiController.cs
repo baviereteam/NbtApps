@@ -19,12 +19,10 @@ namespace McMerchants.Controllers
     public class StockApiController : ControllerBase
     {
         private readonly StoredItemService StoredItemService;
-        private readonly IConfiguration Configuration;
         private readonly McMerchantsDbContext Context;
 
-        public StockApiController(IConfiguration configuration, StoredItemService storedItemService, McMerchantsDbContext context)
+        public StockApiController(StoredItemService storedItemService, McMerchantsDbContext context)
         {
-            Configuration = configuration;
             StoredItemService = storedItemService;
             Context = context;
         }
@@ -79,6 +77,11 @@ namespace McMerchants.Controllers
 
         private bool IsPointInAlley(Point p, Alley a)
         {
+            if (p.Y < a.StartY || p.Y > a.EndY)
+            {
+                return false;
+            }
+
             if (a.Direction == Alley.AlleyDirection.X && a.Coordinate == p.X && a.LowBoundary <= p.Z && p.Z <= a.HighBoundary)
             {
                 return true;
