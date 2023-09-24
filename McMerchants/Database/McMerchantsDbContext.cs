@@ -7,6 +7,7 @@ namespace McMerchants.Database
     {
         public DbSet<StorageRegion> StorageRegions { get; set; }
         public DbSet<Alley> Alleys { get; set; }
+        public DbSet<StoreItemDefaultAlley> DefaultAlleys { get; set; }
 
         public DbSet<TradingRegion> TradingRegions { get; set; }
 
@@ -103,6 +104,15 @@ namespace McMerchants.Database
                     .HasKey(e => e.Id);
                 entity.HasOne(a => a.Store)
                     .WithMany(s => s.Alleys);
+            });
+
+            modelBuilder.Entity<StoreItemDefaultAlley>(entity => 
+            {
+                entity
+                    .ToTable("default_alley")
+                    .HasKey(d => d.Id);
+
+                entity.HasOne(d => d.Alley);
             });
 
             base.OnModelCreating(modelBuilder);

@@ -4,7 +4,6 @@ using McMerchants.Models.Database;
 using McMerchants.Models.Json;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using NbtTools.Geography;
 using NbtTools.Items;
 using System;
@@ -27,7 +26,7 @@ namespace McMerchants.Controllers
             Context = context;
         }
 
-        // GET api/<StockController>/5
+        // GET api/stock/minecraft:glass
         [HttpGet("{id}")]
         public string Get(string id)
         {
@@ -37,7 +36,7 @@ namespace McMerchants.Controllers
             foreach (var store in stores)
             {
                 results.Stores.Add(
-                    FormatStoreResults(store, StoredItemService.FindStoredItems(id, store.Coordinates))
+                    FormatStoreResults(store, id, StoredItemService.FindStoredItems(id, store.Coordinates))
                 );
             }
 
@@ -51,7 +50,7 @@ namespace McMerchants.Controllers
             return json;
         }
 
-        private StoreStockResult FormatStoreResults(StorageRegion store, IDictionary<Point, int> searchResults)
+        private StoreStockResult FormatStoreResults(StorageRegion store, string item, IDictionary<Point, int> searchResults)
         {
             var storeStock = new StoreStockResult(store);
 
@@ -59,20 +58,69 @@ namespace McMerchants.Controllers
             {
                 if (result.Value > 0)
                 {
-                    storeStock.Count += result.Value;
                     try
                     {
-                        storeStock.AlleysContaining.Add(store.Alleys.First(alley => IsPointInAlley(result.Key, alley)));
+                        // throws InvalidOperationException if there's no matches
+                        Alley alley = store.Alleys.First(alley => IsPointInAlley(result.Key, alley));
+
+                        if (storeStock.StockInOtherAlleys.ContainsKey(alley))
+                        {
+                            // There was already some stuff in this alley
+                            storeStock.StockInOtherAlleys[alley] += result.Value;
+                        } 
+                        else 
+                        {
+                            // First time we hear about this alley
+                            storeStock.StockInOtherAlleys.Add(
+                                alley,
+                                result.Value
+                            );
+                        }
                     }
-                    catch (Exception)
+
+                    catch (InvalidOperationException)
                     {
                         // Store has no alleys, or no alley matches this point
+                        storeStock.StockInBulkContainers.Add(result);
                     }
                 }
             }
 
-            storeStock.AlleysContaining = storeStock.AlleysContaining.Distinct().ToList();
+            // Move the default alley stuff to the correct spot
+            var defaultAlley = GetDefaultAlleyForItem(store, item);
+            if (defaultAlley != null) {
+                try
+                {
+                    var defaultAlleyResults = storeStock.StockInOtherAlleys.First(alleyEntry => alleyEntry.Key == defaultAlley);
+                    storeStock.StockInDefaultAlley = new Tuple<Alley, int>(defaultAlleyResults.Key, defaultAlleyResults.Value);
+                    storeStock.StockInOtherAlleys.Remove(defaultAlleyResults);
+                }
+                catch (InvalidOperationException) 
+                {
+                    // There's nothing in the default alley
+                    storeStock.StockInDefaultAlley = new Tuple<Alley, int>(defaultAlley, 0);
+                }
+            }
+
             return storeStock;
+        }
+
+        private Alley GetDefaultAlleyForItem(StorageRegion store, string id)
+        {
+            try
+            {
+                return Context.DefaultAlleys
+                .Include(da => da.Alley)
+                .Where(d => d.Item == id)
+                .First(d => d.Alley.Store == store)
+                .Alley;
+            }
+
+            // No element satisfies the condition in predicate.
+            catch (InvalidOperationException)
+            {
+                return null;
+            } 
         }
 
         private bool IsPointInAlley(Point p, Alley a)
