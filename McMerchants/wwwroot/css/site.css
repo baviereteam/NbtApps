@@ -147,10 +147,30 @@ body > div {
 }
 
 .stocks-list .alleys ul li {
-    background-color: #fc6303;
     color: white;
     padding: 5px;
     border-radius: 20px;
     font-weight: bold;
     margin-right: 5px;
 }
+
+.stocks-list .mainAlley ul li {
+    background-color: #2fc2c5;
+}
+.stocks-list .otherAlleys ul li {
+    background-color: #fc6303;
+}
+
+.stocks-list .mainAlley ul li.empty {
+    background-color: #a75353;
+    text-decoration: line-through;
+}
+
+.stocks-list .otherAlleys ul li.bulk {
+    background-color: #8f8f8f;
+}
+.stocks-list .otherAlleys ul li.bulk::before,
+.stocks-list .otherAlleys ul li.bulk::after {
+    content: '\a0';
+}
+

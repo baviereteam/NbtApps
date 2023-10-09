@@ -1,4 +1,6 @@
 ﻿using McMerchants.Models.Database;
+using NbtTools.Geography;
+using System;
 using System.Collections.Generic;
 
 namespace McMerchants.Models.Json
@@ -6,13 +8,16 @@ namespace McMerchants.Models.Json
     public class StoreStockResult
     {
         public StorageRegion Store { get; set; }
-        public int Count { get; set; }
-        public ICollection<Alley> AlleysContaining { get; set; }
+
+        public Tuple<Alley, int> StockInDefaultAlley { get; set; }
+        public IDictionary<Alley, int> StockInOtherAlleys { get; set; }
+        public IDictionary<Point, int> StockInBulkContainers { get; set; }
 
         public StoreStockResult(StorageRegion store) {
             Store = store;
-            Count = 0;
-            AlleysContaining = new List<Alley>();
+            StockInDefaultAlley = null;
+            StockInOtherAlleys = new Dictionary<Alley, int>();
+            StockInBulkContainers = new Dictionary<Point, int>();
         }
     }
 }
