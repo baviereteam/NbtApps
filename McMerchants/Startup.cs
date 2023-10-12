@@ -12,6 +12,7 @@ using McMerchants.Database;
 using System;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using McMerchants.Extensions.DependencyInjection;
 
 namespace McMerchants
 {
@@ -27,25 +28,19 @@ namespace McMerchants
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddNbtTools(new NbtToolsOptions
-            {
-                DatabaseConnectionString = Configuration.GetConnectionString("NbtDatabase")
-            });
-
             services.AddLocalization();
+
+            services.AddMcMerchantsLib(new McMerchantsLibOptions
+            {
+                McMerchantsDatabaseConnectionString = Configuration.GetConnectionString("McMerchantsDatabase"),
+                NbtToolsDatabaseConnectionString = Configuration.GetConnectionString("NbtDatabase")
+            });
 
             services
                 .AddMvc()
                 .AddViewLocalization();
 
             services.AddTransient<IStringLocalizerFactory, MinecraftIdLocalizerFactory>();
-
-            services.AddDbContext<McMerchantsDbContext>(
-            dbOptions => dbOptions.UseSqlite(
-                    Configuration.GetConnectionString("McMerchantsDatabase"),
-                    sqLiteOptions => sqLiteOptions.MigrationsAssembly("McMerchants")
-                )
-            );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

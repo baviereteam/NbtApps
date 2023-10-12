@@ -1,5 +1,7 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+﻿@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment env
+
+<!DOCTYPE html>
+<html lang="en" data-env="@env.EnvironmentName">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />

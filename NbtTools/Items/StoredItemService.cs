@@ -63,6 +63,54 @@ namespace NbtTools.Items
             return results;
         }
 
+        public ICollection<string> ListStoredItems(Cuboid zone)
+        {
+            var dataSource = regionQuery.GetBlockEntitiesDataSource(zone, false);
+            List<string> results = new List<string>();
+
+            foreach (var blockEntity in dataSource)
+            {
+                var containerIdTag = blockEntity["id"] as StringTag;
+                if (!StorageIds.Contains(containerIdTag.Value))
+                {
+                    continue;
+                }
+
+                results.AddRange(ListItemsIn(blockEntity));
+            }
+
+            return results;
+        }
+
+        private ICollection<string> ListItemsIn(CompoundTag storage)
+        {
+            List<string> results = new List<string>();
+
+            var itemsTag = storage["Items"] as ListTag;
+            if (itemsTag == null)
+            {
+                return results;
+            }
+
+            // each non-empty slot in the container
+            foreach (Tag t in itemsTag)
+            {
+                var itemTag = t as CompoundTag;
+                var itemIdTag = itemTag["id"] as StringTag;
+
+                if (IsShulkerBox(itemIdTag))
+                {
+                    results.AddRange(ListItemsInShulkerBox(itemTag));
+                }
+                else
+                {
+                    results.Add(itemIdTag.Value);
+                }
+            }
+
+            return results;
+        }
+
         private int CountItemsIn(CompoundTag storage, string searchedItem)
         {
             var itemsTag = storage["Items"] as ListTag;
@@ -91,6 +139,25 @@ namespace NbtTools.Items
             }
 
             return count;
+        }
+
+        private ICollection<string> ListItemsInShulkerBox(CompoundTag shulkerBox)
+        {
+            List<string> results = new List<string>();
+
+            var tagTag = shulkerBox["tag"] as CompoundTag;
+            if (tagTag == null)
+            {
+                return results;
+            }
+
+            var blockEntityTag = tagTag["BlockEntityTag"] as CompoundTag;
+            if (blockEntityTag == null)
+            {
+                return results;
+            }
+
+            return ListItemsIn(blockEntityTag);
         }
 
         private int CountItemsInShulkerBox(CompoundTag shulkerBox, string searchedItem)
