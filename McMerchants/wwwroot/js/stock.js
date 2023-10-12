@@ -167,24 +167,34 @@ const parseFactory = (data, container, stackSize) => {
         count += entry.count;
     }
 
-    const storeNode = template.content.cloneNode(true);
-    storeNode.querySelector('.storeName').textContent = name;
-    storeNode.querySelector('.itemCount').textContent = count.toString();
+    const factoryNode = createFactoryNode(name, logo, count, stackSize);
+    container.appendChild(factoryNode);
+};
 
-    if (Number.isNaN(stackSize) || count < stackSize) {
-        storeNode.querySelector('.repartition').className = 'hidden';
-    } else {
-        storeNode.querySelector('.stackCount').textContent = Math.floor(count / stackSize);
-        storeNode.querySelector('.remainderCount').textContent = count % stackSize;
-    }
+const createFactoryNode = (name, logo, grandTotal, stackSize) => {
+    const factoryNode = template.content.cloneNode(true);
+
+    // Identity
+    factoryNode.querySelector('.storeName').textContent = name;
 
     if (logo === null) {
-        storeNode.querySelector('.storeLogo').remove();
+        factoryNode.querySelector('.storeLogo').remove();
     } else {
-        storeNode.querySelector('.storeLogo').src += logo;
+        factoryNode.querySelector('.storeLogo').src += logo;
     }
 
-    container.appendChild(storeNode);
+    // Global count
+    factoryNode.querySelector('.itemCount').textContent = grandTotal.toString();
+
+    if (Number.isNaN(stackSize) || grandTotal < stackSize || grandTotal === 0) {
+        factoryNode.querySelector('.repartition').remove();
+    } else {
+        factoryNode.querySelector('.repartition').textContent = `(${stacksAndItemsToText(stackSize, grandTotal)})`;
+    }
+
+    factoryNode.querySelector('.alleys').remove();
+
+    return factoryNode;
 };
 
 const stacksAndItemsToText = (stackSize, count) => {
