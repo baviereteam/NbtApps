@@ -3,6 +3,11 @@
     --background-color: #FFF;
     --text-color: #000;
     --searchbar-background-color: #FFF;
+
+    --environmentName: "";
+    --environmentColor: transparent;
+    --environmentPadding: 0;
+    --environmentFontStyle: none;
 }
 
 [data-theme="dark"] {
@@ -11,13 +16,26 @@
     --searchbar-background-color: #151515;
 }
 
+[data-env="Development"] {
+    --environmentName: "Development";
+    --environmentColor: cornflowerblue;
+    --environmentPadding: 10px;
+    --environmentFontStyle: italic;
+}
+[data-env="Test"] {
+    --environmentName: "Test";
+    --environmentColor: gold;
+    --environmentPadding: 10px;
+    --environmentFontStyle: italic;
+}
+
 /* Main */
 html {
-  font-size: 16px;
-  font-family: sans-serif;
-  display: flex;
-  background-color: var(--background-color);
-  color: var(--text-color);
+    font-size: 16px;
+    font-family: sans-serif;
+    display: flex;
+    background-color: var(--background-color);
+    color: var(--text-color);
 }
 
 body {
@@ -34,6 +52,13 @@ body > div {
 #top-bar {
     border-bottom: 1px solid lightgray;
     display: flex;
+    background-color: var(--environmentColor);
+    color: black;
+}
+#top-bar::before {
+    content: var(--environmentName);
+    padding-right: var(--environmentPadding);
+    font-style: var(--environmentFontStyle);
 }
 
 #search {
@@ -147,10 +172,30 @@ body > div {
 }
 
 .stocks-list .alleys ul li {
-    background-color: #fc6303;
     color: white;
     padding: 5px;
     border-radius: 20px;
     font-weight: bold;
     margin-right: 5px;
 }
+
+.stocks-list .mainAlley ul li {
+    background-color: #2fc2c5;
+}
+.stocks-list .otherAlleys ul li {
+    background-color: #fc6303;
+}
+
+.stocks-list .mainAlley ul li.empty {
+    background-color: #a75353;
+    text-decoration: line-through;
+}
+
+.stocks-list .otherAlleys ul li.bulk {
+    background-color: #8f8f8f;
+}
+.stocks-list .otherAlleys ul li.bulk::before,
+.stocks-list .otherAlleys ul li.bulk::after {
+    content: '\a0';
+}
+

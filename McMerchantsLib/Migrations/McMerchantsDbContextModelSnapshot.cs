@@ -130,6 +130,25 @@ namespace McMerchants.Migrations
                     b.UseTphMappingStrategy();
                 });
 
+            modelBuilder.Entity("McMerchants.Models.Database.StoreItemDefaultAlley", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("AlleyId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Item")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AlleyId");
+
+                    b.ToTable("default_alley", (string)null);
+                });
+
             modelBuilder.Entity("McMerchants.Models.Database.FactoryRegion", b =>
                 {
                     b.HasBaseType("McMerchants.Models.Database.ItemProviderRegion");
@@ -169,6 +188,15 @@ namespace McMerchants.Migrations
                         .HasForeignKey("FactoryId");
 
                     b.Navigation("Factory");
+                });
+
+            modelBuilder.Entity("McMerchants.Models.Database.StoreItemDefaultAlley", b =>
+                {
+                    b.HasOne("McMerchants.Models.Database.Alley", "Alley")
+                        .WithMany()
+                        .HasForeignKey("AlleyId");
+
+                    b.Navigation("Alley");
                 });
 
             modelBuilder.Entity("McMerchants.Models.Database.FactoryRegion", b =>
