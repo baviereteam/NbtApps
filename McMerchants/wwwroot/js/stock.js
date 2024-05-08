@@ -11,6 +11,8 @@ const texts = {
     otherAlleysWithoutDefaultAlley: 'In alleys:',
     defaultAlleyFull: 'In alley:',
     defaultAlleyEmpty: 'None in:',
+    bulkButtonWhenClosed: 'Bulk 🔽',
+    bulkButtonWhenOpened: 'Bulk 🔼'
 }
 
 const queryStock = () => {
@@ -115,6 +117,7 @@ const createStoreNode = (name, logo, grandTotal, stackSize, defaultAlley, otherA
     const alleysContainer = storeNode.querySelector('.otherAlleys ul');
     if (otherAlleys.length == 0 && bulkContainers.length == 0) {
         storeNode.querySelector('.otherAlleys').remove();
+        storeNode.querySelector('.bulk-details').remove();
 
     } else {
         storeNode.querySelector('.otherAlleys h4').innerText = getAlleysIntroText(defaultAlley !== null);
@@ -126,9 +129,13 @@ const createStoreNode = (name, logo, grandTotal, stackSize, defaultAlley, otherA
         });
 
         // Bulk "alley"
-        if (bulkContainers.length > 0) {
+        if (bulkContainers.length == 0) {
+            storeNode.querySelector('.bulk-details').remove();
+
+        } else {
             const badge = createBulkAlleyBadge(bulkContainers);
             alleysContainer.appendChild(badge);
+            fillBulkAlleyDetails(storeNode.querySelector('.bulk-details tbody'), bulkContainers);
         }
     }
 
@@ -148,16 +155,26 @@ const createAlleyBadge = (name, count, stackSize) => {
 };
 
 const createBulkAlleyBadge = (containers) => {
-    const bulkItem = document.createElement('li');
-    bulkItem.classList.add('bulk');
-    bulkItem.textContent = "-";
-    bulkItem.title =
-        containers
-            .map(element => `${element.count} in ${element.x},${element.y},${element.z}`)
-            .join('\n');
+    const li = document.createElement('li');
+    li.classList.add('bulk');
 
-    return bulkItem;
+    const button = document.createElement('button');
+    button.textContent = texts.bulkButtonWhenClosed;
+    button.addEventListener('click', onBulkButtonClick);
+    li.appendChild(button);
+
+    return li;
 };
+
+const fillBulkAlleyDetails = (tbody, containers) => {
+    containers.forEach(container => {
+        const row = tbody.insertRow();
+        row.insertCell().textContent = container.count;
+        row.insertCell().textContent = container.x;
+        row.insertCell().textContent = container.y;
+        row.insertCell().textContent = container.z;
+    });
+}
 
 const parseFactory = (data, container, stackSize) => {
     const { name, logo, results } = data;
@@ -213,4 +230,10 @@ const getAlleysIntroText = (hasDefaultAlley, isDefaultAlley, count) => {
     return (hasDefaultAlley ? texts.otherAlleysWithDefaultAlley : texts.otherAlleysWithoutDefaultAlley);
 }
 
-//TODO: function to show the counts on mobile when tapping an alley badge
+const onBulkButtonClick = (event) => {
+    const button = event.target;
+    const bulkDetailsDiv = button.closest('.store').querySelectorAll('.bulk-details')[0];
+
+    bulkDetailsDiv.classList.toggle('closed');
+    button.innerText = bulkDetailsDiv.classList.contains('closed') ? texts.bulkButtonWhenClosed : texts.bulkButtonWhenOpened;
+}
