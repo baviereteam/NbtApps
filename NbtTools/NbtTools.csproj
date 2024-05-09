@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Localization" Version="9.0.0-preview.3.24172.13" />
   </ItemGroup>
 
   <ItemGroup>
@@ -14,6 +15,30 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Resources\Entities.Villager.Designer.cs">
+      <DependentUpon>Entities.Villager.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Resources\Entities.Trading.Enchantment.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Entities.Trading.Enchantment.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\Entities.Villager.resx">
+      <LastGenOutput>Entities.Villager.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Entities.Trading.Enchantment.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Entities.Trading.Enchantment.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

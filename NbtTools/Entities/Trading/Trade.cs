@@ -1,25 +1,5 @@
-﻿using System.Collections.Generic;
-
-namespace NbtTools.Entities.Trading
+﻿namespace NbtTools.Entities.Trading
 {
-    public class TradeComponent
-    {
-        public string Item { get; private set; }
-        public byte Quantity { get; private set; }
-        public ICollection<string> Metadata { get; private set; }
-
-        public TradeComponent(string item, byte quantity, ICollection<string> metadata)
-        {
-            Item = item;
-            Quantity = quantity;
-            Metadata = metadata;
-        }
-
-        public override string ToString()
-        {
-            return $"{Quantity} {Item}" + (Metadata.Count > 0 ? " (with metadata)" : "");
-        }
-    }
 
     public class Trade
     {

@@ -1,5 +1,5 @@
-﻿@using Microsoft.AspNetCore.Mvc.Localization
-@inject IViewLocalizer Localizer
+﻿@using Microsoft.Extensions.Localization;
+@inject IStringLocalizer<NbtTools.Entities.Villager> VillagerJobLocalizer
 
 @model McMerchants.Models.ShopViewModel
 
@@ -19,7 +19,7 @@
         <h1>@Html.DisplayFor(x => Model.Shop.Name) : Trades</h1>
         @foreach (var jobGroup in Model.Villagers)
         {
-            <h2 class ="accordion-header"><button type="button"></button> @Localizer[jobGroup.Key] (@Html.DisplayFor(modelItem => jobGroup.Value.Count))</h2>
+            <h2 class="accordion-header"><button type="button"></button> @VillagerJobLocalizer[jobGroup.Key] (@Html.DisplayFor(modelItem => jobGroup.Value.Count))</h2>
             <table class="trades accordion-content">
                 @{
                     foreach (var villager in jobGroup.Value)

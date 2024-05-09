@@ -1,11 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NbtTools.Database;
 using NbtTools.Entities;
+using NbtTools.Entities.Trading;
 using NbtTools.Items;
 using NbtTools.Mca;
-using System;
 
 namespace NbtTools.Extensions.DependencyInjection
 {
@@ -20,7 +19,13 @@ namespace NbtTools.Extensions.DependencyInjection
 
             services.AddTransient<RegionQueryService>();
             services.AddTransient<VillagerService>();
+            services.AddTransient<TradeService>();
             services.AddTransient<StoredItemService>();
+
+            services.AddLocalization(options =>
+            {
+                options.ResourcesPath = "Resources";
+            });
 
             services.AddDbContext<NbtDbContext>(
                 dbOptions => dbOptions.UseSqlite(
