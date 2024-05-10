@@ -1,10 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NbtTools.Database
 {
@@ -15,6 +10,7 @@ namespace NbtTools.Database
     {
         public NbtDbContext CreateDbContext(string[] args)
         {
+            //TODO: see how to remove this! (how did I do it in McMerchantsLib?)
             var optionsBuilder = new DbContextOptionsBuilder<NbtDbContext>();
             // Change this to your own path!
             optionsBuilder.UseSqlite("Filename=C:\\Users\\Cycy\\Source\\Repos\\NbtApps\\NbtTools\\Database\\nbt.db");
