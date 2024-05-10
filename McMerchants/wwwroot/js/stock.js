@@ -2,7 +2,9 @@
 const detailsSection = document.getElementById('details');
 const storesContainer = document.getElementById('store-stocks');
 const factoriesContainer = document.getElementById('factory-stocks');
-const template = document.getElementById('stock');
+const tradingContainer = document.getElementById('trading-stocks');
+const stockTemplate = document.getElementById('stock');
+const tradeTemplate = document.getElementById('trade');
 const spinner = document.getElementById('spinner');
 const alert = document.getElementById('alert');
 
@@ -12,7 +14,9 @@ const texts = {
     defaultAlleyFull: 'In alley:',
     defaultAlleyEmpty: 'None in:',
     bulkButtonWhenClosed: 'Bulk 🔽',
-    bulkButtonWhenOpened: 'Bulk 🔼'
+    bulkButtonWhenOpened: 'Bulk 🔼',
+    tradeIconWhenClosed: '🔽',
+    tradeIconWhenOpened: '🔼'
 }
 
 const queryStock = () => {
@@ -42,6 +46,7 @@ const setAlertDisplayed = displayed => {
 const handleResponse = (response, stackSize) => {
     fillResults(response.stores, storesContainer, stackSize, parseStore);
     fillResults(response.factories, factoriesContainer, stackSize, parseFactory);
+    fillResults(response.traders, tradingContainer, null, parseTrading);
 }
 
 const fillResults = (results, container, stackSize, itemParsingFunction) => {
@@ -81,7 +86,7 @@ const parseStore = (data, container, stackSize) => {
 };
 
 const createStoreNode = (name, logo, grandTotal, stackSize, defaultAlley, otherAlleys, bulkContainers) => {
-    const storeNode = template.content.cloneNode(true);
+    const storeNode = stockTemplate.content.cloneNode(true);
 
     // Identity
     storeNode.querySelector('.storeName').textContent = name;
@@ -117,7 +122,7 @@ const createStoreNode = (name, logo, grandTotal, stackSize, defaultAlley, otherA
     const alleysContainer = storeNode.querySelector('.otherAlleys ul');
     if (otherAlleys.length == 0 && bulkContainers.length == 0) {
         storeNode.querySelector('.otherAlleys').remove();
-        storeNode.querySelector('.bulk-details').remove();
+        storeNode.querySelector('.bulk.details').remove();
 
     } else {
         storeNode.querySelector('.otherAlleys h4').innerText = getAlleysIntroText(defaultAlley !== null);
@@ -130,12 +135,12 @@ const createStoreNode = (name, logo, grandTotal, stackSize, defaultAlley, otherA
 
         // Bulk "alley"
         if (bulkContainers.length == 0) {
-            storeNode.querySelector('.bulk-details').remove();
+            storeNode.querySelector('.bulk.details').remove();
 
         } else {
-            const badge = createBulkAlleyBadge(bulkContainers);
+            const badge = createBulkAlleyBadge();
             alleysContainer.appendChild(badge);
-            fillBulkAlleyDetails(storeNode.querySelector('.bulk-details tbody'), bulkContainers);
+            fillBulkAlleyDetails(storeNode.querySelector('.bulk.details tbody'), bulkContainers);
         }
     }
 
@@ -154,7 +159,7 @@ const createAlleyBadge = (name, count, stackSize) => {
     return alleyItem;
 };
 
-const createBulkAlleyBadge = (containers) => {
+const createBulkAlleyBadge = () => {
     const li = document.createElement('li');
     li.classList.add('bulk');
 
@@ -189,7 +194,7 @@ const parseFactory = (data, container, stackSize) => {
 };
 
 const createFactoryNode = (name, logo, grandTotal, stackSize) => {
-    const factoryNode = template.content.cloneNode(true);
+    const factoryNode = stockTemplate.content.cloneNode(true);
 
     // Identity
     factoryNode.querySelector('.storeName').textContent = name;
@@ -232,8 +237,80 @@ const getAlleysIntroText = (hasDefaultAlley, isDefaultAlley, count) => {
 
 const onBulkButtonClick = (event) => {
     const button = event.target;
-    const bulkDetailsDiv = button.closest('.store').querySelectorAll('.bulk-details')[0];
+    const bulkDetailsDiv = button.closest('.store').querySelectorAll('.bulk.details')[0];
 
     bulkDetailsDiv.classList.toggle('closed');
     button.innerText = bulkDetailsDiv.classList.contains('closed') ? texts.bulkButtonWhenClosed : texts.bulkButtonWhenOpened;
+}
+
+const parseTrading = (data, container, stackSize) => {
+    const { name, logo, results } = data;
+
+    const node = createTradingSpotNode(name, logo, results);
+    container.appendChild(node);
+}
+
+const createTradingSpotNode = (name, logo, trades) => {
+    const node = tradeTemplate.content.cloneNode(true);
+
+    // Identity
+    node.querySelector('.storeName').textContent = name;
+
+    if (logo === null) {
+        node.querySelector('.storeLogo').remove();
+    } else {
+        node.querySelector('.storeLogo').src += logo;
+    }
+
+    // Number of trades
+    node.querySelector('.itemCount').textContent = trades.length.toString();
+    node.querySelector('button').addEventListener('click', onTradesButtonClick);
+
+    if (trades.length == 0) {
+        node.querySelector('.trade.details').remove();
+        node.querySelector('button').classList.add('empty');
+
+    } else {
+        fillTrades(node.querySelector('.trade.details tbody'), trades);
+        node.querySelector('.icon').textContent = texts.tradeIconWhenClosed;
+    }
+
+    return node;
+}
+
+const fillTrades = (tbody, trades) => {
+    trades.forEach(trade => {
+        const row = tbody.insertRow();
+        row.insertCell().textContent = getTradeComponentText(trade.buy1);
+        row.insertCell().textContent = getTradeComponentText(trade.buy2);
+        row.insertCell().textContent = getTradeComponentText(trade.sell);
+        row.insertCell().textContent = `${trade.villager.job} at ${trade.villager.x}, ${trade.villager.y}, ${trade.villager.z}`;
+    });
+}
+
+const getTradeComponentText = (component) => {
+    if (component == null) {
+        return '';
+    }
+
+    let text = `${component.quantity} ${component.item}`;
+
+    if (component.enchantments.length > 0) {
+        const enchantmentTexts = [];
+        component.enchantments.forEach(e => {
+            enchantmentTexts.push(`${e.name} ${e.level}`);
+        });
+
+        text += `(${enchantmentTexts.join(', ')})`;
+    }
+    
+    return text;
+}
+
+const onTradesButtonClick = (event) => {
+    const buttonIcon = event.target.closest('button').querySelectorAll('.icon')[0];
+    const detailsDiv = buttonIcon.closest('.store').querySelectorAll('.trade.details')[0];
+
+    detailsDiv.classList.toggle('closed');
+    buttonIcon.innerText = detailsDiv.classList.contains('closed') ? texts.tradeIconWhenClosed : texts.tradeIconWhenOpened;
 }
