@@ -14,14 +14,14 @@ namespace NbtTools.Entities.Trading
             nbtContext = context;
         }
 
-        public Trade FromTradeTag(CompoundTag rootTag) {
+        public Trade FromTradeTag(Villager villager, CompoundTag rootTag) {
             try
             {
                 var buy1 = TradeComponentFromTag(rootTag["buy"] as CompoundTag);
                 var buy2 = TradeComponentFromTag(rootTag["buyB"] as CompoundTag);
                 var sell = TradeComponentFromTag(rootTag["sell"] as CompoundTag);
 
-                return new Trade(buy1, buy2, sell);
+                return new Trade(villager, buy1, buy2, sell);
             }
 
             catch (Exception e)
@@ -40,7 +40,6 @@ namespace NbtTools.Entities.Trading
                     return null;
                 }
 
-                //TODO need to retrieve the actual item here
                 var item = nbtContext.Items.Find(id);
                 if (item == null)
                 {
@@ -101,13 +100,13 @@ namespace NbtTools.Entities.Trading
             }
         }
 
-        public ICollection<Trade> FromRecipesTag(ListTag recipesTag)
+        public ICollection<Trade> FromRecipesTag(Villager villager, ListTag recipesTag)
         {
             var trades = new List<Trade>();
 
             foreach (var recipe in recipesTag)
             {
-                trades.Add(FromTradeTag(recipe as CompoundTag));
+                trades.Add(FromTradeTag(villager, recipe as CompoundTag));
             }
 
             return trades;

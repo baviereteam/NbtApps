@@ -1,18 +1,11 @@
+using McMerchants.Extensions.DependencyInjection;
+using McMerchants.Json;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Localization;
-using NbtTools.Extensions.DependencyInjection;
-using NbtTools.Database;
-using Microsoft.Extensions.Options;
-using McMerchants.Database;
-using System;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
-using McMerchants.Extensions.DependencyInjection;
 
 namespace McMerchants
 {
@@ -33,6 +26,8 @@ namespace McMerchants
                 McMerchantsDatabaseConnectionString = Configuration.GetConnectionString("McMerchantsDatabase"),
                 NbtToolsDatabaseConnectionString = Configuration.GetConnectionString("NbtDatabase")
             });
+
+            services.AddSingleton<StockApiResultConverter>();
 
             services
                 .AddMvc();

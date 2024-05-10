@@ -4,6 +4,8 @@ using McMerchants.Models.Database;
 using McMerchants.Models.Json;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NbtTools.Entities;
+using NbtTools.Entities.Trading;
 using NbtTools.Geography;
 using NbtTools.Items;
 using System;
@@ -18,12 +20,21 @@ namespace McMerchants.Controllers
     public class StockApiController : ControllerBase
     {
         private readonly StoredItemService StoredItemService;
+        private readonly VillagerService VillagerService;
         private readonly McMerchantsDbContext Context;
+        private readonly StockApiResultConverter JsonConverter;
 
-        public StockApiController(StoredItemService storedItemService, McMerchantsDbContext context)
+        public StockApiController(
+            StoredItemService storedItemService, 
+            VillagerService villagerService, 
+            McMerchantsDbContext context,
+            StockApiResultConverter jsonConverter
+        )
         {
             StoredItemService = storedItemService;
+            VillagerService = villagerService;
             Context = context;
+            JsonConverter = jsonConverter;
         }
 
         // GET api/stock/minecraft:glass
@@ -44,6 +55,12 @@ namespace McMerchants.Controllers
             foreach (var factory in factories)
             {
                 results.Factories.Add(factory, StoredItemService.FindStoredItems(id, factory.Coordinates));
+            }
+
+            var tradingPlaces = Context.TradingRegions;
+            foreach (var tradingPlace in tradingPlaces)
+            {
+                results.Trades.Add(tradingPlace, VillagerService.GetTradesFor(tradingPlace.Coordinates, id));
             }
 
             var json = ResultsToJson(results);
@@ -146,7 +163,7 @@ namespace McMerchants.Controllers
         private string ResultsToJson(StockApiResult result)
         {
             var options = new JsonSerializerOptions();
-            options.Converters.Add(new StockApiResultConverter());
+            options.Converters.Add(JsonConverter);
             return JsonSerializer.Serialize(result, options);
         }
     }

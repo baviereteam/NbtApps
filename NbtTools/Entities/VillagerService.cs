@@ -33,6 +33,30 @@ namespace NbtTools.Entities
             return villagers;
         }
 
+        public ICollection<Trade> GetTradesFor(Cuboid zone, string id) 
+        {
+            var dataSource = regionQuery.GetEntitiesDataSource(zone);
+            var villagerTags = nbtFilter.GetAllCompoundsWithId(dataSource, "minecraft:villager");
+            var trades = new List<Trade>();
+
+            foreach (var villagerTag in villagerTags)
+            {
+                var villager = FromNbtTag(villagerTag);
+                if (villager.Position.ContainedIn(zone))
+                {
+                    foreach (var trade in villager.Trades)
+                    {
+                        if (trade.Sell.Item.Id == id)
+                        {
+                            trades.Add(trade);
+                        }
+                    }
+                }
+            }
+
+            return trades;
+        }
+
         public IDictionary<string, ICollection<Villager>> OrderByJob(ICollection<Villager> source)
         {
             var destination = new Dictionary<string, ICollection<Villager>>();
@@ -64,19 +88,21 @@ namespace NbtTools.Entities
                 int level = (villagerDataTag["level"] as IntTag).Value;
                 string profession = (villagerDataTag["profession"] as StringTag).Value;
                 string type = (villagerDataTag["type"] as StringTag).Value;
+                var villager = new Villager(profession, level, type, position);
 
                 ICollection<Trade> trades;
                 if (profession != "minecraft:none" && profession != "minecraft:nitwit")
                 {
                     ListTag recipes = (rootTag["Offers"] as CompoundTag)["Recipes"] as ListTag;
-                    trades = tradeService.FromRecipesTag(recipes);
+                    trades = tradeService.FromRecipesTag(villager, recipes);
                 }
                 else
                 {
                     trades = new List<Trade>();
                 }
 
-                return new Villager(profession, level, type, position, trades);
+                villager.Trades = trades;
+                return villager;
             }
 
             catch (Exception e)
