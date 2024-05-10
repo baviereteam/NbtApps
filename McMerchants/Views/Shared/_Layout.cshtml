@@ -10,17 +10,36 @@
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body>
+    <div id="top-bar">
+        <input type="text" id="search" placeholder="🔍 What are you looking for ?" />
+    </div>
     @RenderBody()
     <div id="buttons">
         <label for="light-switch">🌗 Change theme</label>
         <input type="checkbox" name="light-switch" />
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js"
+            integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ="
+            crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"
+            integrity="sha256-lSjKY0/srUM9BE3dPm+c4fBo1dky2v27Gdjm2uoZaL0="
+            crossorigin="anonymous"></script>
+
     <script type="text/javascript" src="~/js/main.js"></script>
     <script type="text/javascript" src="~/js/accordion.js"></script>
     <script type="text/javascript">
         document.addEventListener('readystatechange', () => {
             if (document.readyState === "complete") {
                 initAccordions();
+
+                $("#search").autocomplete({
+                    source: "/api/items",
+                    minLength: 3,
+                    select: function (event, ui) {
+                        window.location.href = `/Item/Details/${ui.item.value}`;
+                    }
+                });
             }
         });
     </script>
