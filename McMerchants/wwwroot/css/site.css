@@ -14,6 +14,10 @@
     --stock-otherAlley-badge-background-color: #fc6303;
     --stock-bulk-badge-background-color: #8f8f8f;
     --error-text-color: darkred;
+
+    --link-color: blue;
+    --visited-link-color: purple;
+
 }
 
 [data-theme="dark"] {
@@ -21,6 +25,8 @@
     --text-color: #EEE;
     --searchbar-background-color: #151515;
     --error-text-color: firebrick;
+    --link-color: cornflowerblue;
+    --visited-link-color: mediumpurple;
 }
 
 [data-env="Development"] {
@@ -54,6 +60,13 @@ body {
 
 body > div {
     padding: 1em;
+}
+
+a {
+    color: var(--link-color);
+}
+a:visited {
+    color: var(--visited-link-color);
 }
 
 #top-bar {
@@ -256,4 +269,9 @@ body > div {
     padding: 0;
     font-weight: normal;
     color: var(--text-color);
+}
+.stocks-list .storeName a {
+    font-size: 14px;
+    font-weight: normal;
+    text-decoration: none;
 }

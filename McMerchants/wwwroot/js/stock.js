@@ -244,17 +244,18 @@ const onBulkButtonClick = (event) => {
 }
 
 const parseTrading = (data, container, stackSize) => {
-    const { name, logo, results } = data;
+    const { id, name, logo, results } = data;
 
-    const node = createTradingSpotNode(name, logo, results);
+    const node = createTradingSpotNode(id, name, logo, results);
     container.appendChild(node);
 }
 
-const createTradingSpotNode = (name, logo, trades) => {
+const createTradingSpotNode = (id, name, logo, trades) => {
     const node = tradeTemplate.content.cloneNode(true);
 
     // Identity
-    node.querySelector('.storeName').textContent = name;
+    node.querySelector('.storeName span').textContent = name;
+    node.querySelector('.storeName a').href = `/Shop/Details/${id}`;
 
     if (logo === null) {
         node.querySelector('.storeLogo').remove();

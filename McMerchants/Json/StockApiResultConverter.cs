@@ -140,6 +140,7 @@ namespace McMerchants.Json
             foreach (KeyValuePair<TradingRegion, IEnumerable<Trade>> tradingPlace in value)
             {
                 writer.WriteStartObject();
+                writer.WriteNumber("id", tradingPlace.Key.Id);
                 writer.WriteString("name", tradingPlace.Key.Name);
                 writer.WriteString("logo", tradingPlace.Key.Logo == "" ? null : tradingPlace.Key.Logo);
 
