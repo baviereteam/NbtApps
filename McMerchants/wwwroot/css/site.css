@@ -253,6 +253,14 @@ a:visited {
         text-align: right;
         padding-left: 30px;
     }
+
+    td > div {
+        display: flex;
+
+        .sprite {
+            margin-right: 5px;
+        }
+    }
 }
 .stocks-list button.trades-toggle {
     color: white;

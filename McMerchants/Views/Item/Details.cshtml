@@ -68,13 +68,19 @@ else
             </div>
         </li>
     </template>
+    <template id="trade-component">
+        <div>
+            <div class="sprite"></div>
+            <div class="text"></div>
+        </div>
+        <div class="details"></div>
+    </template>
 
     <div id="details" data-itemid="@Model.Item.Id" data-stacksize="@Model.Item.StackSize">
         <h1>@Model.Item.Name</h1>
 
         <h2 class="accordion-header"><button type="button"></button> Stores</h2>
         <ul id="store-stocks" class="accordion-content stocks-list">
-
         </ul>
 
         <h2 class="accordion-header"><button type="button"></button> Factories</h2>

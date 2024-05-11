@@ -189,6 +189,7 @@ namespace McMerchants.Json
 
             writer.WriteStartObject();
             writer.WriteString("item", component.Item.Name);
+            writer.WriteString("id", component.Item.Id);
             writer.WriteNumber("quantity", component.Quantity);
 
             writer.WritePropertyName("enchantments");

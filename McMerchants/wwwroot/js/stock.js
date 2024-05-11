@@ -5,6 +5,7 @@ const factoriesContainer = document.getElementById('factory-stocks');
 const tradingContainer = document.getElementById('trading-stocks');
 const stockTemplate = document.getElementById('stock');
 const tradeTemplate = document.getElementById('trade');
+const tradeComponentTemplate = document.getElementById('trade-component');
 const spinner = document.getElementById('spinner');
 const alert = document.getElementById('alert');
 
@@ -282,19 +283,22 @@ const createTradingSpotNode = (id, name, logo, trades) => {
 const fillTrades = (tbody, trades) => {
     trades.forEach(trade => {
         const row = tbody.insertRow();
-        row.insertCell().textContent = getTradeComponentText(trade.buy1);
-        row.insertCell().textContent = getTradeComponentText(trade.buy2);
-        row.insertCell().textContent = getTradeComponentText(trade.sell);
+        row.insertCell().appendChild(getTradeComponent(trade.buy1));
+        row.insertCell().appendChild(getTradeComponent(trade.buy2));
+        row.insertCell().appendChild(getTradeComponent(trade.sell));
         row.insertCell().textContent = `${trade.villager.job} at ${trade.villager.x}, ${trade.villager.y}, ${trade.villager.z}`;
     });
 }
 
-const getTradeComponentText = (component) => {
+const getTradeComponent = (component) => {
     if (component == null) {
-        return '';
+        return document.createElement('div');
     }
 
-    let text = `${component.quantity} ${component.item}`;
+    const node = tradeComponentTemplate.content.cloneNode(true);
+    const a = node.querySelectorAll('.sprite')[0];
+    a.dataset.item = component.id;
+    node.querySelectorAll('.text')[0].textContent = `${component.quantity} ${component.item}`;
 
     if (component.enchantments.length > 0) {
         const enchantmentTexts = [];
@@ -302,10 +306,10 @@ const getTradeComponentText = (component) => {
             enchantmentTexts.push(`${e.name} ${e.level}`);
         });
 
-        text += `(${enchantmentTexts.join(', ')})`;
+        node.querySelectorAll('.details')[0].textContent = enchantmentTexts.join(', ');
     }
     
-    return text;
+    return node;
 }
 
 const onTradesButtonClick = (event) => {
