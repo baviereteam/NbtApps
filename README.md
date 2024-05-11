@@ -39,6 +39,18 @@ An example:
   }
 ```
 
+### Texture Atlas
+This section lets you configure the paths for the *texture atlas*, which is used to generate the little icons for the blocks and items.
+Start by consulting [this guide](TextureAtlas.md) to create the texture atlas. Then you'll need to put the two files on the server that runs McMerchants,
+and reference them in this section of the configuration file.
+
+An example:
+```
+  "TextureAtlasPaths": {
+    "atlas": "/home/minecraft/mcmerchants/texture_atlas/minecraft_textures_atlas_blocks.png_0.png",
+    "descriptor": "/home/minecraft/mcmerchants/texture_atlas/minecraft_textures_atlas_blocks.png.txt"
+  }
+```
 
 ## Architecture
 Currently contains three projects: 

@@ -1,5 +1,6 @@
 using McMerchants.Extensions.DependencyInjection;
 using McMerchants.Json;
+using McMerchants.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +22,8 @@ namespace McMerchants
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddStartupTask<TextureAtlasToCssConverter>();
+
             services.AddMcMerchantsLib(new McMerchantsLibOptions
             {
                 McMerchantsDatabaseConnectionString = Configuration.GetConnectionString("McMerchantsDatabase"),
