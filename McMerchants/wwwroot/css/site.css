@@ -128,6 +128,14 @@ a:visited {
     text-align: center;
     vertical-align: middle;
     padding: 10px;
+
+    > div
+    {
+        display: flex;
+    }
+    .sprite {
+        margin-right: 5px;
+    }
 }
 
 .trades ul {

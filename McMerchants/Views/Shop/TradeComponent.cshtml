@@ -1,14 +1,12 @@
 ﻿@using Microsoft.Extensions.Localization;
 @inject IStringLocalizer<NbtTools.Entities.Trading.Enchantment> EnchantmentLocalizer
+@model NbtTools.Entities.Trading.TradeComponent
 
-@{
-    @model NbtTools.Entities.Trading.TradeComponent
-    @addTagHelper *, McMerchants
-}
+<div>
+    <div class="sprite" data-item="@Model.Item.Id"></div>
+    <div class="text">@Html.DisplayFor(x => Model.Quantity) @Model.Item.Name</div>
+</div>
 
-<!--minecraft-item-image for="@Model.Item"></minecraft-item-image-->
-
-@Html.DisplayFor(x => Model.Quantity) @Model.Item.Name
 @if (Model.Enchantments.Count > 0)
 {
     <ul>
