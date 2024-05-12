@@ -147,6 +147,9 @@
   <data name="minecraft:mason" xml:space="preserve">
     <value>Mason</value>
   </data>
+  <data name="minecraft:nitwit" xml:space="preserve">
+    <value>Nitwit</value>
+  </data>
   <data name="minecraft:shepherd" xml:space="preserve">
     <value>Shepherd</value>
   </data>

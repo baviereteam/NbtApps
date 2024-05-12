@@ -151,6 +151,15 @@ namespace NbtTools.Resources {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Nitwit.
+        /// </summary>
+        internal static string minecraft_nitwit {
+            get {
+                return ResourceManager.GetString("minecraft:nitwit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Shepherd.
         /// </summary>
         internal static string minecraft_shepherd {
