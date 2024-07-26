@@ -8,12 +8,25 @@
     --environmentColor: transparent;
     --environmentPadding: 0;
     --environmentFontStyle: none;
+
+    --stock-mainAlley-badge-background-color: #2fc2c5;
+    --stock-mainAlley-empty-badge-background-color: #a75353;
+    --stock-otherAlley-badge-background-color: #fc6303;
+    --stock-bulk-badge-background-color: #8f8f8f;
+    --error-text-color: darkred;
+
+    --link-color: blue;
+    --visited-link-color: purple;
+
 }
 
 [data-theme="dark"] {
     --background-color: #36393F;
     --text-color: #EEE;
     --searchbar-background-color: #151515;
+    --error-text-color: firebrick;
+    --link-color: cornflowerblue;
+    --visited-link-color: mediumpurple;
 }
 
 [data-env="Development"] {
@@ -47,6 +60,13 @@ body {
 
 body > div {
     padding: 1em;
+}
+
+a {
+    color: var(--link-color);
+}
+a:visited {
+    color: var(--visited-link-color);
 }
 
 #top-bar {
@@ -108,6 +128,14 @@ body > div {
     text-align: center;
     vertical-align: middle;
     padding: 10px;
+
+    > div
+    {
+        display: flex;
+    }
+    .sprite {
+        margin-right: 5px;
+    }
 }
 
 .trades ul {
@@ -132,7 +160,7 @@ body > div {
 }
 
 #alert .stamp {
-    color: darkred;
+    color: var(--error-text-color);
     font-family: cursive;
 }
 
@@ -180,22 +208,86 @@ body > div {
 }
 
 .stocks-list .mainAlley ul li {
-    background-color: #2fc2c5;
+    background-color: var(--stock-mainAlley-badge-background-color);
 }
 .stocks-list .otherAlleys ul li {
-    background-color: #fc6303;
+    background-color: var(--stock-otherAlley-badge-background-color);
 }
 
 .stocks-list .mainAlley ul li.empty {
-    background-color: #a75353;
+    background-color: var(--stock-mainAlley-empty-badge-background-color);
     text-decoration: line-through;
 }
 
 .stocks-list .otherAlleys ul li.bulk {
-    background-color: #8f8f8f;
+    background-color: var(--stock-bulk-badge-background-color);
 }
 .stocks-list .otherAlleys ul li.bulk::before,
 .stocks-list .otherAlleys ul li.bulk::after {
     content: '\a0';
 }
 
+.stocks-list button {
+    background: transparent;
+    border: none;
+    color: white;
+    font-weight: bold;
+}
+
+.stocks-list .details.closed {
+    display: none;
+}
+
+.stocks-list .details table {
+    border-collapse: collapse;
+    margin: 10px;
+    border: 1px solid var(--text-color);
+    thead {
+        text-align: center;
+        border-bottom: 2px solid var(--text-color);
+    }
+
+    th, td {
+        padding: 5px;
+    }
+
+    td {
+        border-top: 1px solid var(--text-color);
+    }
+}
+
+.stocks-list .trade.details table {
+    tr > td:last-of-type {
+        text-align: right;
+        padding-left: 30px;
+    }
+
+    td > div {
+        display: flex;
+
+        .sprite {
+            margin-right: 5px;
+        }
+    }
+}
+.stocks-list button.trades-toggle {
+    color: white;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-weight: bold;
+    margin-right: 5px;
+    background-color: var(--stock-bulk-badge-background-color);
+}
+
+.stocks-list button.trades-toggle.empty {
+    background-color: transparent;
+    font-size: 16px;
+    padding: 0;
+    font-weight: normal;
+    color: var(--text-color);
+}
+.stocks-list .storeName a {
+    font-size: 14px;
+    font-weight: normal;
+    text-decoration: none;
+}

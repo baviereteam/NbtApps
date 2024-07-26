@@ -370,3 +370,5 @@ appsettings.*.json
 *.db-shm
 /McMerchants/wwwroot/img/stores/*.png
 /McMerchants/Database/mcmerchants.db
+/McMerchants/wwwroot/css/atlas.css
+/McMerchants/wwwroot/img/atlas.png

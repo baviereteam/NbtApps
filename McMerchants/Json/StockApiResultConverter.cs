@@ -1,5 +1,8 @@
 ﻿using McMerchants.Models.Database;
 using McMerchants.Models.Json;
+using Microsoft.Extensions.Localization;
+using NbtTools.Entities;
+using NbtTools.Entities.Trading;
 using NbtTools.Geography;
 using System;
 using System.Collections.Generic;
@@ -10,6 +13,18 @@ namespace McMerchants.Json
 {
     public class StockApiResultConverter : JsonConverter<StockApiResult>
     {
+        private readonly IStringLocalizer<Enchantment> _enchantmentLocalizer;
+        private readonly IStringLocalizer<Villager> _villagerJobLocalizer;
+
+        public StockApiResultConverter(
+            IStringLocalizer<Enchantment> enchantmentLocalizer,
+            IStringLocalizer<Villager> villagerJobLocalizer
+        ) 
+        { 
+            _enchantmentLocalizer = enchantmentLocalizer;
+            _villagerJobLocalizer = villagerJobLocalizer;
+        }
+
         public override StockApiResult Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             throw new NotImplementedException();
@@ -23,6 +38,9 @@ namespace McMerchants.Json
 
             writer.WritePropertyName("factories");
             WriteFactoriesDictionary(writer, value.Factories, options);
+
+            writer.WritePropertyName("traders");
+            WriteTradingDictionary(writer, value.Trades, options);
 
             writer.WriteEndObject();
         }
@@ -113,6 +131,79 @@ namespace McMerchants.Json
             }
 
             writer.WriteEndArray();
+        }
+
+        private void WriteTradingDictionary(Utf8JsonWriter writer, IDictionary<TradingRegion, IEnumerable<Trade>> value, JsonSerializerOptions options)
+        {
+            writer.WriteStartArray();
+
+            foreach (KeyValuePair<TradingRegion, IEnumerable<Trade>> tradingPlace in value)
+            {
+                writer.WriteStartObject();
+                writer.WriteNumber("id", tradingPlace.Key.Id);
+                writer.WriteString("name", tradingPlace.Key.Name);
+                writer.WriteString("logo", tradingPlace.Key.Logo == "" ? null : tradingPlace.Key.Logo);
+
+                writer.WritePropertyName("results");
+                writer.WriteStartArray();
+
+                foreach (Trade trade in tradingPlace.Value)
+                {
+                    writer.WriteStartObject();
+
+                    WriteVillager(writer, trade.Villager);
+                    WriteTradeComponent(writer, "buy1", trade.Buy1);
+                    WriteTradeComponent(writer, "buy2", trade.Buy2);
+                    WriteTradeComponent(writer, "sell", trade.Sell);
+
+                    writer.WriteEndObject();
+                }
+
+                writer.WriteEndArray();
+                writer.WriteEndObject();
+            }
+
+            writer.WriteEndArray();
+        }
+
+        private void WriteVillager(Utf8JsonWriter writer, Villager villager)
+        {
+            writer.WritePropertyName("villager");
+            writer.WriteStartObject();
+            writer.WriteString("job", _villagerJobLocalizer[villager.Job]);
+            writer.WriteNumber("x", Math.Floor(villager.Position.X));
+            writer.WriteNumber("y", Math.Floor(villager.Position.Y));
+            writer.WriteNumber("z", Math.Floor(villager.Position.Z));
+            writer.WriteEndObject();
+        }
+
+        private void WriteTradeComponent(Utf8JsonWriter writer, string propertyName, TradeComponent component)
+        {
+            writer.WritePropertyName(propertyName);
+
+            if (component == null)
+            {
+                writer.WriteNullValue();
+                return;
+            }
+
+            writer.WriteStartObject();
+            writer.WriteString("item", component.Item.Name);
+            writer.WriteString("id", component.Item.Id);
+            writer.WriteNumber("quantity", component.Quantity);
+
+            writer.WritePropertyName("enchantments");
+            writer.WriteStartArray();
+            foreach (var enchantment in component.Enchantments)
+            {
+                writer.WriteStartObject();
+                writer.WriteString("name", _enchantmentLocalizer[enchantment.Id]);
+                writer.WriteNumber("level", enchantment.Level);
+                writer.WriteEndObject();
+            }
+            writer.WriteEndArray();
+
+            writer.WriteEndObject();
         }
     }
 }

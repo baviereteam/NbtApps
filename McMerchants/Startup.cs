@@ -1,18 +1,12 @@
+using McMerchants.Extensions.DependencyInjection;
+using McMerchants.Json;
+using McMerchants.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Localization;
-using NbtTools.Extensions.DependencyInjection;
-using NbtTools.Database;
-using Microsoft.Extensions.Options;
-using McMerchants.Database;
-using System;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
-using McMerchants.Extensions.DependencyInjection;
 
 namespace McMerchants
 {
@@ -28,7 +22,7 @@ namespace McMerchants
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddLocalization();
+            services.AddStartupTask<TextureAtlasToCssConverter>();
 
             services.AddMcMerchantsLib(new McMerchantsLibOptions
             {
@@ -36,11 +30,10 @@ namespace McMerchants
                 NbtToolsDatabaseConnectionString = Configuration.GetConnectionString("NbtDatabase")
             });
 
-            services
-                .AddMvc()
-                .AddViewLocalization();
+            services.AddSingleton<StockApiResultConverter>();
 
-            services.AddTransient<IStringLocalizerFactory, MinecraftIdLocalizerFactory>();
+            services
+                .AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

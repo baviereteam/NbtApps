@@ -3,10 +3,6 @@
 @{
     Layout = "_Layout";
 }
-<div id="top-bar">
-    <input type="text" id="search" placeholder="🔍 What are you looking for ?"/>
-</div>
-
 
 @if (Model == null)
 {
@@ -17,7 +13,7 @@
 else
 {
     <template id="stock">
-        <li>
+        <li class="store">
             <img class="storeLogo" src="~/img/stores/" />
             <div>
                 <h3 class="storeName"></h3>
@@ -31,8 +27,53 @@ else
                     <h4></h4>
                     <ul></ul>
                 </div>
+                <div class="bulk details closed">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Quantity</th>
+                                <th>X</th>
+                                <th>Y</th>
+                                <th>Z</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </li>
+    </template>
+    <template id="trade">
+        <li class="store">
+            <img class="storeLogo" src="~/img/stores/" />
+            <div>
+                <h3 class="storeName">
+                    <span></span>
+                    <a>See store page</a>
+                </h3>
+                <button class="trades-toggle"><span class="itemCount"></span> trades <span class="icon"></span></button>
+                <div class="trade details closed">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th colspan="2">Buys</th>
+                                <th>Sells</th>
+                                <th>Trader</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </li>
+    </template>
+    <template id="trade-component">
+        <div>
+            <div class="sprite"></div>
+            <div class="text"></div>
+        </div>
+        <div class="details"></div>
     </template>
 
     <div id="details" data-itemid="@Model.Item.Id" data-stacksize="@Model.Item.StackSize">
@@ -40,11 +81,14 @@ else
 
         <h2 class="accordion-header"><button type="button"></button> Stores</h2>
         <ul id="store-stocks" class="accordion-content stocks-list">
-
         </ul>
 
         <h2 class="accordion-header"><button type="button"></button> Factories</h2>
         <ul id="factory-stocks" class="accordion-content stocks-list">
+        </ul>
+
+        <h2 class="accordion-header"><button type="button"></button> Traders</h2>
+        <ul id="trading-stocks" class="accordion-content stocks-list">
         </ul>
 
         <img id="spinner" src="~/img/spinner.gif" alt="Loading..." />
@@ -54,7 +98,7 @@ else
         </div>
     </div>
 
-    <script type="text/javascript" src="~/js/stock.js"></script>
+    <script type="text/javascript" src="~/js/stock.js" asp-append-version="true"></script>
 
     <script type="text/javascript">
         document.addEventListener('readystatechange', () => {
@@ -64,21 +108,3 @@ else
         });
     </script>
 }
-
-<script src="https://code.jquery.com/jquery-3.6.1.min.js"
-        integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ="
-        crossorigin="anonymous"></script>
-<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"
-        integrity="sha256-lSjKY0/srUM9BE3dPm+c4fBo1dky2v27Gdjm2uoZaL0="
-        crossorigin="anonymous"></script>
-
-<script type="text/javascript">
-    $( "#search" ).autocomplete({
-      source: "/api/items",
-      minLength: 3,
-      select: function( event, ui ) {
-        window.location.href = `/Item/Details/${ui.item.value}`;
-      }
-    });
-</script>
-            

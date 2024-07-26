@@ -1,19 +1,17 @@
-﻿@{
-    @using Microsoft.AspNetCore.Mvc.Localization
-    @model NbtTools.Entities.Trading.TradeComponent
-    @inject IViewLocalizer Localizer
-    @addTagHelper *, McMerchants
-}
+﻿@using Microsoft.Extensions.Localization;
+@inject IStringLocalizer<NbtTools.Entities.Trading.Enchantment> EnchantmentLocalizer
+@model NbtTools.Entities.Trading.TradeComponent
 
-<!--minecraft-item-image for="@Model.Item"></minecraft-item-image-->
+<div>
+    <div class="sprite" data-item="@Model.Item.Id"></div>
+    <div class="text">@Html.DisplayFor(x => Model.Quantity) @Model.Item.Name</div>
+</div>
 
-@Html.DisplayFor(x => Model.Quantity) @Localizer[Model.Item]
-@if (Model.Metadata.Count > 0)
+@if (Model.Enchantments.Count > 0)
 {
     <ul>
-        @foreach (var tag in Model.Metadata)
-        {
-            <li>@Localizer[tag]</li>
+        @foreach (var enchantment in Model.Enchantments) {
+            <li>@EnchantmentLocalizer[enchantment.Id] (@enchantment.Level)</li>
         }
     </ul>
 }

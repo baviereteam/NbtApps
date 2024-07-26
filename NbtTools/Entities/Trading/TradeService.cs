@@ -1,22 +1,27 @@
-﻿using SharpNBT;
+﻿using NbtTools.Database;
+using SharpNBT;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NbtTools.Entities.Trading
 {
-    public class TradeFactory
+    public class TradeService : NbtService
     {
-        public static Trade FromTradeTag(CompoundTag rootTag) {
+        private readonly NbtDbContext nbtContext;
+
+        public TradeService(RegionQueryService regionQuery, NbtDbContext context) : base(regionQuery)
+        {
+            nbtContext = context;
+        }
+
+        public Trade FromTradeTag(Villager villager, CompoundTag rootTag) {
             try
             {
                 var buy1 = TradeComponentFromTag(rootTag["buy"] as CompoundTag);
                 var buy2 = TradeComponentFromTag(rootTag["buyB"] as CompoundTag);
                 var sell = TradeComponentFromTag(rootTag["sell"] as CompoundTag);
 
-                return new Trade(buy1, buy2, sell);
+                return new Trade(villager, buy1, buy2, sell);
             }
 
             catch (Exception e)
@@ -25,7 +30,7 @@ namespace NbtTools.Entities.Trading
             }
         }
 
-        public static TradeComponent TradeComponentFromTag(CompoundTag rootTag)
+        public TradeComponent TradeComponentFromTag(CompoundTag rootTag)
         {
             try
             {
@@ -35,9 +40,17 @@ namespace NbtTools.Entities.Trading
                     return null;
                 }
 
+                var item = nbtContext.Items.Find(id);
+                if (item == null)
+                {
+                    throw new KeyNotFoundException($"Item {id} did not exist in the NBT database.");
+                }
+
                 var count = (rootTag["Count"] as ByteTag).Value;
-                var metadata = MetadataFromTag(rootTag["tag"] as CompoundTag);
-                return new TradeComponent(id, count, metadata);
+
+                var metadataTag = rootTag["tag"] as CompoundTag;
+                var enchantments = EnchantmentsFromTag(metadataTag);
+                return new TradeComponent(item, count, enchantments);
             }
 
             catch (Exception e)
@@ -46,15 +59,15 @@ namespace NbtTools.Entities.Trading
             }
         }
 
-        public static ICollection<string> MetadataFromTag(CompoundTag rootTag)
+        public ICollection<Enchantment> EnchantmentsFromTag(CompoundTag rootTag)
         {
             try
             {
-                var metadata = new List<string>();
+                var enchantments = new List<Enchantment>();
 
                 if (rootTag == null)
                 {
-                    return metadata;
+                    return enchantments;
                 }
 
                 var enchantmentsTag = rootTag["Enchantments"] as ListTag;
@@ -66,34 +79,34 @@ namespace NbtTools.Entities.Trading
                     {
                         var id = (enchantment["id"] as StringTag).Value;
                         var lvl = (enchantment["lvl"] as ShortTag).Value;
-                        metadata.Add($"{id} {lvl}");
+                        enchantments.Add(new Enchantment(id, lvl));
                     }
                 }
-                else if (bookEnchantmentsTag != null)
+                if (bookEnchantmentsTag != null)
                 {
                     foreach (CompoundTag enchantment in bookEnchantmentsTag)
                     {
                         var id = (enchantment["id"] as StringTag).Value;
                         var lvl = (enchantment["lvl"] as ShortTag).Value;
-                        metadata.Add($"{id} {lvl}");
+                        enchantments.Add(new Enchantment(id, lvl));
                     }
                 }
 
-                return metadata;
+                return enchantments;
             }
             catch (Exception e)
             {
-                throw new Exception("Could not create trade component metadata", e);
+                throw new Exception("Could not create trade component enchantment metadata", e);
             }
         }
 
-        public static ICollection<Trade> FromRecipesTag(ListTag recipesTag)
+        public ICollection<Trade> FromRecipesTag(Villager villager, ListTag recipesTag)
         {
             var trades = new List<Trade>();
 
             foreach (var recipe in recipesTag)
             {
-                trades.Add(FromTradeTag(recipe as CompoundTag));
+                trades.Add(FromTradeTag(villager, recipe as CompoundTag));
             }
 
             return trades;

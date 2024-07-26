@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using NbtTools.Extensions.DependencyInjection;
-using System.Configuration;
 
 namespace McMerchants.Extensions.DependencyInjection
 {

@@ -13,6 +13,10 @@
     "end": "",
     "custom_map_name": ""
   },
+  "TextureAtlasPaths": {
+    "Atlas": "/path/to/minecraft_textures_atlas_blocks.png_0.png",
+    "Descriptor": "/path/to/minecraft_textures_atlas_blocks.png.txt"
+  },
   "ConnectionStrings": {
     "NbtDatabase": "Filename=/path/to/nbt.db",
     "McMerchantsDatabase": "Filename=/path/to/mcmerchants.db"
