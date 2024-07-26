@@ -21,8 +21,9 @@ namespace NbtTools.Entities
             var villagerTags = nbtFilter.GetAllCompoundsWithId(dataSource, "minecraft:villager");
             var villagers = new List<Villager>();
 
-            foreach (var villagerTag in villagerTags)
+            foreach (var entry in villagerTags)
             {
+                var villagerTag = entry.Tag;
                 var villager = FromNbtTag(villagerTag);
                 if (villager.Position.ContainedIn(zone))
                 {
@@ -39,8 +40,9 @@ namespace NbtTools.Entities
             var villagerTags = nbtFilter.GetAllCompoundsWithId(dataSource, "minecraft:villager");
             var trades = new List<Trade>();
 
-            foreach (var villagerTag in villagerTags)
+            foreach (var entry in villagerTags)
             {
+                var villagerTag = entry.Tag;
                 var villager = FromNbtTag(villagerTag);
                 if (villager.Position.ContainedIn(zone))
                 {

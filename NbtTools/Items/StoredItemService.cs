@@ -36,8 +36,9 @@ namespace NbtTools.Items
             var dataSource = regionQuery.GetBlockEntitiesDataSource(zone, false);
             IDictionary<Point, int> results = new Dictionary<Point, int>();
 
-            foreach (var blockEntity in dataSource)
+            foreach (var entry in dataSource)
             {
+                var blockEntity = entry.Tag;
                 var containerIdTag = blockEntity["id"] as StringTag;
                 if (!StorageIds.Contains(containerIdTag.Value))
                 {
@@ -68,8 +69,9 @@ namespace NbtTools.Items
             var dataSource = regionQuery.GetBlockEntitiesDataSource(zone, false);
             List<string> results = new List<string>();
 
-            foreach (var blockEntity in dataSource)
+            foreach (var entry in dataSource)
             {
+                var blockEntity = entry.Tag;
                 var containerIdTag = blockEntity["id"] as StringTag;
                 if (!StorageIds.Contains(containerIdTag.Value))
                 {
