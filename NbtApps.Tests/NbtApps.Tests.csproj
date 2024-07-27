@@ -35,6 +35,15 @@
     <None Update="Fixtures\StoreAlleyBoundaries-1.20.1\region\r.0.0.mca">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Fixtures\StoreBoundaries-1.20.1\README.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Fixtures\StoreBoundaries-1.20.1\region\r.-1.0.mca">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Fixtures\StoreBoundaries-1.20.1\region\r.0.0.mca">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
