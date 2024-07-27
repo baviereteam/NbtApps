@@ -1,4 +1,4 @@
-﻿# Test fixtures for Store and Alley Boundaries tests
+﻿# Test fixtures for Store Boundaries tests
 ## Minecraft map
 Minecraft version: 1.20.1 (chunk data version: `3465`)
 
