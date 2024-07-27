@@ -1,5 +1,5 @@
 ﻿using McMerchants.Models.Database;
-using McMerchants.Models.Json;
+using McMerchantsLib.Stock;
 using Microsoft.Extensions.Localization;
 using NbtTools.Entities;
 using NbtTools.Entities.Trading;
@@ -11,7 +11,7 @@ using System.Text.Json.Serialization;
 
 namespace McMerchants.Json
 {
-    public class StockApiResultConverter : JsonConverter<StockApiResult>
+    public class StockApiResultConverter : JsonConverter<StockQueryResult>
     {
         private readonly IStringLocalizer<Enchantment> _enchantmentLocalizer;
         private readonly IStringLocalizer<Villager> _villagerJobLocalizer;
@@ -25,12 +25,12 @@ namespace McMerchants.Json
             _villagerJobLocalizer = villagerJobLocalizer;
         }
 
-        public override StockApiResult Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override StockQueryResult Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             throw new NotImplementedException();
         }
 
-        public override void Write(Utf8JsonWriter writer, StockApiResult value, JsonSerializerOptions options) {
+        public override void Write(Utf8JsonWriter writer, StockQueryResult value, JsonSerializerOptions options) {
             writer.WriteStartObject();
 
             writer.WritePropertyName("stores");

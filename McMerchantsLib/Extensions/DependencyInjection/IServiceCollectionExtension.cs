@@ -1,4 +1,5 @@
 ﻿using McMerchants.Database;
+using McMerchantsLib.Stock;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using NbtTools.Extensions.DependencyInjection;
@@ -21,6 +22,7 @@ namespace McMerchants.Extensions.DependencyInjection
                 )
             );
 
+            services.AddTransient<StockService>();
             return services;
         }
     }

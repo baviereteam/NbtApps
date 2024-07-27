@@ -1,9 +1,7 @@
 ﻿using McMerchants.Models.Database;
 using NbtTools.Geography;
-using System;
-using System.Collections.Generic;
 
-namespace McMerchants.Models.Json
+namespace McMerchantsLib.Stock
 {
     public class StoreStockResult
     {
