@@ -4,7 +4,12 @@ Minecraft version: 1.20.1 (chunk data version: `3465`)
 
 A Minecraft map configured as follows:
 * 4 chunks in 2 regions
-* A "store" zone materialized with blocks of a specific color
+* A "store" zone materialized with blocks of a specific color, between the following coordinates:
+
+|x |y  |z |
+|--|---|--|
+|-4|-61|23|
+|7 |-56|11|
 
 ### Inside the "store" boundaries:
 
@@ -37,9 +42,3 @@ Above the "store" vertical boundary:
 |-1,0  |-1,-4,1|Chest         |2 of slime block|
 
 Total: 12 of slime block
-
-## McMerchants database
-* 1 store with bounds
-
-## NBT database
-Version 1.20.1
