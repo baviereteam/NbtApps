@@ -3,6 +3,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace McMerchants.Database
 {
+    /**
+     * To run the migrations for a database in a given environment:
+     * PM> $env:DOTNET_ENVIRONMENT="Test"
+     * PM> dotnet ef database update --project .\McMerchantsLib --startup-project .\McMerchants --context McMerchantsDbContext
+    **/
+
     public class McMerchantsDbContext : DbContext
     {
         public DbSet<StorageRegion> StorageRegions { get; set; }
