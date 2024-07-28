@@ -17,12 +17,12 @@ namespace NbtTools
             McaFileFactory = mcaFileFactory;
         }
 
-        public ICollection<VersionedTagContainer<CompoundTag>> GetEntitiesDataSource(Cuboid zone)
+        public ICollection<Versioned<CompoundTag>> GetEntitiesDataSource(Cuboid zone)
         {
             var chunks = zone.GetAllChunks();
             var regions = chunks.Select(c => c.Region).Distinct();
 
-            var data = new List<VersionedTagContainer<CompoundTag>>();
+            var data = new List<Versioned<CompoundTag>>();
 
             foreach (var region in regions)
             {
@@ -41,7 +41,7 @@ namespace NbtTools
                         {
                             foreach (var entity in chunkEntitiesCollection)
                             {
-                                data.Add(new VersionedTagContainer<CompoundTag>((CompoundTag)entity, dataVersion));
+                                data.Add(new Versioned<CompoundTag>((CompoundTag)entity, dataVersion));
                             }
                         }
                     }
@@ -51,12 +51,12 @@ namespace NbtTools
             return data;
         }
         
-        public ICollection<VersionedTagContainer<CompoundTag>> GetBlockEntitiesDataSource(Cuboid zone, bool includeProtoChunks)
+        public ICollection<Versioned<CompoundTag>> GetBlockEntitiesDataSource(Cuboid zone, bool includeProtoChunks)
         {
             var chunks = zone.GetAllChunks();
             var regions = chunks.Select(c => c.Region).Distinct();
 
-            var data = new List<VersionedTagContainer<CompoundTag>>();
+            var data = new List<Versioned<CompoundTag>>();
 
             foreach (var region in regions)
             {
@@ -89,7 +89,7 @@ namespace NbtTools
 
                                 if (zone.Contains(position))
                                 {
-                                    data.Add(new VersionedTagContainer<CompoundTag>(blockEntity, dataVersion));
+                                    data.Add(new Versioned<CompoundTag>(blockEntity, dataVersion));
                                 }
                             }
                         }

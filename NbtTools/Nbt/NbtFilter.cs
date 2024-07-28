@@ -6,14 +6,14 @@ namespace NbtTools.Nbt
 {
     public class NbtFilter
     {
-        public ICollection<VersionedTagContainer<CompoundTag>> GetAllCompoundsWithId(ICollection<VersionedTagContainer<CompoundTag>> rootTags, string id)
+        public ICollection<Versioned<CompoundTag>> GetAllCompoundsWithId(ICollection<Versioned<CompoundTag>> rootTags, string id)
         {
             return GetAllCompoundsWithId(rootTags, new string[] { id });  
         }
 
-        public ICollection<VersionedTagContainer<CompoundTag>> GetAllCompoundsWithId(ICollection<VersionedTagContainer<CompoundTag>> rootTags, string[] ids)
+        public ICollection<Versioned<CompoundTag>> GetAllCompoundsWithId(ICollection<Versioned<CompoundTag>> rootTags, string[] ids)
         {
-            var tags = new List<VersionedTagContainer<CompoundTag>>();
+            var tags = new List<Versioned<CompoundTag>>();
 
             // open all subtags, check id, and only add if it matches
             foreach (var versionedRootTag in rootTags)

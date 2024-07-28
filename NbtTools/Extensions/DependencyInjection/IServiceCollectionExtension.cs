@@ -4,6 +4,7 @@ using NbtTools.Database;
 using NbtTools.Entities;
 using NbtTools.Entities.Trading;
 using NbtTools.Items;
+using NbtTools.Items.Providers;
 using NbtTools.Mca;
 
 namespace NbtTools.Extensions.DependencyInjection
@@ -18,6 +19,7 @@ namespace NbtTools.Extensions.DependencyInjection
             services.AddSingleton<McaFileFactory>();
 
             services.AddTransient<RegionQueryService>();
+            services.AddTransient<StorageReaderFactory>();
             services.AddTransient<VillagerService>();
             services.AddTransient<TradeService>();
             services.AddTransient<StoredItemService>();
