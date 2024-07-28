@@ -36,7 +36,7 @@ namespace NbtApps.Tests
         }
 
         [TestMethod]
-        public void SearchForRedSand()
+        public void SearchInsideStore_ReturnsCount()
         {
             var StockService = Host.Services.GetService<StockService>();
             var results = StockService.GetStockOf("minecraft:red_sand");
@@ -57,7 +57,7 @@ namespace NbtApps.Tests
         }
 
         [TestMethod]
-        public void SearchForSlimeBlocks()
+        public void SearchOutsideStore_ReturnsZero()
         {
             var StockService = Host.Services.GetService<StockService>();
             var results = StockService.GetStockOf("minecraft:slime_block");

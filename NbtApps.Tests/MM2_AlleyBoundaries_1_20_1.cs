@@ -51,7 +51,7 @@ namespace NbtApps.Tests
         }
 
         [TestMethod]
-        public void SearchForHoneyBlocks()
+        public void SearchInAlley_ReturnsAlley()
         {
             var StockService = Host.Services.GetService<StockService>();
             var results = StockService.GetStockOf("minecraft:honey_block");
@@ -72,7 +72,7 @@ namespace NbtApps.Tests
         }
 
         [TestMethod]
-        public void SearchForIce()
+        public void SearchOutsideAlley_ReturnsBulk()
         {
             var StockService = Host.Services.GetService<StockService>();
             var results = StockService.GetStockOf("minecraft:ice");
