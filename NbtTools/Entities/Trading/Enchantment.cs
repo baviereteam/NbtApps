@@ -10,5 +10,10 @@
             Id = id;
             Level = level;
         }
+
+        public override string ToString()
+        {
+            return $"{Id} {Level}";
+        }
     }
 }
