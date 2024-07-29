@@ -16,19 +16,18 @@ namespace NbtTools.Entities.Providers
         {
             try
             {
-                var metadataTag = tradeComponentTag["tag"] as CompoundTag;
                 var enchantments = new List<Enchantment>();
 
-                if (metadataTag == null)
+                if (!tradeComponentTag.ContainsKey("tag"))
                 {
                     return enchantments;
                 }
 
-                var enchantmentsTag = metadataTag["Enchantments"] as ListTag;
-                var bookEnchantmentsTag = metadataTag["StoredEnchantments"] as ListTag;
+                var metadataTag = tradeComponentTag["tag"] as CompoundTag;
 
-                if (enchantmentsTag != null)
+                if (metadataTag.ContainsKey("Enchantments"))
                 {
+                    var enchantmentsTag = metadataTag["Enchantments"] as ListTag;
                     foreach (CompoundTag enchantment in enchantmentsTag)
                     {
                         var id = (enchantment["id"] as StringTag).Value;
@@ -36,8 +35,9 @@ namespace NbtTools.Entities.Providers
                         enchantments.Add(new Enchantment(id, lvl));
                     }
                 }
-                if (bookEnchantmentsTag != null)
+                if (metadataTag.ContainsKey("StoredEnchantments"))
                 {
+                    var bookEnchantmentsTag = metadataTag["StoredEnchantments"] as ListTag;
                     foreach (CompoundTag enchantment in bookEnchantmentsTag)
                     {
                         var id = (enchantment["id"] as StringTag).Value;

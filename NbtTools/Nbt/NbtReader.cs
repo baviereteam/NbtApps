@@ -14,7 +14,7 @@ namespace NbtTools.Nbt
 
             using (var stream = new MemoryStream(chunk.Data))
             {
-                using (var uncompressor = new SharpNBT.ZLib.ZLibStream(stream, CompressionMode.Decompress))
+                using (var uncompressor = new ZLibStream(stream, CompressionMode.Decompress))
                 {
                     using (var reader = new TagReader(uncompressor, FormatOptions.Java, false))
                     {
