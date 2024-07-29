@@ -1,6 +1,4 @@
-﻿using Microsoft.VisualBasic;
-using SharpNBT;
-using System;
+﻿using SharpNBT;
 
 namespace NbtTools
 {
@@ -19,8 +17,7 @@ namespace NbtTools
             DataVersion = dataVersion;
         }
 
-        public Versioned<T2> As<T2>()
-            where T2 : Tag
+        public Versioned<T2> As<T2>() where T2 : Tag
         {
             if (Tag is T2 convertedTag)
             {

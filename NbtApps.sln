@@ -9,15 +9,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "McMerchants", "McMerchants\
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NbtTools", "NbtTools\NbtTools.csproj", "{CFB62B28-EC13-4073-A221-2D739CFC713D}"
-	ProjectSection(ProjectDependencies) = postProject
-		{79395DC1-FE5D-441C-A58F-C4389876954F} = {79395DC1-FE5D-441C-A58F-C4389876954F}
-	EndProjectSection
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpNBT", "..\SharpNBT\SharpNBT\SharpNBT.csproj", "{79395DC1-FE5D-441C-A58F-C4389876954F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "McMerchantsLib", "McMerchantsLib\McMerchantsLib.csproj", "{ACCBCA06-D2AE-480E-AC9F-8EC40A8CB61A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NbtApps.Tests", "NbtApps.Tests\NbtApps.Tests.csproj", "{35A226D3-9071-4A4F-881B-C79A5CDB6862}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NbtApps.Tests", "NbtApps.Tests\NbtApps.Tests.csproj", "{35A226D3-9071-4A4F-881B-C79A5CDB6862}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,10 +28,6 @@ Global
 		{CFB62B28-EC13-4073-A221-2D739CFC713D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CFB62B28-EC13-4073-A221-2D739CFC713D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CFB62B28-EC13-4073-A221-2D739CFC713D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{79395DC1-FE5D-441C-A58F-C4389876954F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{79395DC1-FE5D-441C-A58F-C4389876954F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{79395DC1-FE5D-441C-A58F-C4389876954F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{79395DC1-FE5D-441C-A58F-C4389876954F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{ACCBCA06-D2AE-480E-AC9F-8EC40A8CB61A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{ACCBCA06-D2AE-480E-AC9F-8EC40A8CB61A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ACCBCA06-D2AE-480E-AC9F-8EC40A8CB61A}.Release|Any CPU.ActiveCfg = Release|Any CPU

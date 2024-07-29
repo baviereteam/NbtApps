@@ -48,7 +48,7 @@ namespace NbtTools.Entities.Trading
         public TradeComponent? TradeComponentFromTag(Versioned<CompoundTag> versionedRootTag)
         {
             // "buy2" is missing when the trade is one item vs. one item.
-            if (versionedRootTag.Tag == null)
+            if (versionedRootTag == null)
             {
                 return null;
             }

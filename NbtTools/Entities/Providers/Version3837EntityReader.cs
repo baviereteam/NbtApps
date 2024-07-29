@@ -24,19 +24,19 @@ namespace NbtTools.Entities.Providers
         {
             try
             {
-                var componentsTag = tradeComponentTag["components"] as CompoundTag;
                 var enchantments = new List<Enchantment>();
 
-                if (componentsTag == null)
+                if (!tradeComponentTag.ContainsKey("components"))
                 {
                     return enchantments;
                 }
+                var componentsTag = tradeComponentTag["components"] as CompoundTag;
 
-                var enchantmentsTag = componentsTag["minecraft:enchantments"] as CompoundTag;
-                var bookEnchantmentsTag = componentsTag["minecraft:stored_enchantments"] as CompoundTag;
 
-                if (enchantmentsTag != null)
+                if (componentsTag.ContainsKey("minecraft:enchantments"))
                 {
+                    var enchantmentsTag = componentsTag["minecraft:enchantments"] as CompoundTag;
+
                     var levelsTag = enchantmentsTag["levels"] as CompoundTag;
                     foreach (IntTag enchantmentTag in levelsTag)
                     {
@@ -44,8 +44,9 @@ namespace NbtTools.Entities.Providers
                     }
                 }
 
-                if (bookEnchantmentsTag != null)
+                if (componentsTag.ContainsKey("minecraft:stored_enchantments"))
                 {
+                    var bookEnchantmentsTag = componentsTag["minecraft:stored_enchantments"] as CompoundTag;
                     var levelsTag = bookEnchantmentsTag["levels"] as CompoundTag;
                     foreach (IntTag enchantmentTag in levelsTag)
                     {
