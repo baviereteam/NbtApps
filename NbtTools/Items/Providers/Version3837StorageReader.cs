@@ -29,7 +29,9 @@ namespace NbtTools.Items.Providers
         {
             // Removed "tag" and replaced with "components" which is a key-value map.
             var componentsTag = shulkerBox["components"] as CompoundTag;
-            if (componentsTag == null)
+
+            // Empty shulker boxes don't have a "minecraft:container".
+            if (componentsTag == null || !componentsTag.ContainsKey("minecraft:container"))
             {
                 return 0;
             }
