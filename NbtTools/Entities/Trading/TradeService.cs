@@ -1,4 +1,5 @@
 ﻿using NbtTools.Database;
+using NbtTools.Entities.Providers;
 using SharpNBT;
 using System;
 using System.Collections.Generic;
@@ -7,19 +8,33 @@ namespace NbtTools.Entities.Trading
 {
     public class TradeService : NbtService
     {
-        private readonly NbtDbContext nbtContext;
+        private readonly NbtDbContext NbtContext;
+        private readonly EntityReaderFactory EntityReaderFactory;
 
-        public TradeService(RegionQueryService regionQuery, NbtDbContext context) : base(regionQuery)
+        public TradeService(RegionQueryService regionQuery, NbtDbContext context, EntityReaderFactory entityReaderFactory) : base(regionQuery)
         {
-            nbtContext = context;
+            NbtContext = context;
+            EntityReaderFactory = entityReaderFactory;
         }
 
-        public Trade FromTradeTag(Villager villager, CompoundTag rootTag) {
+        public ICollection<Trade> FromRecipesTag(Villager villager, Versioned<ListTag> recipesTag)
+        {
+            var trades = new List<Trade>();
+
+            foreach (var recipe in recipesTag.Enumerate())
+            {
+                trades.Add(FromTradeTag(villager, recipe.As<CompoundTag>()));
+            }
+
+            return trades;
+        }
+
+        public Trade FromTradeTag(Villager villager, Versioned<CompoundTag> versionedRootTag) {
             try
             {
-                var buy1 = TradeComponentFromTag(rootTag["buy"] as CompoundTag);
-                var buy2 = TradeComponentFromTag(rootTag["buyB"] as CompoundTag);
-                var sell = TradeComponentFromTag(rootTag["sell"] as CompoundTag);
+                var buy1 = TradeComponentFromTag(versionedRootTag.Get<CompoundTag>("buy"));
+                var buy2 = TradeComponentFromTag(versionedRootTag.Get<CompoundTag>("buyB"));
+                var sell = TradeComponentFromTag(versionedRootTag.Get<CompoundTag>("sell"));
 
                 return new Trade(villager, buy1, buy2, sell);
             }
@@ -30,26 +45,31 @@ namespace NbtTools.Entities.Trading
             }
         }
 
-        public TradeComponent TradeComponentFromTag(CompoundTag rootTag)
+        public TradeComponent? TradeComponentFromTag(Versioned<CompoundTag> versionedRootTag)
         {
+            // "buy2" is missing when the trade is one item vs. one item.
+            if (versionedRootTag.Tag == null)
+            {
+                return null;
+            }
+
             try
             {
-                var id = (rootTag["id"] as StringTag).Value;
+                var id = (versionedRootTag.Tag["id"] as StringTag).Value;
                 if (id == "minecraft:air")
                 {
                     return null;
                 }
 
-                var item = nbtContext.Items.Find(id);
+                var item = NbtContext.Items.Find(id);
                 if (item == null)
                 {
                     throw new KeyNotFoundException($"Item {id} did not exist in the NBT database.");
                 }
 
-                var count = (rootTag["Count"] as ByteTag).Value;
-
-                var metadataTag = rootTag["tag"] as CompoundTag;
-                var enchantments = EnchantmentsFromTag(metadataTag);
+                var entityReader = EntityReaderFactory.GetForVersion(versionedRootTag.DataVersion);
+                var count = entityReader.GetCountFromItemTag(versionedRootTag.Tag);
+                var enchantments = entityReader.GetEnchantmentsFromTradeComponent(versionedRootTag.Tag);
                 return new TradeComponent(item, count, enchantments);
             }
 
@@ -57,59 +77,6 @@ namespace NbtTools.Entities.Trading
             {
                 throw new Exception("Could not create trade component", e);
             }
-        }
-
-        public ICollection<Enchantment> EnchantmentsFromTag(CompoundTag rootTag)
-        {
-            try
-            {
-                var enchantments = new List<Enchantment>();
-
-                if (rootTag == null)
-                {
-                    return enchantments;
-                }
-
-                var enchantmentsTag = rootTag["Enchantments"] as ListTag;
-                var bookEnchantmentsTag = rootTag["StoredEnchantments"] as ListTag;
-
-                if (enchantmentsTag != null)
-                {
-                    foreach (CompoundTag enchantment in enchantmentsTag)
-                    {
-                        var id = (enchantment["id"] as StringTag).Value;
-                        var lvl = (enchantment["lvl"] as ShortTag).Value;
-                        enchantments.Add(new Enchantment(id, lvl));
-                    }
-                }
-                if (bookEnchantmentsTag != null)
-                {
-                    foreach (CompoundTag enchantment in bookEnchantmentsTag)
-                    {
-                        var id = (enchantment["id"] as StringTag).Value;
-                        var lvl = (enchantment["lvl"] as ShortTag).Value;
-                        enchantments.Add(new Enchantment(id, lvl));
-                    }
-                }
-
-                return enchantments;
-            }
-            catch (Exception e)
-            {
-                throw new Exception("Could not create trade component enchantment metadata", e);
-            }
-        }
-
-        public ICollection<Trade> FromRecipesTag(Villager villager, ListTag recipesTag)
-        {
-            var trades = new List<Trade>();
-
-            foreach (var recipe in recipesTag)
-            {
-                trades.Add(FromTradeTag(villager, recipe as CompoundTag));
-            }
-
-            return trades;
         }
     }
 }

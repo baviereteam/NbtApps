@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using NbtTools.Database;
 using NbtTools.Entities;
+using NbtTools.Entities.Providers;
 using NbtTools.Entities.Trading;
 using NbtTools.Items;
 using NbtTools.Items.Providers;
@@ -20,6 +21,7 @@ namespace NbtTools.Extensions.DependencyInjection
 
             services.AddTransient<RegionQueryService>();
             services.AddTransient<StorageReaderFactory>();
+            services.AddTransient<EntityReaderFactory>();
             services.AddTransient<VillagerService>();
             services.AddTransient<TradeService>();
             services.AddTransient<StoredItemService>();
