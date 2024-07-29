@@ -6,7 +6,7 @@ using McMerchantsLib.Stock;
 namespace NbtApps.Tests
 {
     [TestClass]
-    public class MM2_AlleyBoundaries_1_20_1 : TestBase
+    public class MM2_AlleyBoundaries_1_21 : TestBase
     {
         private const string TEST_DIMENSION = "test_dimension";
 
@@ -15,7 +15,7 @@ namespace NbtApps.Tests
         {
             CreateHost(new Dictionary<string, string>()
             {
-                { TEST_DIMENSION, Path.Combine(FixturesDirectory, "AlleyBoundaries-1.20.1") }
+                { TEST_DIMENSION, Path.Combine(FixturesDirectory, "AlleyBoundaries-1.21") }
             });
 
             var dbContext = Host.Services.GetService<McMerchantsDbContext>();
@@ -46,7 +46,7 @@ namespace NbtApps.Tests
                     EndY = -57
                 },
             ];
-            
+
             dbContext.SaveChanges();
         }
 

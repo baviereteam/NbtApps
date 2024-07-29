@@ -17,12 +17,12 @@ namespace NbtTools
             McaFileFactory = mcaFileFactory;
         }
 
-        public ICollection<CompoundTag> GetEntitiesDataSource(Cuboid zone)
+        public ICollection<Versioned<CompoundTag>> GetEntitiesDataSource(Cuboid zone)
         {
             var chunks = zone.GetAllChunks();
             var regions = chunks.Select(c => c.Region).Distinct();
 
-            var data = new List<CompoundTag>();
+            var data = new List<Versioned<CompoundTag>>();
 
             foreach (var region in regions)
             {
@@ -35,12 +35,13 @@ namespace NbtTools
                     if (chunk.Length > 0)
                     {
                         var chunkMainTag = reader.ReadChunk(chunk);
+                        var dataVersion = chunkMainTag["DataVersion"] as IntTag;
                         var chunkEntitiesCollection = chunkMainTag["Entities"] as ListTag;
                         if (chunkEntitiesCollection != null)
                         {
                             foreach (var entity in chunkEntitiesCollection)
                             {
-                                data.Add((CompoundTag)entity);
+                                data.Add(new Versioned<CompoundTag>((CompoundTag)entity, dataVersion));
                             }
                         }
                     }
@@ -50,12 +51,12 @@ namespace NbtTools
             return data;
         }
         
-        public ICollection<CompoundTag> GetBlockEntitiesDataSource(Cuboid zone, bool includeProtoChunks)
+        public ICollection<Versioned<CompoundTag>> GetBlockEntitiesDataSource(Cuboid zone, bool includeProtoChunks)
         {
             var chunks = zone.GetAllChunks();
             var regions = chunks.Select(c => c.Region).Distinct();
 
-            var data = new List<CompoundTag>();
+            var data = new List<Versioned<CompoundTag>>();
 
             foreach (var region in regions)
             {
@@ -72,6 +73,7 @@ namespace NbtTools
                         var status = chunkMainTag["Status"] as StringTag;
                         if (status != null && status == "minecraft:full")
                         {
+                            var dataVersion = chunkMainTag["DataVersion"] as IntTag;
                             var blockEntities = chunkMainTag["block_entities"] as ListTag;
                             foreach (var element in blockEntities)
                             {
@@ -87,7 +89,7 @@ namespace NbtTools
 
                                 if (zone.Contains(position))
                                 {
-                                    data.Add(blockEntity);
+                                    data.Add(new Versioned<CompoundTag>(blockEntity, dataVersion));
                                 }
                             }
                         }

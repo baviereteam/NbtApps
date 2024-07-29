@@ -30,6 +30,7 @@ For example, on a Paper server with an Overworld, a Nether, an End, and a custom
 This section lets you point the app to the two databases that it needs:
 * `NbtDatabase` is the `nbt.db` file that is provided (in `NbtTools/Database`) to power the item search, stack sizes, and correct item names.
 * `McMerchantsDatabase` is a database that contains the stores, factories, trading places... that you'll want the website to display!
+  * Use the `dotnet ef database update` command to create it at the path you specified in your appsettings file!
 
 An example:
 ```
@@ -41,7 +42,9 @@ An example:
 
 ### Texture Atlas
 This section lets you configure the paths for the *texture atlas*, which is used to generate the little icons for the blocks and items.
-Start by consulting [this guide](TextureAtlas.md) to create the texture atlas. Then you'll need to put the two files on the server that runs McMerchants,
+Start by consulting [this guide](TextureAtlas.md) to create the texture atlas. 
+#### Create the texture atlas CSS file
+You'll need to put the two files on the server that runs McMerchants,
 and reference them in this section of the configuration file.
 
 An example:
@@ -51,6 +54,11 @@ An example:
     "descriptor": "/home/minecraft/mcmerchants/texture_atlas/minecraft_textures_atlas_blocks.png.txt"
   }
 ```
+#### Replace or regenerate the texture atlas CSS file
+Remove these two files:
+* `wwwroot/css/atlas.css`
+* `wwwroot/img/atlas.png`
+Then follow the instructions from the previous section!
 
 ## Architecture
 Currently contains three projects: 

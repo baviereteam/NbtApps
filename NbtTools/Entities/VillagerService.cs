@@ -74,10 +74,11 @@ namespace NbtTools.Entities
             return destination;
         }
 
-        private Villager FromNbtTag(CompoundTag rootTag)
+        private Villager FromNbtTag(Versioned<CompoundTag> versionedRootTag)
         {
             try
             {
+                var rootTag = versionedRootTag.Tag;
                 ListTag positionTag = rootTag["Pos"] as ListTag;
                 double x = (positionTag[0] as DoubleTag).Value;
                 double y = (positionTag[1] as DoubleTag).Value;
@@ -93,7 +94,9 @@ namespace NbtTools.Entities
                 ICollection<Trade> trades;
                 if (profession != "minecraft:none" && profession != "minecraft:nitwit")
                 {
-                    ListTag recipes = (rootTag["Offers"] as CompoundTag)["Recipes"] as ListTag;
+                    Versioned<ListTag> recipes = versionedRootTag
+                        .Get<CompoundTag>("Offers")
+                        .Get<ListTag>("Recipes");
                     trades = tradeService.FromRecipesTag(villager, recipes);
                 }
                 else

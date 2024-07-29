@@ -27,8 +27,18 @@ namespace NbtApps.Tests
             Connection.Open();
         }
 
-        public void CreateHost(IDictionary<string, string> mapPaths)
+        public void CreateHost(IDictionary<string, string> mapPaths) 
         {
+            CreateHost(mapPaths, null);
+        }
+
+        public void CreateHost(IDictionary<string, string> mapPaths, string? nbtDatabasePath)
+        {
+            if (nbtDatabasePath != null)
+            {
+                nbtDatabasePath = $"Filename={nbtDatabasePath}";
+            }
+
             CreateConnection();
 
             var configValues = new Dictionary<string, string?>();
@@ -48,7 +58,7 @@ namespace NbtApps.Tests
                 {
                     services.AddMcMerchantsLib(Connection, new McMerchantsLibOptions
                     {
-                        NbtToolsDatabaseConnectionString = null
+                        NbtToolsDatabaseConnectionString = nbtDatabasePath
                     });
                 })
                 .Build();
