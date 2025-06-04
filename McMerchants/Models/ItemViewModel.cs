@@ -1,15 +1,9 @@
-﻿using NbtTools.Entities;
-using NbtTools.Geography;
-using NbtTools.Items;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using NbtTools.Items;
 
 namespace McMerchants.Models
 {
     public class ItemViewModel
     {
-        public Item Item { get; set; }
+        public Searchable Item { get; set; }
     }
 }

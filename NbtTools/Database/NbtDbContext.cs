@@ -11,6 +11,7 @@ namespace NbtTools.Database
 
     public class NbtDbContext : DbContext
     {
+        public DbSet<Searchable> Searchables { get; set; }
         public DbSet<Item> Items { get; set; }
         public DbSet<Potion> Potions { get; set; }
 

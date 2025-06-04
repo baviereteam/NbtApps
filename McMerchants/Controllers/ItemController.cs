@@ -29,7 +29,7 @@ namespace McMerchants.Controllers
         {
             return View(new ItemViewModel
             {
-                Item = _context.Items.First(item => item.Id == itemId),
+                Item = _context.Searchables.First(item => item.Id == itemId),
             });
         }
     }
