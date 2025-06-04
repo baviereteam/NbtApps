@@ -69,3 +69,18 @@ Currently contains three projects:
   * displays all trades of all villagers in given zones
   * lets you search for an item stored in chests/shulker boxes/barrels in given zones
 * `McMerchantsLib`, a class library that carries the underlying concepts of McMerchants, so we can build other apps around them.
+
+## Development
+### Entity Framework Core
+When executing Entity Framework Core commands, you must set the `project`, `startup-project` and `context` parameters so that:
+* `project` points to the project in which files (migrations, ...) must be read and written,
+* `context` is the name of the DbContext describing the database to operate on,
+* `startup-project` is the name of the project containing a reference to `Microsoft.EntityFrameworkCore.Design` package.
+
+For example:
+```
+dotnet ef database update --project NbtTools --startup-project McMerchantsLib --context NbtDbContext
+```
+
+If the `startup-project` is missing, you will get the following error:
+> Your startup project 'NbtTools' doesn't reference Microsoft.EntityFrameworkCore.Design. This package is required for the Entity Framework Core Tools to work. Ensure your startup project is correct, install the package, and try again.
