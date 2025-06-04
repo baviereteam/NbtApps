@@ -12,6 +12,7 @@ namespace NbtTools.Database
     public class NbtDbContext : DbContext
     {
         public DbSet<Item> Items { get; set; }
+        public DbSet<Potion> Potions { get; set; }
 
         public NbtDbContext(DbContextOptions<NbtDbContext> options) : base(options)
         {
@@ -26,6 +27,10 @@ namespace NbtTools.Database
                 entity.HasIndex(e => e.Name);
             });
             modelBuilder.Entity<Item>().ToTable("items");
+            modelBuilder.Entity<Potion>(entity => {
+                entity.ToTable("potions");
+                entity.HasOne(potion => potion.Type);
+            });
 
             base.OnModelCreating(modelBuilder);
         }
