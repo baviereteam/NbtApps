@@ -19,12 +19,13 @@ namespace NbtTools.Database
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Item>().ToTable("items");
-            modelBuilder.Entity<Item>(entity =>
+            modelBuilder.Entity<Searchable>().UseTpcMappingStrategy();
+            modelBuilder.Entity<Searchable>(entity =>
             {
                 entity.HasKey(e => e.Id);
                 entity.HasIndex(e => e.Name);
             });
+            modelBuilder.Entity<Item>().ToTable("items");
 
             base.OnModelCreating(modelBuilder);
         }
