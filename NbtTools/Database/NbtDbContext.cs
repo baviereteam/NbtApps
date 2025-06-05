@@ -14,6 +14,7 @@ namespace NbtTools.Database
         public DbSet<Searchable> Searchables { get; set; }
         public DbSet<Item> Items { get; set; }
         public DbSet<Potion> Potions { get; set; }
+        public DbSet<EnchantedBook> EnchantedBooks { get; set; }
 
         public NbtDbContext(DbContextOptions<NbtDbContext> options) : base(options)
         {
@@ -32,6 +33,7 @@ namespace NbtTools.Database
                 entity.ToTable("potions");
                 entity.HasOne(potion => potion.Type);
             });
+            modelBuilder.Entity<EnchantedBook>().ToTable("enchanted_books");
 
             base.OnModelCreating(modelBuilder);
         }
