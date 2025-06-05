@@ -1,4 +1,5 @@
-﻿using NbtTools.Geography;
+﻿using NbtTools.Database;
+using NbtTools.Geography;
 using NbtTools.Items.Providers;
 using SharpNBT;
 using System;
@@ -25,7 +26,7 @@ namespace NbtTools.Items
             StorageReaderFactory = storageReaderFactory;
         }
 
-        public IDictionary<Point, int> FindStoredItems(string searchedItem, Cuboid zone)
+        public IDictionary<Point, int> FindStoredItems(Searchable searchedItem, Cuboid zone)
         {
             var dataSource = regionQuery.GetBlockEntitiesDataSource(zone, false);
             IDictionary<Point, int> results = new Dictionary<Point, int>();

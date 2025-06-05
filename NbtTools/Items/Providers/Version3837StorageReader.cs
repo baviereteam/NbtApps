@@ -25,7 +25,7 @@ namespace NbtTools.Items.Providers
         /// <param name="shulkerBox"></param>
         /// <param name="searchedItem"></param>
         /// <returns></returns>
-        internal override int CountItemsInContainedShulkerBox(CompoundTag shulkerBox, string searchedItem)
+        internal override int CountItemsInContainedShulkerBox(CompoundTag shulkerBox, Searchable searchedItem)
         {
             // Removed "tag" and replaced with "components" which is a key-value map.
             var componentsTag = shulkerBox["components"] as CompoundTag;
@@ -53,6 +53,35 @@ namespace NbtTools.Items.Providers
             }
 
             return count;
+        }
+
+        /// <summary>
+        /// Indicates whether the provided item tag is a potion matching the search.
+        /// </summary>
+        /// <param name="itemTag"></param>
+        /// <param name="searchedPotion"></param>
+        /// <returns></returns>
+        protected override bool IsMatchingPotion(CompoundTag itemTag, Potion searchedPotion)
+        {
+            var componentsTag = itemTag["components"] as CompoundTag;
+            if (componentsTag == null)
+            {
+                return false;
+            }
+
+            var potionContentsTag = componentsTag["minecraft:potion_contents"] as CompoundTag;
+            if (potionContentsTag == null)
+            {
+                return false;
+            }
+
+            var potionTag = potionContentsTag["potion"] as StringTag;
+            if (potionTag == null)
+            {
+                return false;
+            }
+
+            return potionTag == searchedPotion.PotionContents;
         }
     }
 }
