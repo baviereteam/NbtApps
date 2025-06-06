@@ -27,11 +27,15 @@ namespace NbtTools.Items.Providers
         /// <returns></returns>
         internal override int CountItemsInContainedShulkerBox(CompoundTag shulkerBox, Searchable searchedItem)
         {
-            // Removed "tag" and replaced with "components" which is a key-value map.
+            if (!shulkerBox.ContainsKey("components"))
+            {
+                return 0;
+            }
+
             var componentsTag = shulkerBox["components"] as CompoundTag;
 
             // Empty shulker boxes don't have a "minecraft:container".
-            if (componentsTag == null || !componentsTag.ContainsKey("minecraft:container"))
+            if (!componentsTag.ContainsKey("minecraft:container"))
             {
                 return 0;
             }
