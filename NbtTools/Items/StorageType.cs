@@ -5,7 +5,8 @@
         CHEST,
         TRAPPED_CHEST,
         BARREL,
-        SHULKERBOX
+        SHULKERBOX,
+        CHISELED_BOOKSHELF
     }
 
     public static class StorageTypeFactory
@@ -24,6 +25,9 @@
                 case "minecraft:shulker_box":
                     return StorageType.SHULKERBOX;
 
+                case "minecraft:chiseled_bookshelf":
+                    return StorageType.CHISELED_BOOKSHELF;
+
                 default:
                     throw new System.Exception($"Tried to create an invalid storage type: {blockId}");
             }
@@ -37,6 +41,7 @@
                 StorageType.CHEST => "minecraft:chest",
                 StorageType.TRAPPED_CHEST => "minecraft:trapped_chest",
                 StorageType.SHULKERBOX => "minecraft:shulker_box",
+                StorageType.CHISELED_BOOKSHELF => "minecraft:chiseled_bookshelf",
                 _ => throw new System.Exception($"Unsupported storage type {type}")
             };
         }

@@ -2,6 +2,8 @@
 {
     public class EnchantedBook : Searchable
     {
+        public const string GENERIC_ENCHANTED_BOOK_ID = "minecraft:enchanted_book";
+
         public string Enchantment {  get; set; }
         public int Level { get; set; }
 

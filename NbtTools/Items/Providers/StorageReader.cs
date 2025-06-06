@@ -32,6 +32,17 @@ namespace NbtTools.Items.Providers
         }
 
         /// <summary>
+        /// Indicates whether the provided item tag is an enchanted book matching the search.
+        /// </summary>
+        /// <param name="itemTag"></param>
+        /// <param name="searchedBook"></param>
+        /// <returns></returns>
+        protected virtual bool IsMatchingEnchantedBook(CompoundTag itemTag, EnchantedBook searchedBook)
+        {
+            return false;   // search for enchanted books is not supported before 1.20.5.
+        }
+
+        /// <summary>
         /// Count the number of matching items in a container block (block containing an Items list tag).
         /// </summary>
         /// <param name="storage"></param>
@@ -39,12 +50,12 @@ namespace NbtTools.Items.Providers
         /// <returns></returns>
         internal virtual int CountItemsIn(CompoundTag storage, Searchable searchedItem)
         {
-            var itemsTag = storage["Items"] as ListTag;
-            if (itemsTag == null)
+            if (!storage.ContainsKey("Items"))
             {
                 return 0;
             }
 
+            var itemsTag = storage["Items"] as ListTag;
             int count = 0;
 
             // each non-empty slot in the container
@@ -75,6 +86,16 @@ namespace NbtTools.Items.Providers
             {
                 case Item _:
                     if (itemIdTag.Value == searchedItem.Id)
+                    {
+                        return GetCountFromItemTag(itemTag);
+                    }
+                    else
+                    {
+                        return 0;
+                    }
+
+                case EnchantedBook book:
+                    if (itemIdTag.Value == EnchantedBook.GENERIC_ENCHANTED_BOOK_ID && IsMatchingEnchantedBook(itemTag, book))
                     {
                         return GetCountFromItemTag(itemTag);
                     }
