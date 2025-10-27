@@ -13,10 +13,13 @@ namespace NbtApps.Tests
         [TestInitialize]
         public void Setup()
         {
-            CreateHost(new Dictionary<string, string>()
-            {
-                { TEST_DIMENSION, Path.Combine(FixturesDirectory, "AlleyBoundaries-1.21") }
-            });
+            CreateHost(
+                new Dictionary<string, string>()
+                {
+                    { TEST_DIMENSION, Path.Combine(FixturesDirectory, "AlleyBoundaries-1.21") }
+                },
+                Path.Combine(FixturesDirectory, "NbtDatabases/nbt_1.21.db")
+            );
 
             var dbContext = Host.Services.GetService<McMerchantsDbContext>();
 
