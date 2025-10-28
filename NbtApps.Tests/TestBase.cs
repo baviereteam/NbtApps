@@ -36,7 +36,14 @@ namespace NbtApps.Tests
         {
             if (nbtDatabasePath != null)
             {
-                nbtDatabasePath = $"Filename={nbtDatabasePath}";
+                if (File.Exists(nbtDatabasePath))
+                {
+                    nbtDatabasePath = $"Filename={nbtDatabasePath}";
+                } else
+                {
+                    throw new FileLoadException($"NBT database {nbtDatabasePath} does not exist.");
+                }
+                
             }
 
             CreateConnection();
