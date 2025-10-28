@@ -3,7 +3,7 @@ using McMerchants.Models.Database;
 using Microsoft.Extensions.DependencyInjection;
 using McMerchantsLib.Stock;
 
-namespace NbtApps.Tests
+namespace NbtApps.Tests.v1_21
 {
     [TestClass]
     public class MM2_AlleyBoundaries_1_21 : TestBase

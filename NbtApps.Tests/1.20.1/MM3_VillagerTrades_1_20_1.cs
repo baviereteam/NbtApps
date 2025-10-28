@@ -3,10 +3,10 @@ using McMerchants.Models.Database;
 using Microsoft.Extensions.DependencyInjection;
 using McMerchantsLib.Stock;
 
-namespace NbtApps.Tests
+namespace NbtApps.Tests.v1_20_1
 {
     [TestClass]
-    public class MM3_VillagerTrades_1_21 : TestBase
+    public class MM3_VillagerTrades_1_20_1 : TestBase
     {
         private const string TEST_DIMENSION = "test_dimension";
 
@@ -16,9 +16,9 @@ namespace NbtApps.Tests
             CreateHost(
                 new Dictionary<string, string>()
                 {
-                    { TEST_DIMENSION, Path.Combine(FixturesDirectory, "VillagerTrades-1.21") }
+                    { TEST_DIMENSION, Path.Combine(FixturesDirectory, "VillagerTrades-1.20.1") }
                 },
-                Path.Combine(FixturesDirectory, "NbtDatabases/nbt_1.21.db")
+                Path.Combine(FixturesDirectory, "NbtDatabases/nbt_1.20.1.db")
             );
 
             var dbContext = Host.Services.GetService<McMerchantsDbContext>();

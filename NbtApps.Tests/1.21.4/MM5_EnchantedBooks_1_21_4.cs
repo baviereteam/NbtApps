@@ -3,10 +3,10 @@ using McMerchants.Models.Database;
 using McMerchantsLib.Stock;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace NbtApps.Tests;
+namespace NbtApps.Tests.v1_21_4;
 
 [TestClass]
-public class MM4_Potions_1_21_4 : TestBase
+public class MM5_EnchantedBooks_1_21_4 : TestBase
 {
     private const string TEST_DIMENSION = "test_dimension";
 
@@ -39,17 +39,11 @@ public class MM4_Potions_1_21_4 : TestBase
     }
 
     [TestMethod]
-    public void SearchForPotions_ReturnsPotionsInChest()
+    public void SearchForEnchantedBooks_ReturnsEnchantedBooksInChest()
     {
         var StockService = Host.Services.GetService<StockService>();
 
-        var results = StockService.GetStockOf("potion:invisibility");
-        Assert.AreEqual(1, results.Stores.Count);
-        Assert.AreEqual(0, results.Factories.Count);
-        Assert.AreEqual(0, results.Trades.Count);
-        Assert.AreEqual(1, results.Stores[0].StockInBulkContainers.First().Value);
-
-        results = StockService.GetStockOf("potion:lingering_long_strength");
+        var results = StockService.GetStockOf("enchanted_book:wind_burst_1");
         Assert.AreEqual(1, results.Stores.Count);
         Assert.AreEqual(0, results.Factories.Count);
         Assert.AreEqual(0, results.Trades.Count);
@@ -57,15 +51,15 @@ public class MM4_Potions_1_21_4 : TestBase
     }
 
     [TestMethod]
-    public void SearchForPotions_ReturnsPotionsInShulkerInChest()
+    public void SearchForEnchantedBooks_ReturnsEnchantedBooksInShulkerInChest()
     {
         var StockService = Host.Services.GetService<StockService>();
 
-        var results = StockService.GetStockOf("potion:splash_long_night_vision");
+        var results = StockService.GetStockOf("enchanted_book:protection_3");
         Assert.AreEqual(1, results.Stores.Count);
         Assert.AreEqual(0, results.Factories.Count);
         Assert.AreEqual(0, results.Trades.Count);
-        Assert.AreEqual(2, results.Stores[0].StockInBulkContainers.First().Value);
+        Assert.AreEqual(1, results.Stores[0].StockInBulkContainers.First().Value);
     }
 
     [TestCleanup]

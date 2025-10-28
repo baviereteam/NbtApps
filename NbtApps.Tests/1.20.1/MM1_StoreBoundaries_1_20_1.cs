@@ -3,7 +3,7 @@ using McMerchants.Models.Database;
 using McMerchantsLib.Stock;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace NbtApps.Tests
+namespace NbtApps.Tests.v1_20_1
 {
     [TestClass]
     public class MM1_StoreBoundaries_1_20_1 : TestBase
