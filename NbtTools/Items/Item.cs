@@ -1,22 +1,9 @@
-﻿using System.Text.Json.Serialization;
-
-namespace NbtTools.Items
+﻿namespace NbtTools.Items
 {
-    public class Item
+    public class Item : Searchable
     {
-        [JsonPropertyName("value")]
-        public string Id { get; private set; }
-
-        [JsonPropertyName("label")]
-        public string Name { get; private set; }
-
-        public byte StackSize { get; private set; }
-
-        public Item(string id, string name, byte stackSize)
+        public Item(string id, string name, byte stackSize) : base(id, name, stackSize)
         {
-            Id = id;
-            Name = name;
-            StackSize = stackSize;
         }
     }
 }

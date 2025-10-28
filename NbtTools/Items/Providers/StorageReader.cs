@@ -21,19 +21,41 @@ namespace NbtTools.Items.Providers
         }
 
         /// <summary>
+        /// Indicates whether the provided item tag is a potion matching the search.
+        /// </summary>
+        /// <param name="itemTag"></param>
+        /// <param name="searchedPotion"></param>
+        /// <returns></returns>
+        protected virtual bool IsMatchingPotion(CompoundTag itemTag, Potion searchedPotion)
+        {
+            return false;   // search for potions is not supported before 1.20.5.
+        }
+
+        /// <summary>
+        /// Indicates whether the provided item tag is an enchanted book matching the search.
+        /// </summary>
+        /// <param name="itemTag"></param>
+        /// <param name="searchedBook"></param>
+        /// <returns></returns>
+        protected virtual bool IsMatchingEnchantedBook(CompoundTag itemTag, EnchantedBook searchedBook)
+        {
+            return false;   // search for enchanted books is not supported before 1.20.5.
+        }
+
+        /// <summary>
         /// Count the number of matching items in a container block (block containing an Items list tag).
         /// </summary>
         /// <param name="storage"></param>
         /// <param name="searchedItem"></param>
         /// <returns></returns>
-        internal virtual int CountItemsIn(CompoundTag storage, string searchedItem)
+        internal virtual int CountItemsIn(CompoundTag storage, Searchable searchedItem)
         {
-            var itemsTag = storage["Items"] as ListTag;
-            if (itemsTag == null)
+            if (!storage.ContainsKey("Items"))
             {
                 return 0;
             }
 
+            var itemsTag = storage["Items"] as ListTag;
             int count = 0;
 
             // each non-empty slot in the container
@@ -51,21 +73,50 @@ namespace NbtTools.Items.Providers
         /// <param name="itemTag">A CompoundTag containing an id tag and optionally a count and a component tags.</param>
         /// <param name="searchedItem"></param>
         /// <returns></returns>
-        internal virtual int GetCountFromItemSlot(CompoundTag itemTag, string searchedItem)
+        internal virtual int GetCountFromItemSlot(CompoundTag itemTag, Searchable searchedItem)
         {
             var itemIdTag = itemTag["id"] as StringTag;
 
-            if (itemIdTag.Value == searchedItem)
-            {
-                return GetCountFromItemTag(itemTag);
-            }
-
-            else if (IsShulkerBox(itemIdTag))
+            if (IsShulkerBox(itemIdTag))
             {
                 return CountItemsInContainedShulkerBox(itemTag, searchedItem);
             }
 
-            return 0;
+            switch (searchedItem)
+            {
+                case Item _:
+                    if (itemIdTag.Value == searchedItem.Id)
+                    {
+                        return GetCountFromItemTag(itemTag);
+                    }
+                    else
+                    {
+                        return 0;
+                    }
+
+                case EnchantedBook book:
+                    if (itemIdTag.Value == EnchantedBook.GENERIC_ENCHANTED_BOOK_ID && IsMatchingEnchantedBook(itemTag, book))
+                    {
+                        return GetCountFromItemTag(itemTag);
+                    }
+                    else
+                    {
+                        return 0;
+                    }
+
+                case Potion potion:
+                    if (itemIdTag.Value == potion.Type.Id && IsMatchingPotion(itemTag, potion))
+                    {
+                        return GetCountFromItemTag(itemTag);
+                    }
+                    else
+                    {
+                        return 0;
+                    }
+
+                default:
+                    return 0;
+            }
         }
 
         /// <summary>
@@ -75,7 +126,7 @@ namespace NbtTools.Items.Providers
         /// <param name="shulkerBox"></param>
         /// <param name="searchedItem"></param>
         /// <returns></returns>
-        internal virtual int CountItemsInContainedShulkerBox(CompoundTag shulkerBox, string searchedItem)
+        internal virtual int CountItemsInContainedShulkerBox(CompoundTag shulkerBox, Searchable searchedItem)
         {
             var tagTag = shulkerBox["tag"] as CompoundTag;
             if (tagTag == null)

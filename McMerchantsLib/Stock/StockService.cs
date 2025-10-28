@@ -1,6 +1,7 @@
 ﻿using McMerchants.Database;
 using McMerchants.Models.Database;
 using Microsoft.EntityFrameworkCore;
+using NbtTools.Database;
 using NbtTools.Entities;
 using NbtTools.Geography;
 using NbtTools.Items;
@@ -12,34 +13,41 @@ namespace McMerchantsLib.Stock
         private readonly StoredItemService StoredItemService;
         private readonly VillagerService VillagerService;
         private readonly McMerchantsDbContext Context;
+        private readonly NbtDbContext NbtContext;
 
         public StockService(
             StoredItemService storedItemService,
             VillagerService villagerService,
-            McMerchantsDbContext context
+            McMerchantsDbContext context,
+            NbtDbContext nbtContext
         )
         {
             StoredItemService = storedItemService;
             VillagerService = villagerService;
             Context = context;
+            NbtContext = nbtContext;
         }
 
         public StockQueryResult GetStockOf(string id)
         {
+            var searchedItem = NbtContext.Searchables
+                .Include(searchable => (searchable as Potion).Type)
+                .Single(searchable => searchable.Id == id);
+
             var results = new StockQueryResult();
 
             IEnumerable<StorageRegion> stores = Context.StorageRegions.Include(s => s.Alleys);
             foreach (var store in stores)
             {
                 results.Stores.Add(
-                    SortIntoAlleys(store, id, StoredItemService.FindStoredItems(id, store.Coordinates))
+                    SortIntoAlleys(store, id, StoredItemService.FindStoredItems(searchedItem, store.Coordinates))
                 );
             }
 
             IEnumerable<FactoryRegion> factories = Context.FactoryProducts.Where(p => p.Item == id).Select(p => p.Factory);
             foreach (var factory in factories)
             {
-                results.Factories.Add(factory, StoredItemService.FindStoredItems(id, factory.Coordinates));
+                results.Factories.Add(factory, StoredItemService.FindStoredItems(searchedItem, factory.Coordinates));
             }
 
             var tradingPlaces = Context.TradingRegions;

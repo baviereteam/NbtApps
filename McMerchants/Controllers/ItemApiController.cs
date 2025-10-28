@@ -21,9 +21,9 @@ namespace McMerchants.Controllers
 
         // GET: api/items?term=cia%20bo
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Item>>> SearchItems([FromQuery] string term)
+        public async Task<ActionResult<IEnumerable<Searchable>>> SearchItems([FromQuery] string term)
         {
-            return await _context.Items.Where(item => item.Name.ToLower().Contains(term.ToLower())).ToListAsync();
+            return await _context.Searchables.Where(item => item.Name.ToLower().Contains(term.ToLower())).ToListAsync();
         }
     }
 }

@@ -41,7 +41,13 @@
     <None Update="Fixtures\NbtDatabases\nbt_1.20.1.db">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Fixtures\NbtDatabases\nbt_1.21.4.db">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Fixtures\NbtDatabases\nbt_1.21.db">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Fixtures\PotionsAndEnchantedBooks-1.21.4\region\r.0.0.mca">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Fixtures\StoreAlleyBoundaries-1.20.1\README.md">
