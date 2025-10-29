@@ -14,3 +14,11 @@ McMerchants uses it to display these icons on the website.
 ## Then what?
 * Put these two files somewhere on the server where McMerchants runs.
 * Configure the paths in the `appsettings.json` file.
+
+## Upgrades
+When a new Minecraft version is released and contains texture changes or new textures, you need to follow this procedure again to extract the new textures.
+You also need to delete one (or both) of these files:
+* `css/atlas.css`
+* `img/atlas.png`
+
+then restart McMerchants to regenerate the atlas from the updated files.
