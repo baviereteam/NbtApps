@@ -1,21 +1,37 @@
-﻿namespace NbtTools.Items.Providers
+﻿using System.Collections.Generic;
+
+namespace NbtTools.Items.Providers
 {
     /// <summary>
     /// Provides a reader to access data about item storage for a given Data Version.
     /// </summary>
     public class StorageReaderFactory
     {
-        private readonly Version3837StorageReader v3837Provider = new Version3837StorageReader();
-        private readonly StorageReader previousVersionsProvider = new StorageReader();
+        private readonly IDictionary<string, StorageReader> providers = new Dictionary<string, StorageReader>();
 
         internal StorageReader GetForVersion(int chunkDataVersion)
         {
+            if (chunkDataVersion >= 4556)
+            {
+                return GetOrCreateReader<Version4556StorageReader>();
+            }
             if (chunkDataVersion >= 3837)
             {
-                return v3837Provider;
+                return GetOrCreateReader<Version3837StorageReader>();
             }
 
-            return previousVersionsProvider;
+            return GetOrCreateReader<StorageReader>();
+        }
+
+        private StorageReader GetOrCreateReader<T>() where T : StorageReader, new()
+        {
+            string providerClass = typeof(T).Name;
+            if (!providers.ContainsKey(providerClass))
+            {
+                providers.Add(providerClass, new T());
+            }
+
+            return providers[providerClass];
         }
     }
 }
