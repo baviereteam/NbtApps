@@ -28,32 +28,36 @@ namespace McMerchantsLib.Stock
             NbtContext = nbtContext;
         }
 
-        public StockQueryResult GetStockOf(string id)
+        public StockQueryResult GetStockOf(string itemId)
         {
             var searchedItem = NbtContext.Searchables
                 .Include(searchable => (searchable as Potion).Type)
-                .Single(searchable => searchable.Id == id);
+                .Single(searchable => searchable.Id == itemId);
 
             var results = new StockQueryResult();
 
             IEnumerable<StorageRegion> stores = Context.StorageRegions.Include(s => s.Alleys);
             foreach (var store in stores)
             {
-                results.Stores.Add(
-                    SortIntoAlleys(store, id, StoredItemService.FindStoredItems(searchedItem, store.Coordinates))
-                );
+                var storeQuery = StoredItemService.FindStoredItems(searchedItem, store.Coordinates);
+                results.Stores.Add(SortIntoAlleys(store, itemId, storeQuery.Result));
+                results.IsComplete &= storeQuery.IsComplete;
             }
 
-            IEnumerable<FactoryRegion> factories = Context.FactoryProducts.Where(p => p.Item == id).Select(p => p.Factory);
+            IEnumerable<FactoryRegion> factories = Context.FactoryProducts.Where(p => p.Item == itemId).Select(p => p.Factory);
             foreach (var factory in factories)
             {
-                results.Factories.Add(factory, StoredItemService.FindStoredItems(searchedItem, factory.Coordinates));
+                var factoryQuery = StoredItemService.FindStoredItems(searchedItem, factory.Coordinates);
+                results.Factories.Add(factory, factoryQuery.Result);
+                results.IsComplete &= factoryQuery.IsComplete;
             }
 
             var tradingPlaces = Context.TradingRegions;
             foreach (var tradingPlace in tradingPlaces)
             {
-                results.Trades.Add(tradingPlace, VillagerService.GetTradesFor(tradingPlace.Coordinates, id));
+                var tradingQuery = VillagerService.GetTradesFor(tradingPlace.Coordinates, itemId);
+                results.Trades.Add(tradingPlace, tradingQuery.Result);
+                results.IsComplete &= tradingQuery.IsComplete;
             }
 
             return results;

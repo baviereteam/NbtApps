@@ -3,28 +3,24 @@
     --background-color: #FFF;
     --text-color: #000;
     --searchbar-background-color: #FFF;
-
     --environmentName: "";
     --environmentColor: transparent;
     --environmentPadding: 0;
     --environmentFontStyle: none;
-
     --stock-mainAlley-badge-background-color: #2fc2c5;
     --stock-mainAlley-empty-badge-background-color: #a75353;
     --stock-otherAlley-badge-background-color: #fc6303;
     --stock-bulk-badge-background-color: #8f8f8f;
-    --error-text-color: darkred;
-
+    --alert-banner-background-color: palevioletred;
     --link-color: blue;
     --visited-link-color: purple;
-
 }
 
 [data-theme="dark"] {
     --background-color: #36393F;
     --text-color: #EEE;
     --searchbar-background-color: #151515;
-    --error-text-color: firebrick;
+    --alert-banner-background-color: darkred;
     --link-color: cornflowerblue;
     --visited-link-color: mediumpurple;
 }
@@ -94,6 +90,11 @@ a:visited {
     color: var(--text-color);
 }
 
+#alert-banner {
+    text-align: center;
+    background-color: var(--alert-banner-background-color);
+}
+
 #details h1 {
     margin-top: 0;
 }
@@ -149,19 +150,6 @@ a:visited {
     display: none;
     width: 64px;
     height: 64px;
-}
-
-#alert {
-    display: none;
-}
-
-#alert .icon {
-    font-size: 48px;
-}
-
-#alert .stamp {
-    color: var(--error-text-color);
-    font-family: cursive;
 }
 
 .stocks-list li {

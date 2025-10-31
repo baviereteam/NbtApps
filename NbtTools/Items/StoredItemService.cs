@@ -1,10 +1,11 @@
-﻿using NbtTools.Database;
-using NbtTools.Geography;
+﻿using NbtTools.Geography;
 using NbtTools.Items.Providers;
 using SharpNBT;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
+using StoredItems = System.Collections.Generic.IDictionary<NbtTools.Geography.Point, int>;
 
 namespace NbtTools.Items
 {
@@ -35,12 +36,12 @@ namespace NbtTools.Items
             StorageReaderFactory = storageReaderFactory;
         }
 
-        public IDictionary<Point, int> FindStoredItems(Searchable searchedItem, Cuboid zone)
+        public QueryResult<StoredItems> FindStoredItems(Searchable searchedItem, Cuboid zone)
         {
-            var dataSource = regionQuery.GetBlockEntitiesDataSource(zone, false);
+            var dataSource = regionQuery.GetBlockEntitiesDataSource(zone);
             IDictionary<Point, int> results = new Dictionary<Point, int>();
 
-            foreach (var versionedBlockEntity in dataSource)
+            foreach (var versionedBlockEntity in dataSource.Result)
             {
                 var blockEntity = versionedBlockEntity.Tag;
 
@@ -82,28 +83,7 @@ namespace NbtTools.Items
                 }
             }
             
-            return results;
-        }
-
-        public ICollection<string> ListStoredItems(Cuboid zone)
-        {
-            var dataSource = regionQuery.GetBlockEntitiesDataSource(zone, false);
-            List<string> results = new List<string>();
-
-            foreach (var versionedBlockEntity in dataSource)
-            {
-                var blockEntity = versionedBlockEntity.Tag;
-                var containerIdTag = blockEntity["id"] as StringTag;
-                if (!StorageIds.Contains(containerIdTag.Value))
-                {
-                    continue;
-                }
-
-                var storageReader = StorageReaderFactory.GetForVersion(versionedBlockEntity.DataVersion);
-                results.AddRange(storageReader.ListItemsIn(blockEntity));
-            }
-
-            return results;
+            return new QueryResult<StoredItems>(results, dataSource.UnreadableChunks);
         }
     }
 }

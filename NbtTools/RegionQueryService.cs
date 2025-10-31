@@ -1,28 +1,34 @@
-﻿using NbtTools.Geography;
+﻿using Microsoft.Extensions.Logging;
+using NbtTools.Geography;
 using NbtTools.Mca;
 using NbtTools.Nbt;
 using SharpNBT;
 using System.Collections.Generic;
 using System.Linq;
 
+using CompoundTags = System.Collections.Generic.ICollection<NbtTools.Versioned<SharpNBT.CompoundTag>>;
+
 namespace NbtTools
 {
     public class RegionQueryService
     {
-        private readonly NbtReader reader = new NbtReader();
+        private readonly NbtReader Reader = new NbtReader();
         private readonly McaFileFactory McaFileFactory;
+        private readonly ILogger<RegionQueryService> Logger;
 
-        public RegionQueryService(McaFileFactory mcaFileFactory)
+        public RegionQueryService(McaFileFactory mcaFileFactory, ILogger<RegionQueryService> logger)
         {
             McaFileFactory = mcaFileFactory;
+            Logger = logger;
         }
 
-        public ICollection<Versioned<CompoundTag>> GetEntitiesDataSource(Cuboid zone)
+        public QueryResult<CompoundTags> GetEntitiesDataSource(Cuboid zone)
         {
             var chunks = zone.GetAllChunks();
             var regions = chunks.Select(c => c.Region).Distinct();
 
-            var data = new List<Versioned<CompoundTag>>();
+            var chunksEntities = new List<Versioned<CompoundTag>>();
+            var missingChunks = new List<Chunk>();
 
             foreach (var region in regions)
             {
@@ -34,29 +40,38 @@ namespace NbtTools
                     var chunk = file.GetChunk(c.GetChunkId());
                     if (chunk.Length > 0)
                     {
-                        var chunkMainTag = reader.ReadChunk(chunk);
-                        var dataVersion = chunkMainTag["DataVersion"] as IntTag;
-                        var chunkEntitiesCollection = chunkMainTag["Entities"] as ListTag;
-                        if (chunkEntitiesCollection != null)
+                        try
                         {
-                            foreach (var entity in chunkEntitiesCollection)
+                            var chunkMainTag = Reader.ReadChunk(chunk);
+                            var dataVersion = chunkMainTag["DataVersion"] as IntTag;
+                            var chunkEntitiesCollection = chunkMainTag["Entities"] as ListTag;
+                            if (chunkEntitiesCollection != null)
                             {
-                                data.Add(new Versioned<CompoundTag>((CompoundTag)entity, dataVersion));
+                                foreach (var entity in chunkEntitiesCollection)
+                                {
+                                    chunksEntities.Add(new Versioned<CompoundTag>((CompoundTag)entity, dataVersion));
+                                }
                             }
+                        }
+                        catch (UnreadableChunkException e) 
+                        {
+                            Logger.LogError(e, "Could not read chunk {0} from entity file {1}", c, region);
+                            missingChunks.Add(c);
                         }
                     }
                 }
             }
 
-            return data;
+            return new QueryResult<CompoundTags>(chunksEntities, missingChunks);
         }
         
-        public ICollection<Versioned<CompoundTag>> GetBlockEntitiesDataSource(Cuboid zone, bool includeProtoChunks)
+        public QueryResult<CompoundTags> GetBlockEntitiesDataSource(Cuboid zone)
         {
             var chunks = zone.GetAllChunks();
             var regions = chunks.Select(c => c.Region).Distinct();
 
             var data = new List<Versioned<CompoundTag>>();
+            var missingChunks = new List<Chunk>();
 
             foreach (var region in regions)
             {
@@ -69,35 +84,43 @@ namespace NbtTools
                     var chunk = file.GetChunk(c.GetChunkId());
                     if (chunk.Length > 0)
                     {
-                        var chunkMainTag = reader.ReadChunk(chunk);
-                        var status = chunkMainTag["Status"] as StringTag;
-                        if (status != null && status == "minecraft:full")
+                        try
                         {
-                            var dataVersion = chunkMainTag["DataVersion"] as IntTag;
-                            var blockEntities = chunkMainTag["block_entities"] as ListTag;
-                            foreach (var element in blockEntities)
+                            var chunkMainTag = Reader.ReadChunk(chunk);
+                            var status = chunkMainTag["Status"] as StringTag;
+                            if (status != null && status == "minecraft:full")
                             {
-                                var blockEntity = element as CompoundTag;
-
-                                // Ignore entities that are in the chunk, but outside of the selection
-                                // (in chunks containing the selection limits)
-                                Point position = new Point(
-                                    (blockEntity["x"] as IntTag).Value,
-                                    (blockEntity["y"] as IntTag).Value,
-                                    (blockEntity["z"] as IntTag).Value
-                                );
-
-                                if (zone.Contains(position))
+                                var dataVersion = chunkMainTag["DataVersion"] as IntTag;
+                                var blockEntities = chunkMainTag["block_entities"] as ListTag;
+                                foreach (var element in blockEntities)
                                 {
-                                    data.Add(new Versioned<CompoundTag>(blockEntity, dataVersion));
+                                    var blockEntity = element as CompoundTag;
+
+                                    // Ignore entities that are in the chunk, but outside of the selection
+                                    // (in chunks containing the selection limits)
+                                    Point position = new Point(
+                                        (blockEntity["x"] as IntTag).Value,
+                                        (blockEntity["y"] as IntTag).Value,
+                                        (blockEntity["z"] as IntTag).Value
+                                    );
+
+                                    if (zone.Contains(position))
+                                    {
+                                        data.Add(new Versioned<CompoundTag>(blockEntity, dataVersion));
+                                    }
                                 }
                             }
+                        }
+                        catch (UnreadableChunkException e)
+                        {
+                            Logger.LogError(e, "Could not read chunk {0} from region file {1}", c, region);
+                            missingChunks.Add(c);
                         }
                     }
                 }
             }
 
-            return data;
+            return new QueryResult<CompoundTags>(data, missingChunks);
         }
     }
 }

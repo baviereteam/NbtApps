@@ -7,7 +7,7 @@ const stockTemplate = document.getElementById('stock');
 const tradeTemplate = document.getElementById('trade');
 const tradeComponentTemplate = document.getElementById('trade-component');
 const spinner = document.getElementById('spinner');
-const alert = document.getElementById('alert');
+const alertBanner = document.getElementById('alert-banner');
 
 const texts = {
     otherAlleysWithDefaultAlley: 'Also in:',
@@ -17,7 +17,9 @@ const texts = {
     bulkButtonWhenClosed: 'Bulk 🔽',
     bulkButtonWhenOpened: 'Bulk 🔼',
     tradeIconWhenClosed: '🔽',
-    tradeIconWhenOpened: '🔼'
+    tradeIconWhenOpened: '🔼',
+    incompleteSearchErrorMessage: '⚠ Some chunks could not be read. The results displayed on this page might be incomplete.',
+    genericErrorMessage: '💣 Something went terribly wrong. Please call for help'
 }
 
 const queryStock = () => {
@@ -32,7 +34,7 @@ const queryStock = () => {
         .catch((e) => {
             console.error(e);
             setSpinnerDisplayed(false);
-            setAlertDisplayed(true);
+            showAlert(texts.genericErrorMessage);
         });
 };
 
@@ -40,14 +42,18 @@ const setSpinnerDisplayed = displayed => {
     spinner.style.display = (displayed ? 'block' : 'none');
 };
 
-const setAlertDisplayed = displayed => {
-    alert.style.display = (displayed ? 'block' : 'none');
-}
-
 const handleResponse = (response, stackSize) => {
+    if (!response.complete) {
+        showAlert(texts.incompleteSearchErrorMessage);
+    }
     fillResults(response.stores, storesContainer, stackSize, parseStore);
     fillResults(response.factories, factoriesContainer, stackSize, parseFactory);
     fillResults(response.traders, tradingContainer, null, parseTrading);
+}
+
+const showAlert = (message) => {
+    alertBanner.textContent = message;
+    alertBanner.classList.remove('hidden');
 }
 
 const fillResults = (results, container, stackSize, itemParsingFunction) => {
