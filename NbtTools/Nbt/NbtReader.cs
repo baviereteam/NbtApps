@@ -12,25 +12,30 @@ namespace NbtTools.Nbt
         {
             CompoundTag rootTag = null;
 
-            using (var stream = new MemoryStream(chunk.Data))
+            try
             {
-                using (var uncompressor = new ZLibStream(stream, CompressionMode.Decompress))
+                using (var stream = new MemoryStream(chunk.Data))
                 {
-                    using (var reader = new TagReader(uncompressor, FormatOptions.Java, false))
+                    using (var uncompressor = new ZLibStream(stream, CompressionMode.Decompress))
                     {
-                        rootTag = reader.ReadTag<CompoundTag>();
+                        using (var reader = new TagReader(uncompressor, FormatOptions.Java, false))
+                        {
+                            rootTag = reader.ReadTag<CompoundTag>();
+                        }
                     }
                 }
+            }
+            catch (Exception e) 
+            {
+                throw new UnreadableChunkException("Could not read the chunk NBT", e);
             }
 
             if (rootTag == null)
             {
-                throw new Exception($"Unreadable NBT.");
+                throw new UnreadableChunkException("The chunk NBT did not produce a root tag");
             }
-            else
-            {
-                return rootTag;
-            }
+
+            return rootTag;
         }
     }
 }

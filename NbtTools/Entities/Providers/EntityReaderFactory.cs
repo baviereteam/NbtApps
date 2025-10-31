@@ -1,18 +1,34 @@
-﻿namespace NbtTools.Entities.Providers
+﻿using System.Collections.Generic;
+
+namespace NbtTools.Entities.Providers
 {
     public class EntityReaderFactory
     {
-        private readonly Version3837EntityReader v3837Provider = new Version3837EntityReader();
-        private readonly EntityReader previousVersionsProvider = new EntityReader();
+        private readonly IDictionary<string, EntityReader> providers = new Dictionary<string, EntityReader>();
 
         public EntityReader GetForVersion(int chunkDataVersion)
         {
+            if (chunkDataVersion >= 4556)
+            {
+                return GetOrCreateReader<Version4556EntityReader>();
+            }
             if (chunkDataVersion >= 3837)
             {
-                return v3837Provider;
+                return GetOrCreateReader<Version3837EntityReader>();
             }
 
-            return previousVersionsProvider;
+            return GetOrCreateReader<EntityReader>();
+        }
+
+        private EntityReader GetOrCreateReader<T>() where T : EntityReader, new()
+        {
+            string providerClass = typeof(T).Name;
+            if (!providers.ContainsKey(providerClass))
+            {
+                providers.Add(providerClass, new T());
+            }
+
+            return providers[providerClass];
         }
     }
 }

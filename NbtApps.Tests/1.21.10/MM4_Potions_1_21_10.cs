@@ -3,10 +3,10 @@ using McMerchants.Models.Database;
 using McMerchantsLib.Stock;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace NbtApps.Tests;
+namespace NbtApps.Tests.v1_21_10;
 
 [TestClass]
-public class MM4_Potions_1_21_4 : TestBase
+public class MM4_Potions_1_21_10 : TestBase
 {
     private const string TEST_DIMENSION = "test_dimension";
 
@@ -16,7 +16,7 @@ public class MM4_Potions_1_21_4 : TestBase
         CreateHost(
             new Dictionary<string, string>()
             {
-                    { TEST_DIMENSION, Path.Combine(FixturesDirectory, "PotionsAndEnchantedBooks-1.21.4") }
+                    { TEST_DIMENSION, Path.Combine(FixturesDirectory, "CombinedTestMap-1.21.10") }
             },
             Path.Combine(FixturesDirectory, "NbtDatabases/nbt_1.21.4.db")
         );
@@ -28,12 +28,12 @@ public class MM4_Potions_1_21_4 : TestBase
         {
             Name = "Test store",
             Dimension = TEST_DIMENSION,
-            StartX = 1,
+            StartX = 10,
             StartY = -61,
-            StartZ = 1,
-            EndX = 3,
+            StartZ = 4,
+            EndX = 12,
             EndY = -59,
-            EndZ = 3
+            EndZ = 6
         });
         dbContext.SaveChanges();
     }

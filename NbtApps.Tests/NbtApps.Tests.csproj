@@ -38,6 +38,15 @@
     <None Update="Fixtures\AlleyBoundaries-1.21\region\r.-1.0.mca">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Fixtures\CombinedTestMap-1.21.10\entities\r.0.0.mca">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Fixtures\CombinedTestMap-1.21.10\region\r.-1.0.mca">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Fixtures\CombinedTestMap-1.21.10\region\r.0.0.mca">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Fixtures\NbtDatabases\nbt_1.20.1.db">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

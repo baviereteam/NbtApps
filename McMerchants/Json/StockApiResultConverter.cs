@@ -33,6 +33,8 @@ namespace McMerchants.Json
         public override void Write(Utf8JsonWriter writer, StockQueryResult value, JsonSerializerOptions options) {
             writer.WriteStartObject();
 
+            writer.WriteBoolean("complete", value.IsComplete);
+
             writer.WritePropertyName("stores");
             WriteStoresDictionary(writer, value.Stores, options);
 

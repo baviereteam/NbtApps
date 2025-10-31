@@ -5,23 +5,9 @@ using System.Collections.Generic;
 
 namespace NbtTools.Entities.Providers
 {
-    // 1.20.5
-    // https://misode.github.io/versions/?id=1.20.5&tab=changelog
-    internal class Version3837EntityReader : EntityReader
+    // 1.21.10
+    internal class Version4556EntityReader : Version3837EntityReader
     {
-        public override int GetCountFromItemTag(CompoundTag tag)
-        {
-            //Renamed "Count" → "count".The count now defaults to 1 and will not be present in that case.
-            var countTag = tag["count"];
-
-            if (countTag == null)
-            {
-                return 1;
-            }
-
-            return (countTag as IntTag).Value;
-        }
-
         public override ICollection<Enchantment> GetEnchantmentsFromTradeComponent(CompoundTag tradeComponentTag)
         {
             try
@@ -38,9 +24,7 @@ namespace NbtTools.Entities.Providers
                 if (componentsTag.ContainsKey("minecraft:enchantments"))
                 {
                     var enchantmentsTag = componentsTag["minecraft:enchantments"] as CompoundTag;
-
-                    var levelsTag = enchantmentsTag["levels"] as CompoundTag;
-                    foreach (IntTag enchantmentTag in levelsTag)
+                    foreach (IntTag enchantmentTag in enchantmentsTag)
                     {
                         enchantments.Add(new Enchantment(enchantmentTag.Name, enchantmentTag.Value));
                     }
@@ -49,8 +33,7 @@ namespace NbtTools.Entities.Providers
                 if (componentsTag.ContainsKey("minecraft:stored_enchantments"))
                 {
                     var bookEnchantmentsTag = componentsTag["minecraft:stored_enchantments"] as CompoundTag;
-                    var levelsTag = bookEnchantmentsTag["levels"] as CompoundTag;
-                    foreach (IntTag enchantmentTag in levelsTag)
+                    foreach (IntTag enchantmentTag in bookEnchantmentsTag)
                     {
                         enchantments.Add(new Enchantment(enchantmentTag.Name, enchantmentTag.Value));
                     }

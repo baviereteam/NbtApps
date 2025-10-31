@@ -15,6 +15,13 @@
     <title>Trades</title>
 </head>
 <body>
+    @if (!Model.IsComplete)
+    {
+        <div id="alert-banner">
+            Some chunks could not be read. The results displayed on this page might be incomplete.
+        </div>
+    }
+    
     <div>
         <h1>@Html.DisplayFor(x => Model.Shop.Name) : Trades</h1>
         @foreach (var jobGroup in Model.Villagers)

@@ -1,12 +1,12 @@
 ﻿using McMerchants.Database;
 using McMerchants.Models.Database;
-using McMerchantsLib.Stock;
 using Microsoft.Extensions.DependencyInjection;
+using McMerchantsLib.Stock;
 
-namespace NbtApps.Tests
+namespace NbtApps.Tests.v1_21_10
 {
     [TestClass]
-    public class MM1_StoreBoundaries_1_21 : TestBase
+    public class MM2_AlleyBoundaries_1_21_10 : TestBase
     {
         private const string TEST_DIMENSION = "test_dimension";
 
@@ -16,33 +16,69 @@ namespace NbtApps.Tests
             CreateHost(
                 new Dictionary<string, string>()
                 {
-                    { TEST_DIMENSION, Path.Combine(FixturesDirectory, "StoreBoundaries-1.21") }
+                    { TEST_DIMENSION, Path.Combine(FixturesDirectory, "CombinedTestMap-1.21.10") }
                 },
-                Path.Combine(FixturesDirectory, "NbtDatabases/nbt_1.21.db")
+                Path.Combine(FixturesDirectory, "NbtDatabases/nbt_1.21.4.db")
             );
 
             var dbContext = Host.Services.GetService<McMerchantsDbContext>();
 
             // create the test store
-            dbContext.StorageRegions.Add(new StorageRegion()
+            var store = new StorageRegion()
             {
                 Name = "Test store",
                 Dimension = TEST_DIMENSION,
-                StartX = -4,
+                StartX = -3,
                 StartY = -61,
-                StartZ = 23,
-                EndX = 7,
-                EndY = -56,
-                EndZ = 11
-            });
+                StartZ = 6,
+                EndX = -12,
+                EndY = -55,
+                EndZ = 3
+            };
+            dbContext.StorageRegions.Add(store);
+            store.Alleys =
+            [
+                new Alley()
+                {
+                    Name = "Pink alley",
+                    Direction = Alley.AlleyDirection.Z,
+                    Coordinate = 4,
+                    LowBoundary = -8,
+                    HighBoundary = -5,
+                    StartY = -59,
+                    EndY = -57
+                },
+            ];
+
             dbContext.SaveChanges();
         }
 
         [TestMethod]
-        public void SearchInsideStore_ReturnsCount()
+        public void SearchInAlley_ReturnsAlley()
         {
             var StockService = Host.Services.GetService<StockService>();
-            var results = StockService.GetStockOf("minecraft:red_sand");
+            var results = StockService.GetStockOf("minecraft:honey_block");
+
+            Assert.AreEqual(0, results.Factories.Count);
+            Assert.AreEqual(0, results.Trades.Count);
+            Assert.AreEqual(1, results.Stores.Count);
+            Assert.IsNull(results.Stores[0].StockInDefaultAlley);
+            Assert.AreEqual(0, results.Stores[0].StockInBulkContainers.Count);
+
+            int count = 0;
+            foreach (var bulk in results.Stores[0].StockInOtherAlleys)
+            {
+                count += bulk.Value;
+            }
+
+            Assert.AreEqual(3, count);
+        }
+
+        [TestMethod]
+        public void SearchOutsideAlley_ReturnsBulk()
+        {
+            var StockService = Host.Services.GetService<StockService>();
+            var results = StockService.GetStockOf("minecraft:ice");
 
             Assert.AreEqual(0, results.Factories.Count);
             Assert.AreEqual(0, results.Trades.Count);
@@ -56,21 +92,7 @@ namespace NbtApps.Tests
                 count += bulk.Value;
             }
 
-            Assert.AreEqual(7, count);
-        }
-
-        [TestMethod]
-        public void SearchOutsideStore_ReturnsZero()
-        {
-            var StockService = Host.Services.GetService<StockService>();
-            var results = StockService.GetStockOf("minecraft:slime_block");
-
-            Assert.AreEqual(0, results.Factories.Count);
-            Assert.AreEqual(0, results.Trades.Count);
-            Assert.AreEqual(1, results.Stores.Count);
-            Assert.IsNull(results.Stores[0].StockInDefaultAlley);
-            Assert.AreEqual(0, results.Stores[0].StockInOtherAlleys.Count);
-            Assert.AreEqual(0, results.Stores[0].StockInBulkContainers.Count);
+            Assert.AreEqual(6, count);
         }
 
         [TestCleanup]

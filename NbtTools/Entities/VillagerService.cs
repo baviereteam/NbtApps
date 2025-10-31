@@ -4,6 +4,9 @@ using SharpNBT;
 using System;
 using System.Collections.Generic;
 
+using Villagers = System.Collections.Generic.ICollection<NbtTools.Entities.Villager>;
+using Trades = System.Collections.Generic.ICollection<NbtTools.Entities.Trading.Trade>;
+
 namespace NbtTools.Entities
 {
     public class VillagerService : NbtService
@@ -15,10 +18,10 @@ namespace NbtTools.Entities
             this.tradeService = tradeService;
         }
 
-        public ICollection<Villager> GetVillagers(Cuboid zone)
+        public QueryResult<Villagers> GetVillagers(Cuboid zone)
         {
             var dataSource = regionQuery.GetEntitiesDataSource(zone);
-            var villagerTags = nbtFilter.GetAllCompoundsWithId(dataSource, "minecraft:villager");
+            var villagerTags = nbtFilter.GetAllCompoundsWithId(dataSource.Result, "minecraft:villager");
             var villagers = new List<Villager>();
 
             foreach (var villagerTag in villagerTags)
@@ -30,13 +33,13 @@ namespace NbtTools.Entities
                 }
             }
 
-            return villagers;
+            return new QueryResult<Villagers>(villagers, dataSource.UnreadableChunks);
         }
 
-        public ICollection<Trade> GetTradesFor(Cuboid zone, string id) 
+        public QueryResult<Trades> GetTradesFor(Cuboid zone, string id) 
         {
             var dataSource = regionQuery.GetEntitiesDataSource(zone);
-            var villagerTags = nbtFilter.GetAllCompoundsWithId(dataSource, "minecraft:villager");
+            var villagerTags = nbtFilter.GetAllCompoundsWithId(dataSource.Result, "minecraft:villager");
             var trades = new List<Trade>();
 
             foreach (var villagerTag in villagerTags)
@@ -54,7 +57,7 @@ namespace NbtTools.Entities
                 }
             }
 
-            return trades;
+            return new QueryResult<Trades>(trades, dataSource.UnreadableChunks);
         }
 
         public IDictionary<string, ICollection<Villager>> OrderByJob(ICollection<Villager> source)

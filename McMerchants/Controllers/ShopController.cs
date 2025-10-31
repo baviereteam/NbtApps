@@ -29,11 +29,13 @@ namespace McMerchants.Controllers
                 return View("NotFound");
             }
 
-            var villagers = VillagerService.OrderByJob(VillagerService.GetVillagers(shop.Coordinates));
+            var villagersQuery = VillagerService.GetVillagers(shop.Coordinates);
+            var sortedVillagers = VillagerService.OrderByJob(villagersQuery.Result);
 
             return View(new ShopViewModel { 
                 Shop = shop,
-                Villagers = villagers
+                Villagers = sortedVillagers,
+                IsComplete = villagersQuery.IsComplete  //TODO: make CSS for this
             });
         }
     }

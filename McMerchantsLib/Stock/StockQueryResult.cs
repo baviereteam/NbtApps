@@ -11,11 +11,14 @@ namespace McMerchantsLib.Stock
 
         public IDictionary<TradingRegion, IEnumerable<Trade>> Trades {  get; set; }
 
+        public Boolean IsComplete { get; set; }
+
         public StockQueryResult()
         {
             Stores = new List<StoreStockResult>();
             Factories = new Dictionary<FactoryRegion, IDictionary<Point, int>>();
             Trades = new Dictionary<TradingRegion, IEnumerable<Trade>>();
+            IsComplete = true;
         }
     }
 }
