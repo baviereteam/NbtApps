@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "net.baviereteam.mcmerchants"
-version = "1.0-SNAPSHOT"
+version = "MC_1.21.10"
 
 repositories {
     maven {
