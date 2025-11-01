@@ -77,10 +77,16 @@ When executing Entity Framework Core commands, you must set the `project`, `star
 * `context` is the name of the DbContext describing the database to operate on,
 * `startup-project` is the name of the project containing a reference to `Microsoft.EntityFrameworkCore.Design` package.
 
+Additionally, in order for the framework to understand how to access the databases, you need to be in the *McMerchants* project directory, and not at the project root (database contexts are initialized from the DI in `Startup.cs`)
+
 For example:
 ```
+cd ./McMerchants
 dotnet ef database update --project NbtTools --startup-project McMerchantsLib --context NbtDbContext
 ```
 
 If the `startup-project` is missing, you will get the following error:
 > Your startup project 'NbtTools' doesn't reference Microsoft.EntityFrameworkCore.Design. This package is required for the Entity Framework Core Tools to work. Ensure your startup project is correct, install the package, and try again.
+
+If you are not in the *McMerchants* directory, you will get the following error:
+> Unable to create a 'DbContext' of type 'McMerchantsDbContext'. The exception 'Unable to resolve service for type 'Microsoft.EntityFrameworkCore.DbContextOptions`1[McMerchants.Database.McMerchantsDbContext]' while attempting to activate 'McMerchants.Database.McMerchantsDbContext'.' was thrown while attempting to create an instance. For the different patterns supported at design time, see https://go.microsoft.com/fwlink/?linkid=851728
