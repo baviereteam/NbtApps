@@ -1,0 +1,11 @@
+name: McMerchantsChatPlugin
+version: 1.1.0
+main: net.baviereteam.mcmerchantschatplugin.McMerchantsChatPlugin
+description: Allows access to a McMerchants instance from the in-game chat.
+author: baviereteam
+website: https://github.com/baviereteam
+api-version: '1.21.10'
+commands:
+  mcm:
+    description: Search in McMerchants
+    usage: /mcm <item>
