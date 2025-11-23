@@ -57,16 +57,24 @@ public class McMerchantsChatPlugin extends JavaPlugin {
 
 	public void queryMcMerchantsAndShowResults(Entity executor, ItemType itemType) {
 		CompletableFuture<QueryResult> futureResult = mcMerchantsClient.query(itemType.getKey().toString());
-		futureResult.thenAccept(data -> {
-			if (data.hasError()) {
-				logFailure(data.getError().toString());
+		
+		futureResult.handle((result, err) -> {
+			if (err != null) {
+				logFailure(err.getMessage());
+				sendFailAnswer(executor);
+			}
+
+			if (result.hasError()) {
+				logFailure(result.getError().toString());
 				sendFailAnswer(executor);
 
 			} else {
-				ResponseRoot response = data.getResponse();
+				ResponseRoot response = result.getResponse();
 				Component answer = craftSuccessAnswer(itemType.getKey().toString(), response);
 				broadcastSuccessAnswer(answer);
 			}
+			
+			return 0;
 		});
 	}
 
@@ -100,6 +108,7 @@ public class McMerchantsChatPlugin extends JavaPlugin {
 						0,
 						(accumulator, alley) -> accumulator + alley.count,
 						Integer::sum);
+				total += store.bulk;
 
 				if (total == 0) {
 					answer
@@ -113,10 +122,14 @@ public class McMerchantsChatPlugin extends JavaPlugin {
 							.reduce(
 									"",
 									(accumulator, alley) -> {
-										return accumulator + " " + (alley.type.equals("bulk") ? "bulk" : alley.name);
+										return accumulator + alley.name + " ";
 									},
 									String::concat
 							);
+					
+					if (store.bulk > 0) {
+						alleyNames += "bulk";
+					}
 					
 					answer
 						.append("  - <b>")
@@ -141,12 +154,7 @@ public class McMerchantsChatPlugin extends JavaPlugin {
 			answer.append("\n");
 			
 			response.factories.forEach(factory -> {
-				int total = factory.results.stream().reduce(
-						0,
-						(accumulator, factoryResult) -> accumulator + factoryResult.count,
-						Integer::sum);
-
-				if (total == 0) {
+				if (factory.count == 0) {
 					answer
 							.append("  - <b>none</b> in <light_purple>")
 							.append(factory.name)
@@ -155,7 +163,7 @@ public class McMerchantsChatPlugin extends JavaPlugin {
 				} else {
 					answer
 							.append("  - <b>")
-							.append(total)
+							.append(factory.count)
 							.append("</b> in <light_purple>")
 							.append(factory.name)
 							.append("</light_purple>\n");
@@ -170,7 +178,7 @@ public class McMerchantsChatPlugin extends JavaPlugin {
 					response.traders
 							.stream()
 							.filter(
-									trader -> !trader.results.isEmpty())
+									trader -> trader.count > 0)
 							.toList();
 
 			if (tradingZonesWithThisItem.isEmpty()) {
@@ -179,13 +187,13 @@ public class McMerchantsChatPlugin extends JavaPlugin {
 			} else {
 				answer.append("\n");
 				
-				response.traders.forEach(trader -> {
-					if (!trader.results.isEmpty()) {
+				response.traders.forEach(tradingZone -> {
+					if (tradingZone.count > 0) {
 						answer
 								.append("  - <b>")
-								.append(trader.results.size())
+								.append(tradingZone.count)
 								.append("</b> trades in <light_purple>")
-								.append(trader.name)
+								.append(tradingZone.name)
 								.append("</light_purple>\n");
 					}
 				});

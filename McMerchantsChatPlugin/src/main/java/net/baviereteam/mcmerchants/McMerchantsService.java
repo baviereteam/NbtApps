@@ -13,7 +13,7 @@ public class McMerchantsService {
 	private final String apiUrl;
 
 	public McMerchantsService(String baseUrl) {
-		this.apiUrl = baseUrl.strip() + "/api/stock/%s";
+		this.apiUrl = baseUrl.strip() + "/api/stock/%s?synthetic=true";
 	}
 	
 	public CompletableFuture<QueryResult> query(String item) {
