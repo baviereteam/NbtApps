@@ -39,10 +39,9 @@ namespace McMerchants.Json
             foreach (StoreStockResult storeResult in value)
             {
                 writer.WriteStartObject();
-                writer.WriteString("name", storeResult.Store.Name);
-                writer.WriteString("logo", string.IsNullOrWhiteSpace(storeResult.Store.Logo) ? null : storeResult.Store.Logo);
-                writer.WriteString("url", string.IsNullOrWhiteSpace(storeResult.Store.URL) ? null : storeResult.Store.URL);
-                writer.WriteString("map_url", GetWebMapUrl(storeResult.Store));
+
+                writer.WritePropertyName("identity");
+                WriteIdentity(writer, storeResult.Store);
 
                 writer.WritePropertyName("alleys");
                 writer.WriteStartArray();
@@ -76,18 +75,17 @@ namespace McMerchants.Json
         {
             writer.WriteStartArray();
 
-            foreach (KeyValuePair<FactoryRegion, IDictionary<Point, int>> storeResult in value)
+            foreach (KeyValuePair<FactoryRegion, IDictionary<Point, int>> factoryResult in value)
             {
                 writer.WriteStartObject();
-                writer.WriteString("name", storeResult.Key.Name);
-                writer.WriteString("logo", string.IsNullOrWhiteSpace(storeResult.Key.Logo) ? null : storeResult.Key.Logo);
-                writer.WriteString("url", string.IsNullOrWhiteSpace(storeResult.Key.URL) ? null : storeResult.Key.URL);
-                writer.WriteString("map_url", GetWebMapUrl(storeResult.Key));
+
+                writer.WritePropertyName("identity");
+                WriteIdentity(writer, factoryResult.Key);
 
                 writer.WritePropertyName("results");
                 writer.WriteStartArray();
 
-                foreach (KeyValuePair<Point, int> stackResult in storeResult.Value)
+                foreach (KeyValuePair<Point, int> stackResult in factoryResult.Value)
                 {
                     writer.WriteStartObject();
                     writer.WriteNumber("x", stackResult.Key.X);
@@ -111,11 +109,9 @@ namespace McMerchants.Json
             foreach (KeyValuePair<TradingRegion, IEnumerable<Trade>> tradingPlace in value)
             {
                 writer.WriteStartObject();
-                writer.WriteNumber("id", tradingPlace.Key.Id);
-                writer.WriteString("name", tradingPlace.Key.Name);
-                writer.WriteString("logo", string.IsNullOrWhiteSpace(tradingPlace.Key.Logo) ? null : tradingPlace.Key.Logo);
-                writer.WriteString("url", string.IsNullOrWhiteSpace(tradingPlace.Key.URL) ? null : tradingPlace.Key.URL);
-                writer.WriteString("map_url", GetWebMapUrl(tradingPlace.Key));
+
+                writer.WritePropertyName("identity");
+                WriteIdentity(writer, tradingPlace.Key, true);
 
                 writer.WritePropertyName("results");
                 writer.WriteStartArray();
@@ -139,20 +135,38 @@ namespace McMerchants.Json
             writer.WriteEndArray();
         }
 
-        private string? GetWebMapUrl(ItemProviderRegion place)
+        private void WriteIdentity(Utf8JsonWriter writer, ItemProviderRegion place, bool includeId = false)
         {
+            writer.WriteStartObject();
+
+            if (includeId)
+            {
+                writer.WriteNumber("id", place.Id);
+            }            
+
+            writer.WriteString("name", place.Name);
+            writer.WriteString("logo", string.IsNullOrWhiteSpace(place.Logo) ? null : place.Logo);
+            writer.WriteString("url", string.IsNullOrWhiteSpace(place.URL) ? null : place.URL);
+
             if (generateMapLinks)
             {
                 // Must match the order set in the constructor
-                return webMapPattern.FormatWith(
-                    place.Dimension,
-                    (place.EndX - place.StartX) / 2,
-                    (place.EndY - place.StartY) / 2,
-                    (place.EndZ - place.StartZ) / 2
+                writer.WriteString(
+                    "map_url", 
+                    webMapPattern.FormatWith(
+                        place.Dimension,
+                        place.StartX + (place.EndX - place.StartX) / 2,
+                        place.StartY + (place.EndY - place.StartY) / 2,
+                        place.StartZ + (place.EndZ - place.StartZ) / 2
+                    )
                 );
             }
+            else
+            {
+                writer.WriteNull("map_url");
+            }
 
-            return null;
+            writer.WriteEndObject();
         }
     }
 }

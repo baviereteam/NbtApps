@@ -1,4 +1,4 @@
-# NBT Apps
+﻿# NBT Apps
 A webapp and its support libraries to do cool stuff with Minecraft data in .NET !
 
 ## What?
@@ -59,6 +59,16 @@ Remove these two files:
 * `wwwroot/css/atlas.css`
 * `wwwroot/img/atlas.png`
 Then follow the instructions from the previous section!
+
+### Options
+#### WebmapUrlPattern
+If you have a website that displays your world maps (for example with Bluemap or Dynmap), you can put its URL here, and replace the dimension, x, y and z in the URL with placeholders: `{DIMENSION}`, `{X}`, `{Y}`, `{Z}`.
+That will add, for each store, factory or trading place, a link to the map with the coordinates replaced.
+
+⚠ Make sure that the dimension names (`item_provider_regions.dimension` in the database, and the keys in `MapPaths` in `appsettings.json`) match the dimension names that your map site expects.
+
+#### WebmapLinkTitle / CustomLinkTitle
+These settings control the text that appears on the links to the map and on the links to the custom URL of the `item_provider_regions` table.
 
 ## Architecture
 Currently contains three projects: 

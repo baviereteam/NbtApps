@@ -20,5 +20,10 @@
   "ConnectionStrings": {
     "NbtDatabase": "Filename=/path/to/nbt.db",
     "McMerchantsDatabase": "Filename=/path/to/mcmerchants.db"
+  },
+  "Options": {
+    "WebmapUrlPattern": "url_to_your_map_site/with_these_placeholders/{DIMENSION}{X}{Y}{Z}",
+    "WebmapLinkTitle": "See on map",
+    "CustomLinkTitle": "Wiki"
   }
 }
