@@ -30,7 +30,8 @@ namespace McMerchants
                 NbtToolsDatabaseConnectionString = Configuration.GetConnectionString("NbtDatabase")
             });
 
-            services.AddSingleton<StockApiResultConverter>();
+            services.AddSingleton<PluginApiConverter>();
+            services.AddSingleton<WebApiConverter>();
 
             services
                 .AddMvc();

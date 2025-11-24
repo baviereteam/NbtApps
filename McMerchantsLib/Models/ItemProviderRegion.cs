@@ -11,13 +11,14 @@ namespace McMerchants.Models.Database
     **/
     public class ItemProviderRegion
     {
-        private Cuboid _coordinates;
+        private Cuboid? _coordinates;
 
         public string Type { get; }
         public int Id { get; set; }
         public string Name { get; set; }
         public string? Logo { get; set; }
         public string Dimension { get; set; }
+        public string? URL { get; set; }
         public int StartX { get; set; }
         public int StartY { get; set; }
         public int StartZ { get; set; }

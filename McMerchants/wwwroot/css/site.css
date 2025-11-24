@@ -274,8 +274,13 @@ a:visited {
     font-weight: normal;
     color: var(--text-color);
 }
-.stocks-list .storeName a {
+.stocks-list .identity a {
     font-size: 14px;
     font-weight: normal;
     text-decoration: none;
+}
+
+.stocks-list .identity a + a:before {
+    content: " | ";
+    color: var(--text-color);
 }

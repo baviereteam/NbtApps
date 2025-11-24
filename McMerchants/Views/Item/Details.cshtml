@@ -16,8 +16,14 @@ else
         <li class="store">
             <img class="storeLogo" src="~/img/stores/" />
             <div>
-                <h3 class="storeName"></h3>
+                <h3 class="identity">
+                    <span class="storeName"></span>
+                    <a class="mapLink">@Model.MapLinkTitle</a>
+                    <a class="customLink">@Model.CustomLinkTitle</a>
+                </h3>
+
                 <span class="itemCount"></span> @Model.Item.Name
+
                 <div class="repartition"></div>
                 <div class="mainAlley alleys">
                     <h4></h4>
@@ -48,9 +54,11 @@ else
         <li class="store">
             <img class="storeLogo" src="~/img/stores/" />
             <div>
-                <h3 class="storeName">
-                    <span></span>
-                    <a>See store page</a>
+                <h3 class ="identity">
+                    <span class="storeName"></span>
+                    <a class="tradesLink">See all trades here</a>
+                    <a class="mapLink">@Model.MapLinkTitle</a>
+                    <a class="customLink">@Model.CustomLinkTitle</a>
                 </h3>
                 <button class="trades-toggle"><span class="itemCount"></span> trades <span class="icon"></span></button>
                 <div class="trade details closed">

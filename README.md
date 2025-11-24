@@ -1,4 +1,4 @@
-# NBT Apps
+﻿# NBT Apps
 A webapp and its support libraries to do cool stuff with Minecraft data in .NET !
 
 ## What?
@@ -60,6 +60,16 @@ Remove these two files:
 * `wwwroot/img/atlas.png`
 Then follow the instructions from the previous section!
 
+### Options
+#### WebmapUrlPattern
+If you have a website that displays your world maps (for example with Bluemap or Dynmap), you can put its URL here, and replace the dimension, x, y and z in the URL with placeholders: `{DIMENSION}`, `{X}`, `{Y}`, `{Z}`.
+That will add, for each store, factory or trading place, a link to the map with the coordinates replaced.
+
+⚠ Make sure that the dimension names (`item_provider_regions.dimension` in the database, and the keys in `MapPaths` in `appsettings.json`) match the dimension names that your map site expects.
+
+#### WebmapLinkTitle / CustomLinkTitle
+These settings control the text that appears on the links to the map and on the links to the custom URL of the `item_provider_regions` table.
+
 ## Architecture
 Currently contains three projects: 
 * `NbtTools`, a class library containing common elements to query NBT data:
@@ -77,10 +87,16 @@ When executing Entity Framework Core commands, you must set the `project`, `star
 * `context` is the name of the DbContext describing the database to operate on,
 * `startup-project` is the name of the project containing a reference to `Microsoft.EntityFrameworkCore.Design` package.
 
+Additionally, in order for the framework to understand how to access the databases, you need to be in the *McMerchants* project directory, and not at the project root (database contexts are initialized from the DI in `Startup.cs`)
+
 For example:
 ```
+cd ./McMerchants
 dotnet ef database update --project NbtTools --startup-project McMerchantsLib --context NbtDbContext
 ```
 
 If the `startup-project` is missing, you will get the following error:
 > Your startup project 'NbtTools' doesn't reference Microsoft.EntityFrameworkCore.Design. This package is required for the Entity Framework Core Tools to work. Ensure your startup project is correct, install the package, and try again.
+
+If you are not in the *McMerchants* directory, you will get the following error:
+> Unable to create a 'DbContext' of type 'McMerchantsDbContext'. The exception 'Unable to resolve service for type 'Microsoft.EntityFrameworkCore.DbContextOptions`1[McMerchants.Database.McMerchantsDbContext]' while attempting to activate 'McMerchants.Database.McMerchantsDbContext'.' was thrown while attempting to create an instance. For the different patterns supported at design time, see https://go.microsoft.com/fwlink/?linkid=851728

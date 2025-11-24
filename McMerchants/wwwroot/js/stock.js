@@ -67,7 +67,7 @@ const fillResults = (results, container, stackSize, itemParsingFunction) => {
 };
 
 const parseStore = (data, container, stackSize) => {
-    const { name, logo, alleys } = data;
+    const { identity, alleys } = data;
     let grandTotal = 0;
 
     let defaultAlley = null;
@@ -88,21 +88,15 @@ const parseStore = (data, container, stackSize) => {
         }
     });
 
-    const storeNode = createStoreNode(name, logo, grandTotal, stackSize, defaultAlley, otherAlleys, bulkContainers);
+    const storeNode = createStoreNode(identity, grandTotal, stackSize, defaultAlley, otherAlleys, bulkContainers);
     container.appendChild(storeNode);
 };
 
-const createStoreNode = (name, logo, grandTotal, stackSize, defaultAlley, otherAlleys, bulkContainers) => {
-    const storeNode = stockTemplate.content.cloneNode(true);
-
-    // Identity
-    storeNode.querySelector('.storeName').textContent = name;
-
-    if (logo === null) {
-        storeNode.querySelector('.storeLogo').remove();
-    } else {
-        storeNode.querySelector('.storeLogo').src += logo;
-    }
+const createStoreNode = (identity, grandTotal, stackSize, defaultAlley, otherAlleys, bulkContainers) => {
+    const storeNode = setIdentity(
+        stockTemplate.content.cloneNode(true),
+        identity
+    );
 
     // Global count
     storeNode.querySelector('.itemCount').textContent = grandTotal.toString();
@@ -189,28 +183,22 @@ const fillBulkAlleyDetails = (tbody, containers) => {
 }
 
 const parseFactory = (data, container, stackSize) => {
-    const { name, logo, results } = data;
+    const { identity, results } = data;
     let count = 0;
 
     for (const entry of results) {
         count += entry.count;
     }
 
-    const factoryNode = createFactoryNode(name, logo, count, stackSize);
+    const factoryNode = createFactoryNode(identity, count, stackSize);
     container.appendChild(factoryNode);
 };
 
-const createFactoryNode = (name, logo, grandTotal, stackSize) => {
-    const factoryNode = stockTemplate.content.cloneNode(true);
-
-    // Identity
-    factoryNode.querySelector('.storeName').textContent = name;
-
-    if (logo === null) {
-        factoryNode.querySelector('.storeLogo').remove();
-    } else {
-        factoryNode.querySelector('.storeLogo').src += logo;
-    }
+const createFactoryNode = (identity, grandTotal, stackSize) => {
+    const factoryNode = setIdentity(
+        stockTemplate.content.cloneNode(true),
+        identity
+    );
 
     // Global count
     factoryNode.querySelector('.itemCount').textContent = grandTotal.toString();
@@ -251,24 +239,18 @@ const onBulkButtonClick = (event) => {
 }
 
 const parseTrading = (data, container, stackSize) => {
-    const { id, name, logo, results } = data;
+    const { identity, results } = data;
 
-    const node = createTradingSpotNode(id, name, logo, results);
+    const node = createTradingSpotNode(identity, results);
     container.appendChild(node);
 }
 
-const createTradingSpotNode = (id, name, logo, trades) => {
-    const node = tradeTemplate.content.cloneNode(true);
-
-    // Identity
-    node.querySelector('.storeName span').textContent = name;
-    node.querySelector('.storeName a').href = `/Shop/Details/${id}`;
-
-    if (logo === null) {
-        node.querySelector('.storeLogo').remove();
-    } else {
-        node.querySelector('.storeLogo').src += logo;
-    }
+const createTradingSpotNode = (identity, trades) => {
+    const node = setIdentity(
+        tradeTemplate.content.cloneNode(true),
+        identity
+    );
+    node.querySelector('.tradesLink').href = `/Shop/Details/${identity.id}`;
 
     // Number of trades
     node.querySelector('.itemCount').textContent = trades.length.toString();
@@ -324,4 +306,28 @@ const onTradesButtonClick = (event) => {
 
     detailsDiv.classList.toggle('closed');
     buttonIcon.innerText = detailsDiv.classList.contains('closed') ? texts.tradeIconWhenClosed : texts.tradeIconWhenOpened;
+}
+
+const setIdentity = (node, identity) => {
+    node.querySelector('.storeName').textContent = identity.name;
+
+    if (identity.logo === null) {
+        node.querySelector('.storeLogo').remove();
+    } else {
+        node.querySelector('.storeLogo').src += identity.logo;
+    }
+
+    if (identity.url === null) {
+        node.querySelector('.customLink').remove();
+    } else {
+        node.querySelector('.customLink').href += identity.url;
+    }
+    
+    if (identity.map_url === null) {
+        node.querySelector('.mapLink').remove();
+    } else {
+        node.querySelector('.mapLink').href += identity.map_url;
+    }
+
+    return node;
 }

@@ -1,10 +1,6 @@
 package net.baviereteam.mcmerchants.json;
 
-import java.util.ArrayList;
-
-public class Trader{
-	public int id;
+public class Trader {
 	public String name;
-	public String logo;
-	public ArrayList<TraderResult> results;
+	public int count;
 }
