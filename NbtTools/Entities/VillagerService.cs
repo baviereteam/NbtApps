@@ -1,11 +1,11 @@
 ﻿using NbtTools.Entities.Trading;
 using NbtTools.Geography;
+using NbtTools.Items;
 using SharpNBT;
 using System;
 using System.Collections.Generic;
-
-using Villagers = System.Collections.Generic.ICollection<NbtTools.Entities.Villager>;
 using Trades = System.Collections.Generic.ICollection<NbtTools.Entities.Trading.Trade>;
+using Villagers = System.Collections.Generic.ICollection<NbtTools.Entities.Villager>;
 
 namespace NbtTools.Entities
 {
@@ -36,7 +36,7 @@ namespace NbtTools.Entities
             return new QueryResult<Villagers>(villagers, dataSource.UnreadableChunks);
         }
 
-        public QueryResult<Trades> GetTradesFor(Cuboid zone, string id) 
+        public QueryResult<Trades> GetTradesFor(Cuboid zone, Searchable searchedItem) 
         {
             var dataSource = regionQuery.GetEntitiesDataSource(zone);
             var villagerTags = nbtFilter.GetAllCompoundsWithId(dataSource.Result, "minecraft:villager");
@@ -49,7 +49,7 @@ namespace NbtTools.Entities
                 {
                     foreach (var trade in villager.Trades)
                     {
-                        if (trade.Sell.Item.Id == id)
+                        if (TradeMatchesSearch(trade, searchedItem))
                         {
                             trades.Add(trade);
                         }
@@ -58,6 +58,27 @@ namespace NbtTools.Entities
             }
 
             return new QueryResult<Trades>(trades, dataSource.UnreadableChunks);
+        }
+
+        private bool TradeMatchesSearch(Trade trade, Searchable searchedItem)
+        {
+            switch (searchedItem)
+            {
+                case Item _:
+                    return trade.Sell.Item.Id == searchedItem.Id;
+
+                case EnchantedBook book:
+                    var searchedEnchantment = new Enchantment(book.Enchantment, book.Level);
+                    return 
+                        trade.Sell.Item.Id == EnchantedBook.GENERIC_ENCHANTED_BOOK_ID
+                        && trade.Sell.Enchantments.Contains(searchedEnchantment);
+
+                // No villager sells potions.
+                // case Potion potion:
+
+                default:
+                    return false;
+            }
         }
 
         public IDictionary<string, ICollection<Villager>> OrderByJob(ICollection<Villager> source)

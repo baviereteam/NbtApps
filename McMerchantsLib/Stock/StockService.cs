@@ -55,7 +55,7 @@ namespace McMerchantsLib.Stock
             var tradingPlaces = Context.TradingRegions;
             foreach (var tradingPlace in tradingPlaces)
             {
-                var tradingQuery = VillagerService.GetTradesFor(tradingPlace.Coordinates, itemId);
+                var tradingQuery = VillagerService.GetTradesFor(tradingPlace.Coordinates, searchedItem);
                 results.Trades.Add(tradingPlace, tradingQuery.Result);
                 results.IsComplete &= tradingQuery.IsComplete;
             }
