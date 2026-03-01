@@ -5,24 +5,25 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.concurrent.CompletableFuture;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import net.baviereteam.mcmerchants.json.ResponseRoot;
 
 public class McMerchantsService {
 	private final String apiUrl;
+	private final HttpClient client;
 
 	public McMerchantsService(String baseUrl) {
 		this.apiUrl = baseUrl.strip() + "/api/stock/%s?synthetic=true";
+		this.client = HttpClient.newHttpClient();
 	}
-	
+		
 	public CompletableFuture<QueryResult> query(String item) {
 		return executeRequest(item)
 				.thenApply(this::craftResult);
 	}
 
 	private CompletableFuture<String> executeRequest(String arg) {
-		HttpClient client = HttpClient.newHttpClient();
 		HttpRequest request = HttpRequest.newBuilder()
 				.uri(URI.create(apiUrl.formatted(arg)))
 				.build();
@@ -37,15 +38,15 @@ public class McMerchantsService {
 
 		try {
 			result = new QueryResult(deserializeResult(json));
-		} catch (JsonProcessingException e) {
+		} catch (JsonSyntaxException e) {
 			result = new QueryResult(e);
 		}
 
 		return result;
 	}
 
-	private ResponseRoot deserializeResult(String input) throws JsonProcessingException {
-		ObjectMapper mapper = new ObjectMapper();
-		return mapper.readValue(input, ResponseRoot.class);
+	private ResponseRoot deserializeResult(String input) throws JsonSyntaxException {
+		Gson gson = new Gson();
+		return gson.fromJson(input, ResponseRoot.class);
 	}
 }

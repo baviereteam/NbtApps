@@ -1,24 +1,23 @@
 package net.baviereteam.mcmerchantschatplugin;
 
+import com.google.gson.JsonSyntaxException;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.baviereteam.mcmerchants.McMerchantsService;
 import net.baviereteam.mcmerchants.QueryResult;
-import net.baviereteam.mcmerchants.json.Alley;
-import net.baviereteam.mcmerchants.json.FactoryResult;
 import net.baviereteam.mcmerchants.json.ResponseRoot;
 import net.baviereteam.mcmerchants.json.Trader;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.apache.commons.lang3.ObjectUtils;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemType;
 import org.bukkit.plugin.java.JavaPlugin;
-
+import javax.net.ssl.SSLHandshakeException;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class McMerchantsChatPlugin extends JavaPlugin {
@@ -51,22 +50,18 @@ public class McMerchantsChatPlugin extends JavaPlugin {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public void logFailure(String text) {
-		this.getComponentLogger().warn(Component.text(text));
-	}
-
 	public void queryMcMerchantsAndShowResults(Entity executor, ItemType itemType) {
 		CompletableFuture<QueryResult> futureResult = mcMerchantsClient.query(itemType.getKey().toString());
 		
 		futureResult.handle((result, err) -> {
+			// An error occurs during the request (client-side)...
 			if (err != null) {
-				logFailure(err.getMessage());
-				sendFailAnswer(executor);
+				handleError(err, executor);
 			}
 
+			// McMerchants returned an error (server-side)...
 			if (result.hasError()) {
-				logFailure(result.getError().toString());
-				sendFailAnswer(executor);
+				handleError(result.getError(), executor);
 
 			} else {
 				ResponseRoot response = result.getResponse();
@@ -78,9 +73,11 @@ public class McMerchantsChatPlugin extends JavaPlugin {
 		});
 	}
 
-	public void sendFailAnswer(Entity executor) {
+	public void sendFailAnswer(String message, Entity executor) {
 		if (executor != null) {
-			executor.sendMessage("McMerchants did not answer properly :(");
+			executor.sendMessage(MiniMessage.miniMessage().deserialize(
+					message + "\n<red><b>Please tell someone!</b></red>"
+			));
 		}
 	}
 	public void broadcastSuccessAnswer(Component answer) {
@@ -201,5 +198,29 @@ public class McMerchantsChatPlugin extends JavaPlugin {
 		}
 
 		return MiniMessage.miniMessage().deserialize(answer.toString());
+	}
+	
+	public void handleError(Throwable err, Entity executor) {
+		getComponentLogger().error(err.getMessage());
+		
+		// Anything's a CompletionException if it happens during some async operations
+		if (err instanceof CompletionException) {
+			err = err.getCause();
+		}
+		
+		String messageToPlayer;
+		
+		if (err instanceof SSLHandshakeException && err.getMessage().contains("PKIX path building failed")) {
+			getComponentLogger().warn("If the keystore has been updated since the server started, you might need to restart Minecraft.");
+			messageToPlayer = "I can't talk to McMerchants in a secure way :(";
+			
+		} else if (err instanceof JsonSyntaxException) {
+			messageToPlayer = "I can't understand McMerchants' answer :(";
+		
+		} else {
+			messageToPlayer = "I don't know why that didn't work :(";
+		}
+
+		sendFailAnswer(messageToPlayer, executor);
 	}
 }
