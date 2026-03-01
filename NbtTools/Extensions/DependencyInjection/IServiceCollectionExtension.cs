@@ -7,6 +7,7 @@ using NbtTools.Entities.Trading;
 using NbtTools.Items;
 using NbtTools.Items.Providers;
 using NbtTools.Mca;
+using NbtTools.RegionQuery;
 
 namespace NbtTools.Extensions.DependencyInjection
 {
@@ -19,7 +20,8 @@ namespace NbtTools.Extensions.DependencyInjection
             // Configuration doesn't change during app lifecycle.
             services.AddSingleton<McaFileFactory>();
 
-            services.AddTransient<RegionQueryService>();
+            services.AddTransient<EntitiesQuery>();
+            services.AddTransient<BlockEntitiesQuery>();
             services.AddTransient<StorageReaderFactory>();
             services.AddTransient<EntityReaderFactory>();
             services.AddTransient<VillagerService>();

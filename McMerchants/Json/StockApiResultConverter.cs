@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
+using StockAtPosition = System.Collections.Generic.KeyValuePair<NbtTools.Geography.Point, int>;
+
 namespace McMerchants.Json
 {
     public abstract class StockApiResultConverter : JsonConverter<StockQueryResult>
@@ -69,7 +71,7 @@ namespace McMerchants.Json
             writer.WriteEndObject();
         }
 
-        protected abstract void WriteFactoriesDictionary(Utf8JsonWriter writer, IDictionary<FactoryRegion, IDictionary<Point, int>> value, JsonSerializerOptions options);
+        protected abstract void WriteFactoriesDictionary(Utf8JsonWriter writer, IDictionary<FactoryRegion, ICollection<StockAtPosition>> value, JsonSerializerOptions options);
 
         protected abstract void WriteTradingDictionary(Utf8JsonWriter writer, IDictionary<TradingRegion, IEnumerable<Trade>> value, JsonSerializerOptions options);
 

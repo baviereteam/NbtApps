@@ -9,6 +9,8 @@ namespace NbtTools.Geography
         public Point Start { get; }
         public Point End { get; }
 
+        private List<Chunk> chunks;
+
         public double Size { 
             get
             {
@@ -50,22 +52,25 @@ namespace NbtTools.Geography
 
         public ICollection<Chunk> GetAllChunks()
         {
-            var startChunk = Chunk.FromPoint(Start);
-            var endChunk = Chunk.FromPoint(End);
-
-            var smallerX = Math.Min(startChunk.X, endChunk.X);
-            var smallerZ = Math.Min(startChunk.Z, endChunk.Z);
-
-            var biggerX = Math.Max(startChunk.X, endChunk.X);
-            var biggerZ = Math.Max(startChunk.Z, endChunk.Z);
-
-            var chunks = new List<Chunk>();
-
-            for(var x = smallerX; x <= biggerX; x++)
+            if (chunks == null)
             {
-                for (var z = smallerZ; z <= biggerZ; z++)
+                var startChunk = Chunk.FromPoint(Start);
+                var endChunk = Chunk.FromPoint(End);
+
+                var smallerX = Math.Min(startChunk.X, endChunk.X);
+                var smallerZ = Math.Min(startChunk.Z, endChunk.Z);
+
+                var biggerX = Math.Max(startChunk.X, endChunk.X);
+                var biggerZ = Math.Max(startChunk.Z, endChunk.Z);
+
+                chunks = new List<Chunk>();
+
+                for (var x = smallerX; x <= biggerX; x++)
                 {
-                    chunks.Add(new Chunk(x, z));
+                    for (var z = smallerZ; z <= biggerZ; z++)
+                    {
+                        chunks.Add(new Chunk(x, z));
+                    }
                 }
             }
 

@@ -6,6 +6,8 @@ using NbtTools.Entities;
 using NbtTools.Geography;
 using NbtTools.Items;
 
+using StockAtPosition = System.Collections.Generic.KeyValuePair<NbtTools.Geography.Point, int>;
+
 namespace McMerchantsLib.Stock
 {
     public class StockService
@@ -63,7 +65,7 @@ namespace McMerchantsLib.Stock
             return results;
         }
 
-        private StoreStockResult SortIntoAlleys(StorageRegion store, string item, IDictionary<Point, int> searchResults)
+        private StoreStockResult SortIntoAlleys(StorageRegion store, string item, ICollection<StockAtPosition> searchResults)
         {
             var storeStock = new StoreStockResult(store);
 

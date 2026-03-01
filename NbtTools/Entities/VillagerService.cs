@@ -1,27 +1,29 @@
 ﻿using NbtTools.Entities.Trading;
 using NbtTools.Geography;
 using NbtTools.Items;
+using NbtTools.Nbt;
+using NbtTools.RegionQuery;
 using SharpNBT;
 using System;
 using System.Collections.Generic;
-using Trades = System.Collections.Generic.ICollection<NbtTools.Entities.Trading.Trade>;
-using Villagers = System.Collections.Generic.ICollection<NbtTools.Entities.Villager>;
 
 namespace NbtTools.Entities
 {
-    public class VillagerService : NbtService
+    public class VillagerService
     {
-        private readonly TradeService tradeService;
+        private EntitiesQuery RegionQuery;
+        private readonly TradeService TradeService;
 
-        public VillagerService(RegionQueryService regionQuery, TradeService tradeService) : base(regionQuery)
+        public VillagerService(EntitiesQuery regionQuery, TradeService tradeService)
         {
-            this.tradeService = tradeService;
+            this.TradeService = tradeService;
+            this.RegionQuery = regionQuery;
         }
 
-        public QueryResult<Villagers> GetVillagers(Cuboid zone)
+        public QueryResult<Villager> GetVillagers(Cuboid zone)
         {
-            var dataSource = regionQuery.GetEntitiesDataSource(zone);
-            var villagerTags = nbtFilter.GetAllCompoundsWithId(dataSource.Result, "minecraft:villager");
+            var dataSource = RegionQuery.GetData(zone);
+            var villagerTags = NbtFilter.GetAllCompoundsWithId(dataSource.Result, "minecraft:villager");
             var villagers = new List<Villager>();
 
             foreach (var villagerTag in villagerTags)
@@ -33,13 +35,13 @@ namespace NbtTools.Entities
                 }
             }
 
-            return new QueryResult<Villagers>(villagers, dataSource.UnreadableChunks);
+            return new QueryResult<Villager>(villagers, dataSource.UnreadableChunks);
         }
 
-        public QueryResult<Trades> GetTradesFor(Cuboid zone, Searchable searchedItem) 
+        public QueryResult<Trade> GetTradesFor(Cuboid zone, Searchable searchedItem) 
         {
-            var dataSource = regionQuery.GetEntitiesDataSource(zone);
-            var villagerTags = nbtFilter.GetAllCompoundsWithId(dataSource.Result, "minecraft:villager");
+            var dataSource = RegionQuery.GetData(zone);
+            var villagerTags = NbtFilter.GetAllCompoundsWithId(dataSource.Result, "minecraft:villager");
             var trades = new List<Trade>();
 
             foreach (var villagerTag in villagerTags)
@@ -57,7 +59,7 @@ namespace NbtTools.Entities
                 }
             }
 
-            return new QueryResult<Trades>(trades, dataSource.UnreadableChunks);
+            return new QueryResult<Trade>(trades, dataSource.UnreadableChunks);
         }
 
         private bool TradeMatchesSearch(Trade trade, Searchable searchedItem)
@@ -121,7 +123,7 @@ namespace NbtTools.Entities
                     Versioned<ListTag> recipes = versionedRootTag
                         .Get<CompoundTag>("Offers")
                         .Get<ListTag>("Recipes");
-                    trades = tradeService.FromRecipesTag(villager, recipes);
+                    trades = TradeService.FromRecipesTag(villager, recipes);
                 }
                 else
                 {
