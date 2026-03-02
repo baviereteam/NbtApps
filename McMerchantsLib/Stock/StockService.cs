@@ -6,6 +6,8 @@ using NbtTools.Entities;
 using NbtTools.Geography;
 using NbtTools.Items;
 
+using StockAtPosition = System.Collections.Generic.KeyValuePair<NbtTools.Geography.Point, int>;
+
 namespace McMerchantsLib.Stock
 {
     public class StockService
@@ -55,7 +57,7 @@ namespace McMerchantsLib.Stock
             var tradingPlaces = Context.TradingRegions;
             foreach (var tradingPlace in tradingPlaces)
             {
-                var tradingQuery = VillagerService.GetTradesFor(tradingPlace.Coordinates, itemId);
+                var tradingQuery = VillagerService.GetTradesFor(tradingPlace.Coordinates, searchedItem);
                 results.Trades.Add(tradingPlace, tradingQuery.Result);
                 results.IsComplete &= tradingQuery.IsComplete;
             }
@@ -63,7 +65,7 @@ namespace McMerchantsLib.Stock
             return results;
         }
 
-        private StoreStockResult SortIntoAlleys(StorageRegion store, string item, IDictionary<Point, int> searchResults)
+        private StoreStockResult SortIntoAlleys(StorageRegion store, string item, ICollection<StockAtPosition> searchResults)
         {
             var storeStock = new StoreStockResult(store);
 
@@ -137,7 +139,7 @@ namespace McMerchantsLib.Stock
             }
         }
 
-        private bool IsPointInAlley(Point p, Alley a)
+        private static bool IsPointInAlley(Point p, Alley a)
         {
             if (p.Y < a.StartY || p.Y > a.EndY)
             {

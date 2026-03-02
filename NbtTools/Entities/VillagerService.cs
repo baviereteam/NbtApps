@@ -1,27 +1,29 @@
 ﻿using NbtTools.Entities.Trading;
 using NbtTools.Geography;
+using NbtTools.Items;
+using NbtTools.Nbt;
+using NbtTools.RegionQuery;
 using SharpNBT;
 using System;
 using System.Collections.Generic;
 
-using Villagers = System.Collections.Generic.ICollection<NbtTools.Entities.Villager>;
-using Trades = System.Collections.Generic.ICollection<NbtTools.Entities.Trading.Trade>;
-
 namespace NbtTools.Entities
 {
-    public class VillagerService : NbtService
+    public class VillagerService
     {
-        private readonly TradeService tradeService;
+        private EntitiesQuery RegionQuery;
+        private readonly TradeService TradeService;
 
-        public VillagerService(RegionQueryService regionQuery, TradeService tradeService) : base(regionQuery)
+        public VillagerService(EntitiesQuery regionQuery, TradeService tradeService)
         {
-            this.tradeService = tradeService;
+            this.TradeService = tradeService;
+            this.RegionQuery = regionQuery;
         }
 
-        public QueryResult<Villagers> GetVillagers(Cuboid zone)
+        public QueryResult<Villager> GetVillagers(Cuboid zone)
         {
-            var dataSource = regionQuery.GetEntitiesDataSource(zone);
-            var villagerTags = nbtFilter.GetAllCompoundsWithId(dataSource.Result, "minecraft:villager");
+            var dataSource = RegionQuery.GetData(zone);
+            var villagerTags = NbtFilter.GetAllCompoundsWithId(dataSource.Result, "minecraft:villager");
             var villagers = new List<Villager>();
 
             foreach (var villagerTag in villagerTags)
@@ -33,13 +35,13 @@ namespace NbtTools.Entities
                 }
             }
 
-            return new QueryResult<Villagers>(villagers, dataSource.UnreadableChunks);
+            return new QueryResult<Villager>(villagers, dataSource.UnreadableChunks);
         }
 
-        public QueryResult<Trades> GetTradesFor(Cuboid zone, string id) 
+        public QueryResult<Trade> GetTradesFor(Cuboid zone, Searchable searchedItem) 
         {
-            var dataSource = regionQuery.GetEntitiesDataSource(zone);
-            var villagerTags = nbtFilter.GetAllCompoundsWithId(dataSource.Result, "minecraft:villager");
+            var dataSource = RegionQuery.GetData(zone);
+            var villagerTags = NbtFilter.GetAllCompoundsWithId(dataSource.Result, "minecraft:villager");
             var trades = new List<Trade>();
 
             foreach (var villagerTag in villagerTags)
@@ -49,7 +51,7 @@ namespace NbtTools.Entities
                 {
                     foreach (var trade in villager.Trades)
                     {
-                        if (trade.Sell.Item.Id == id)
+                        if (TradeMatchesSearch(trade, searchedItem))
                         {
                             trades.Add(trade);
                         }
@@ -57,10 +59,31 @@ namespace NbtTools.Entities
                 }
             }
 
-            return new QueryResult<Trades>(trades, dataSource.UnreadableChunks);
+            return new QueryResult<Trade>(trades, dataSource.UnreadableChunks);
         }
 
-        public IDictionary<string, ICollection<Villager>> OrderByJob(ICollection<Villager> source)
+        private static bool TradeMatchesSearch(Trade trade, Searchable searchedItem)
+        {
+            switch (searchedItem)
+            {
+                case Item _:
+                    return trade.Sell.Item.Id == searchedItem.Id;
+
+                case EnchantedBook book:
+                    var searchedEnchantment = new Enchantment(book.Enchantment, book.Level);
+                    return 
+                        trade.Sell.Item.Id == EnchantedBook.GENERIC_ENCHANTED_BOOK_ID
+                        && trade.Sell.Enchantments.Contains(searchedEnchantment);
+
+                // No villager sells potions.
+                // case Potion potion:
+
+                default:
+                    return false;
+            }
+        }
+
+        public static IDictionary<string, ICollection<Villager>> OrderByJob(ICollection<Villager> source)
         {
             var destination = new Dictionary<string, ICollection<Villager>>();
 
@@ -100,7 +123,7 @@ namespace NbtTools.Entities
                     Versioned<ListTag> recipes = versionedRootTag
                         .Get<CompoundTag>("Offers")
                         .Get<ListTag>("Recipes");
-                    trades = tradeService.FromRecipesTag(villager, recipes);
+                    trades = TradeService.FromRecipesTag(villager, recipes);
                 }
                 else
                 {

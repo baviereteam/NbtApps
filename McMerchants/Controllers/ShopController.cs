@@ -3,8 +3,6 @@ using McMerchants.Models;
 using McMerchants.Models.Database;
 using Microsoft.AspNetCore.Mvc;
 using NbtTools.Entities;
-using NbtTools.Geography;
-using System;
 
 namespace McMerchants.Controllers
 {
@@ -35,7 +33,7 @@ namespace McMerchants.Controllers
             return View(new ShopViewModel { 
                 Shop = shop,
                 Villagers = sortedVillagers,
-                IsComplete = villagersQuery.IsComplete  //TODO: make CSS for this
+                IsComplete = villagersQuery.IsComplete
             });
         }
     }

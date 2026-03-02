@@ -18,9 +18,7 @@ namespace McMerchants.Controllers
         }
 
         // GET: ItemController
-        [Route("")]
-        [Route("Item")]
-        [Route("Item/Details")]
+        [Route("")]             // Landing page
         public ActionResult Index()
         {
             return View("Details", null);

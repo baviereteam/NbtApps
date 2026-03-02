@@ -34,7 +34,7 @@ namespace NbtApps.Tests.v1_21_10
                 StartZ = 6,
                 EndX = 8,
                 EndY = -57,
-                EndZ = 2
+                EndZ = 0
             });
             dbContext.SaveChanges();
         }
@@ -84,6 +84,29 @@ namespace NbtApps.Tests.v1_21_10
 
             Assert.IsTrue(trade.Sell.Enchantments.Contains(depthStriderEnchantment));
             Assert.IsTrue(trade.Sell.Enchantments.Contains(featherFallingEnchantment));
+        }
+
+        [TestMethod]
+        public void SearchEnchantedBook_Found()
+        {
+            var StockService = Host.Services.GetService<StockService>();
+            var results = StockService.GetStockOf("enchanted_book:thorns_1");
+
+            Assert.AreEqual(0, results.Factories.Count);
+            Assert.AreEqual(0, results.Stores.Count);
+            Assert.AreEqual(1, results.Trades.Count);
+
+            var trades = results.Trades.First().Value;
+            Assert.AreEqual(1, trades.Count());
+
+            var trade = trades.First();
+            Assert.AreEqual("16 Emerald", trade.Buy1.ToString());
+            Assert.AreEqual("1 Book", trade.Buy2.ToString());
+            Assert.AreEqual("1 Enchanted Book (enchanted)", trade.Sell.ToString());
+
+            Assert.AreEqual(1, trade.Sell.Enchantments.Count);
+            var thornsEnchantment = new Enchantment("minecraft:thorns", 1);
+            Assert.IsTrue(trade.Sell.Enchantments.Contains(thornsEnchantment));
         }
 
         [TestCleanup]

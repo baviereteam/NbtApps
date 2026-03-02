@@ -2,11 +2,11 @@
 
 const changeTheme = function (isDarkTheme) {
     if (isDarkTheme) {
-        document.documentElement.setAttribute('data-theme', 'dark');
+        document.documentElement.dataset.theme = 'dark';
         localStorage.setItem('theme', 'dark');
         lightSwitch.checked = true;
     } else {
-        document.documentElement.setAttribute('data-theme', 'light');
+        document.documentElement.dataset.theme = 'light';
         localStorage.setItem('theme', 'light');
         lightSwitch.checked = false;
     }
@@ -19,7 +19,7 @@ const initThemes = function (e) {
         return;
     }
 
-    const mqMatcher = window.matchMedia("(prefers-color-scheme: dark)");
+    const mqMatcher = globalThis.matchMedia("(prefers-color-scheme: dark)");
     if (mqMatcher.matches) {
         changeTheme(true);
         return;

@@ -7,6 +7,8 @@ using NbtTools.Geography;
 using System.Collections.Generic;
 using System.Text.Json;
 
+using StockAtPosition = System.Collections.Generic.KeyValuePair<NbtTools.Geography.Point, int>;
+
 namespace McMerchants.Json
 {
     public class PluginApiConverter : StockApiResultConverter
@@ -54,17 +56,17 @@ namespace McMerchants.Json
             writer.WriteEndArray();
         }
 
-        protected override void WriteFactoriesDictionary(Utf8JsonWriter writer, IDictionary<FactoryRegion, IDictionary<Point, int>> value, JsonSerializerOptions options)
+        protected override void WriteFactoriesDictionary(Utf8JsonWriter writer, IDictionary<FactoryRegion, ICollection<StockAtPosition>> value, JsonSerializerOptions options)
         {
             writer.WriteStartArray();
 
-            foreach (KeyValuePair<FactoryRegion, IDictionary<Point, int>> storeResult in value)
+            foreach (KeyValuePair<FactoryRegion, ICollection<StockAtPosition>> storeResult in value)
             {
                 writer.WriteStartObject();
                 writer.WriteString("name", storeResult.Key.Name);
 
                 int countItemsInFactory = 0;
-                foreach (KeyValuePair<Point, int> stackResult in storeResult.Value)
+                foreach (StockAtPosition stackResult in storeResult.Value)
                 {
                     countItemsInFactory += stackResult.Value;
                 }

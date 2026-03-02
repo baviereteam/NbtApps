@@ -20,5 +20,10 @@ namespace NbtTools.Entities
             Type = type;
             Position = position;
         }
+
+        public override string ToString()
+        {
+            return $"{Job} at {Position}";
+        }
     }
 }
