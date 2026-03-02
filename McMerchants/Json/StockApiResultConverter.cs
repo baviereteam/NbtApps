@@ -51,7 +51,7 @@ namespace McMerchants.Json
 
         protected abstract void WriteStoresDictionary(Utf8JsonWriter writer, IList<StoreStockResult> value, JsonSerializerOptions options);
         
-        protected void WriteAlley(Utf8JsonWriter writer, bool isDefault, string name, int count) {
+        protected static void WriteAlley(Utf8JsonWriter writer, bool isDefault, string name, int count) {
             writer.WriteStartObject();
             if (isDefault) {
                 writer.WriteString("type", "default");
@@ -61,7 +61,7 @@ namespace McMerchants.Json
             writer.WriteEndObject();
         }
 
-        protected void WriteBulk(Utf8JsonWriter writer, Point point, int count) {
+        protected static void WriteBulk(Utf8JsonWriter writer, Point point, int count) {
             writer.WriteStartObject();
             writer.WriteString("type", "bulk");
             writer.WriteNumber("x", point.X);

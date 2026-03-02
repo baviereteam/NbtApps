@@ -25,7 +25,7 @@ const texts = {
 const queryStock = () => {
     setSpinnerDisplayed(true);
     const item = detailsSection.dataset.itemid;
-    let stackSize = parseInt(detailsSection.dataset.stacksize);
+    let stackSize = Number.parseInt(detailsSection.dataset.stacksize);
 
     fetch(api.replace('%s', item))
         .then(response => response.json())
@@ -58,7 +58,7 @@ const showAlert = (message) => {
 
 const fillResults = (results, container, stackSize, itemParsingFunction) => {
     while (container.firstChild) {
-        container.removeChild(container.firstChild);
+        container.firstChild.remove();
     }
 
     results.forEach(item => {
@@ -108,15 +108,14 @@ const createStoreNode = (identity, grandTotal, stackSize, defaultAlley, otherAll
     }
 
     // Default alley
-    if (defaultAlley !== null) {
-        storeNode.querySelector('.mainAlley h4').innerText = getAlleysIntroText(true, true, defaultAlley.count);
+    if (defaultAlley == null) {
+        storeNode.querySelector('.mainAlley').remove();
 
+    } else {
+        storeNode.querySelector('.mainAlley h4').innerText = getAlleysIntroText(true, true, defaultAlley.count);
         const defaultAlleyContainer = storeNode.querySelector('.mainAlley ul');
         const defaultAlleyBadge = createAlleyBadge(defaultAlley.name, defaultAlley.count, stackSize);
         defaultAlleyContainer.appendChild(defaultAlleyBadge);
-
-    } else {
-        storeNode.querySelector('.mainAlley').remove();
     }
 
     // Alleys

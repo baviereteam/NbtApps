@@ -139,7 +139,7 @@ namespace McMerchantsLib.Stock
             }
         }
 
-        private bool IsPointInAlley(Point p, Alley a)
+        private static bool IsPointInAlley(Point p, Alley a)
         {
             if (p.Y < a.StartY || p.Y > a.EndY)
             {

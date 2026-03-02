@@ -33,7 +33,7 @@ namespace McMerchants.Controllers
             return View(new ShopViewModel { 
                 Shop = shop,
                 Villagers = sortedVillagers,
-                IsComplete = villagersQuery.IsComplete  //TODO: make CSS for this
+                IsComplete = villagersQuery.IsComplete
             });
         }
     }

@@ -62,7 +62,7 @@ namespace NbtTools.Entities
             return new QueryResult<Trade>(trades, dataSource.UnreadableChunks);
         }
 
-        private bool TradeMatchesSearch(Trade trade, Searchable searchedItem)
+        private static bool TradeMatchesSearch(Trade trade, Searchable searchedItem)
         {
             switch (searchedItem)
             {
@@ -83,7 +83,7 @@ namespace NbtTools.Entities
             }
         }
 
-        public IDictionary<string, ICollection<Villager>> OrderByJob(ICollection<Villager> source)
+        public static IDictionary<string, ICollection<Villager>> OrderByJob(ICollection<Villager> source)
         {
             var destination = new Dictionary<string, ICollection<Villager>>();
 
