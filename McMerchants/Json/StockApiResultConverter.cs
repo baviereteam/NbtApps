@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
+using StockAtPosition = System.Collections.Generic.KeyValuePair<NbtTools.Geography.Point, int>;
+
 namespace McMerchants.Json
 {
     public abstract class StockApiResultConverter : JsonConverter<StockQueryResult>
@@ -49,7 +51,7 @@ namespace McMerchants.Json
 
         protected abstract void WriteStoresDictionary(Utf8JsonWriter writer, IList<StoreStockResult> value, JsonSerializerOptions options);
         
-        protected void WriteAlley(Utf8JsonWriter writer, bool isDefault, string name, int count) {
+        protected static void WriteAlley(Utf8JsonWriter writer, bool isDefault, string name, int count) {
             writer.WriteStartObject();
             if (isDefault) {
                 writer.WriteString("type", "default");
@@ -59,7 +61,7 @@ namespace McMerchants.Json
             writer.WriteEndObject();
         }
 
-        protected void WriteBulk(Utf8JsonWriter writer, Point point, int count) {
+        protected static void WriteBulk(Utf8JsonWriter writer, Point point, int count) {
             writer.WriteStartObject();
             writer.WriteString("type", "bulk");
             writer.WriteNumber("x", point.X);
@@ -69,7 +71,7 @@ namespace McMerchants.Json
             writer.WriteEndObject();
         }
 
-        protected abstract void WriteFactoriesDictionary(Utf8JsonWriter writer, IDictionary<FactoryRegion, IDictionary<Point, int>> value, JsonSerializerOptions options);
+        protected abstract void WriteFactoriesDictionary(Utf8JsonWriter writer, IDictionary<FactoryRegion, ICollection<StockAtPosition>> value, JsonSerializerOptions options);
 
         protected abstract void WriteTradingDictionary(Utf8JsonWriter writer, IDictionary<TradingRegion, IEnumerable<Trade>> value, JsonSerializerOptions options);
 

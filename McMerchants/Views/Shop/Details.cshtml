@@ -7,54 +7,44 @@
     Layout = "_Layout";
 }
 
-<!DOCTYPE html>
-
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Trades</title>
-</head>
-<body>
-    @if (!Model.IsComplete)
-    {
-        <div id="alert-banner">
-            Some chunks could not be read. The results displayed on this page might be incomplete.
-        </div>
-    }
+@if (!Model.IsComplete)
+{
+    <div id="alert-banner">
+        Some chunks could not be read. The results displayed on this page might be incomplete.
+    </div>
+}
     
-    <div>
-        <h1>@Html.DisplayFor(x => Model.Shop.Name) : Trades</h1>
-        @foreach (var jobGroup in Model.Villagers)
-        {
-            <h2 class="accordion-header"><button type="button"></button> @VillagerJobLocalizer[jobGroup.Key] (@Html.DisplayFor(modelItem => jobGroup.Value.Count))</h2>
-            <table class="trades accordion-content">
-                @{
-                    foreach (var villager in jobGroup.Value)
+<div>
+    <h1>@Html.DisplayFor(x => Model.Shop.Name) : Trades</h1>
+    @foreach (var jobGroup in Model.Villagers)
+    {
+        <h2 class="accordion-header"><button type="button"></button> @VillagerJobLocalizer[jobGroup.Key] (@Html.DisplayFor(modelItem => jobGroup.Value.Count))</h2>
+        <table class="trades accordion-content">
+            @{
+                foreach (var villager in jobGroup.Value)
+                {
+                    foreach (var trade in villager.Trades)
                     {
-                        foreach (var trade in villager.Trades)
-                        {
-                                <tr>
-                                    <td>
-                                        @await Html.PartialAsync("./TradeComponent", trade.Buy1)
-                                    </td>
-                                    <td>
-                                    @{
-                                        if (trade.Buy2 != null)
-                                        {
-                                            await Html.RenderPartialAsync("./TradeComponent", trade.Buy2);
-                                        }
+                            <tr>
+                                <td>
+                                    @await Html.PartialAsync("./TradeComponent", trade.Buy1)
+                                </td>
+                                <td>
+                                @{
+                                    if (trade.Buy2 != null)
+                                    {
+                                        await Html.RenderPartialAsync("./TradeComponent", trade.Buy2);
                                     }
-                                    </td>
-                                    <td>►</td>
-                                    <td>
-                                        @await Html.PartialAsync("./TradeComponent", trade.Sell)
-                                    </td>
-                                </tr>
-                        }
+                                }
+                                </td>
+                                <td>►</td>
+                                <td>
+                                    @await Html.PartialAsync("./TradeComponent", trade.Sell)
+                                </td>
+                            </tr>
                     }
                 }
-            </table>
-        }
-    </div>
-</body>
-</html>
+            }
+        </table>
+    }
+</div>

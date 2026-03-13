@@ -1,17 +1,18 @@
 ﻿using NbtTools.Database;
 using NbtTools.Entities.Providers;
+using NbtTools.RegionQuery;
 using SharpNBT;
 using System;
 using System.Collections.Generic;
 
 namespace NbtTools.Entities.Trading
 {
-    public class TradeService : NbtService
+    public class TradeService
     {
         private readonly NbtDbContext NbtContext;
         private readonly EntityReaderFactory EntityReaderFactory;
 
-        public TradeService(RegionQueryService regionQuery, NbtDbContext context, EntityReaderFactory entityReaderFactory) : base(regionQuery)
+        public TradeService(NbtDbContext context, EntityReaderFactory entityReaderFactory)
         {
             NbtContext = context;
             EntityReaderFactory = entityReaderFactory;
@@ -47,7 +48,6 @@ namespace NbtTools.Entities.Trading
 
         public TradeComponent? TradeComponentFromTag(Versioned<CompoundTag> versionedRootTag)
         {
-            // "buy2" is missing when the trade is one item vs. one item.
             if (versionedRootTag == null)
             {
                 return null;

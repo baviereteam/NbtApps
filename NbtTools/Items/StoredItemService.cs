@@ -1,21 +1,23 @@
 ﻿using NbtTools.Geography;
 using NbtTools.Items.Providers;
+using NbtTools.RegionQuery;
 using SharpNBT;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using StoredItems = System.Collections.Generic.IDictionary<NbtTools.Geography.Point, int>;
+using StoredItem = System.Collections.Generic.KeyValuePair<NbtTools.Geography.Point, int>;
 
 namespace NbtTools.Items
 {
-    public class StoredItemService : NbtService
+    public class StoredItemService
     {
         private readonly StorageReaderFactory StorageReaderFactory;
+        private readonly BlockEntitiesQuery RegionQuery;
         private readonly string[] StorageIds;
         private readonly string[] BookStorageIds;
 
-        public StoredItemService(RegionQueryService regionQuery, StorageReaderFactory storageReaderFactory) : base(regionQuery)
+        public StoredItemService(BlockEntitiesQuery regionQuery, StorageReaderFactory storageReaderFactory)
         {
             StorageIds = new string[]
             {
@@ -34,11 +36,12 @@ namespace NbtTools.Items
             };
 
             StorageReaderFactory = storageReaderFactory;
+            RegionQuery = regionQuery;
         }
 
-        public QueryResult<StoredItems> FindStoredItems(Searchable searchedItem, Cuboid zone)
+        public QueryResult<StoredItem> FindStoredItems(Searchable searchedItem, Cuboid zone)
         {
-            var dataSource = regionQuery.GetBlockEntitiesDataSource(zone);
+            var dataSource = RegionQuery.GetData(zone);
             IDictionary<Point, int> results = new Dictionary<Point, int>();
 
             foreach (var versionedBlockEntity in dataSource.Result)
@@ -83,7 +86,7 @@ namespace NbtTools.Items
                 }
             }
             
-            return new QueryResult<StoredItems>(results, dataSource.UnreadableChunks);
+            return new QueryResult<StoredItem>(results, dataSource.UnreadableChunks);
         }
     }
 }

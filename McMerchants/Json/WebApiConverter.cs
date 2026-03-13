@@ -5,9 +5,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Localization;
 using NbtTools.Entities;
 using NbtTools.Entities.Trading;
-using NbtTools.Geography;
 using System.Collections.Generic;
 using System.Text.Json;
+
+using StockAtPosition = System.Collections.Generic.KeyValuePair<NbtTools.Geography.Point, int>;
 
 namespace McMerchants.Json
 {
@@ -59,7 +60,7 @@ namespace McMerchants.Json
                 }
 
                 // Bulk
-                foreach (KeyValuePair<Point, int> bulkResult in storeResult.StockInBulkContainers)
+                foreach (StockAtPosition bulkResult in storeResult.StockInBulkContainers)
                 {
                     WriteBulk(writer, bulkResult.Key, bulkResult.Value);
                 }
@@ -71,11 +72,11 @@ namespace McMerchants.Json
             writer.WriteEndArray();
         }
 
-        protected override void WriteFactoriesDictionary(Utf8JsonWriter writer, IDictionary<FactoryRegion, IDictionary<Point, int>> value, JsonSerializerOptions options)
+        protected override void WriteFactoriesDictionary(Utf8JsonWriter writer, IDictionary<FactoryRegion, ICollection<StockAtPosition>> value, JsonSerializerOptions options)
         {
             writer.WriteStartArray();
 
-            foreach (KeyValuePair<FactoryRegion, IDictionary<Point, int>> factoryResult in value)
+            foreach (KeyValuePair<FactoryRegion, ICollection<StockAtPosition>> factoryResult in value)
             {
                 writer.WriteStartObject();
 
@@ -85,7 +86,7 @@ namespace McMerchants.Json
                 writer.WritePropertyName("results");
                 writer.WriteStartArray();
 
-                foreach (KeyValuePair<Point, int> stackResult in factoryResult.Value)
+                foreach (StockAtPosition stackResult in factoryResult.Value)
                 {
                     writer.WriteStartObject();
                     writer.WriteNumber("x", stackResult.Key.X);
