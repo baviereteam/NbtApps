@@ -284,10 +284,4 @@ a:visited {
     content: " | ";
     color: var(--text-color);
 }
-
-.globalList .identity {
-    padding: 0.3em 0;
-    .storeName {
-        font-size: 18px;
-    }
 }
