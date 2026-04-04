@@ -9,9 +9,7 @@
 
 @if (!Model.IsComplete)
 {
-    <div id="alert-banner">
-        Some chunks could not be read. The results displayed on this page might be incomplete.
-    </div>
+    <script>showAlert(texts.incompleteSearchErrorMessage);</script>
 }
 
 <div>
