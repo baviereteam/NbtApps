@@ -35,6 +35,16 @@ namespace McMerchants
             services.AddSingleton<PluginApiConverter>();
             services.AddSingleton<WebApiConverter>();
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy("GET from allowed origins", policy =>
+                {
+                    policy
+                        .WithOrigins(Configuration["Cors:AllowedOrigins"].Split(";"))
+                        .WithMethods("GET");
+                });
+            });
+
             services
                 .AddMvc();
         }
@@ -63,9 +73,8 @@ namespace McMerchants
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
             app.UseRouting();
-
+            app.UseCors();
             app.UseAuthorization();
 
             // Use [Route()] annotations in controllers to manage routing.

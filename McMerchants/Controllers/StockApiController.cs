@@ -1,5 +1,6 @@
 ﻿using McMerchants.Json;
 using McMerchantsLib.Stock;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
@@ -22,6 +23,7 @@ namespace McMerchants.Controllers
 
         // GET api/stock/minecraft:glass
         [HttpGet("{id}")]
+        [EnableCors("GET from allowed origins")]
         public string Get(string id, [FromQuery] bool synthetic = false)
         {
             var results = StockService.GetStockOf(id);

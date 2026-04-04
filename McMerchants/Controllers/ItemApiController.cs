@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NbtTools.Database;
 using NbtTools.Items;
@@ -21,6 +22,7 @@ namespace McMerchants.Controllers
 
         // GET: api/items?term=cia%20bo
         [HttpGet]
+        [EnableCors("GET from allowed origins")]
         public async Task<ActionResult<IEnumerable<Searchable>>> SearchItems([FromQuery] string term)
         {
             return await _context.Searchables.Where(item => item.Name.ToLower().Contains(term.ToLower())).ToListAsync();
