@@ -4,9 +4,9 @@ using System.Collections.Generic;
 
 namespace McMerchants.Models
 {
-    public class ShopViewModel
+    public class TradingZoneViewModel
     {
-        public TradingRegion Shop { get; set; }
+        public TradingRegion Zone { get; set; }
 
         public IDictionary<string, ICollection<Villager>> Villagers { get; set; }
         public bool IsComplete { get; set; }

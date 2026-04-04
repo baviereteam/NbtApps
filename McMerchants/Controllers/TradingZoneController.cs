@@ -3,35 +3,36 @@ using McMerchants.Models;
 using McMerchants.Models.Database;
 using Microsoft.AspNetCore.Mvc;
 using NbtTools.Entities;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace McMerchants.Controllers
 {
-    public class ShopController : Controller
+    public class TradingZoneController : Controller
     {
         private readonly VillagerService VillagerService;
         private readonly McMerchantsDbContext Context;
 
-        public ShopController(VillagerService villagerService, McMerchantsDbContext context)
+        public TradingZoneController(VillagerService villagerService, McMerchantsDbContext context)
         {
             VillagerService = villagerService;
             Context = context;
         }
 
-        // GET: TradeController/Details/5
-        [Route("Shop/Details/{shopId}")]
-        public ActionResult Details(int shopId)
+        [Route("Trading/Details/{zoneId}")]
+        public ActionResult Details(int zoneId)
         {
-            TradingRegion shop = Context.TradingRegions.Find(shopId);
-            if (shop == null)
+            TradingRegion zone = Context.TradingRegions.Find(zoneId);
+            if (zone == null)
             {
                 return View("NotFound");
             }
 
-            var villagersQuery = VillagerService.GetVillagers(shop.Coordinates);
+            var villagersQuery = VillagerService.GetVillagers(zone.Coordinates);
             var sortedVillagers = VillagerService.OrderByJob(villagersQuery.Result);
 
-            return View(new ShopViewModel { 
-                Shop = shop,
+            return View(new TradingZoneViewModel { 
+                Zone = zone,
                 Villagers = sortedVillagers,
                 IsComplete = villagersQuery.IsComplete
             });
