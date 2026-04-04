@@ -1,5 +1,6 @@
 ﻿using Humanizer;
 using McMerchants.Models.Database;
+using McMerchants.Services;
 using McMerchantsLib.Stock;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Localization;
@@ -14,23 +15,11 @@ namespace McMerchants.Json
 {
     public class WebApiConverter : StockApiResultConverter
     {
-        private readonly bool generateMapLinks = false;
-        private readonly string webMapPattern = null;
-        
-        public WebApiConverter(IStringLocalizer<Enchantment> enchantmentLocalizer, IStringLocalizer<Villager> villagerJobLocalizer, IConfiguration configuration) : base(enchantmentLocalizer, villagerJobLocalizer)
-        {
-            var pattern = configuration["Options:WebmapUrlPattern"];
-            generateMapLinks = !string.IsNullOrWhiteSpace(pattern);
+        private readonly ItemProviderLinksBuilder _mapLinkBuilder;
 
-            if (generateMapLinks)
-            {
-                // Must match the order used in GetWebMapUrl()
-                webMapPattern = pattern
-                    .Replace("{DIMENSION}", "{0}")
-                    .Replace("{X}", "{1}")
-                    .Replace("{Y}", "{2}")
-                    .Replace("{Z}", "{3}");
-            }
+        public WebApiConverter(IStringLocalizer<Enchantment> enchantmentLocalizer, IStringLocalizer<Villager> villagerJobLocalizer, ItemProviderLinksBuilder mapLinkBuilder) : base(enchantmentLocalizer, villagerJobLocalizer)
+        {
+            _mapLinkBuilder = mapLinkBuilder;
         }
 
         protected override void WriteStoresDictionary(Utf8JsonWriter writer, IList<StoreStockResult> value, JsonSerializerOptions options)
@@ -143,24 +132,15 @@ namespace McMerchants.Json
             if (includeId)
             {
                 writer.WriteNumber("id", place.Id);
-            }            
+            }
 
             writer.WriteString("name", place.Name);
             writer.WriteString("logo", string.IsNullOrWhiteSpace(place.Logo) ? null : place.Logo);
             writer.WriteString("url", string.IsNullOrWhiteSpace(place.URL) ? null : place.URL);
 
-            if (generateMapLinks)
+            if (_mapLinkBuilder.CanGenerateMapLinks)
             {
-                // Must match the order set in the constructor
-                writer.WriteString(
-                    "map_url", 
-                    webMapPattern.FormatWith(
-                        place.Dimension,
-                        place.StartX + (place.EndX - place.StartX) / 2,
-                        place.StartY + (place.EndY - place.StartY) / 2,
-                        place.StartZ + (place.EndZ - place.StartZ) / 2
-                    )
-                );
+                writer.WriteString("map_url", _mapLinkBuilder.GetMapUrlFor(place));
             }
             else
             {

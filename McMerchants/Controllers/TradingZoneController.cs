@@ -19,6 +19,13 @@ namespace McMerchants.Controllers
             Context = context;
         }
 
+        [Route("Trading")]
+        public ActionResult List()
+        {
+            ICollection<TradingRegion> zones = Context.TradingRegions.ToList();
+            return View(zones);
+        }
+
         [Route("Trading/Details/{zoneId}")]
         public ActionResult Details(int zoneId)
         {

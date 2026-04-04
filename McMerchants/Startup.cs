@@ -1,5 +1,6 @@
 using McMerchants.Extensions.DependencyInjection;
 using McMerchants.Json;
+using McMerchants.Services;
 using McMerchants.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -30,6 +31,7 @@ namespace McMerchants
                 NbtToolsDatabaseConnectionString = Configuration.GetConnectionString("NbtDatabase")
             });
 
+            services.AddSingleton<ItemProviderLinksBuilder>();
             services.AddSingleton<PluginApiConverter>();
             services.AddSingleton<WebApiConverter>();
 
