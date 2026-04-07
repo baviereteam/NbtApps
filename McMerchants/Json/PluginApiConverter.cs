@@ -17,26 +17,26 @@ namespace McMerchants.Json
         {
         }
 
-        protected override void WriteStoresDictionary(Utf8JsonWriter writer, IList<StoreStockResult> value, JsonSerializerOptions options)
+        protected override void WriteStoresDictionary(Utf8JsonWriter writer, ICollection<StoreItemStockResult> value, JsonSerializerOptions options)
         {
             writer.WriteStartArray();
 
-            foreach (StoreStockResult storeResult in value)
+            foreach (var storeEntry in value)
             {
                 writer.WriteStartObject();
-                writer.WriteString("name", storeResult.Store.Name);
+                writer.WriteString("name", storeEntry.Store.Name);
 
                 writer.WritePropertyName("alleys");
                 writer.WriteStartArray();
 
                 // Default alley
-                if (storeResult.StockInDefaultAlley != null)
+                if (storeEntry.StockInDefaultAlley != null)
                 {
-                    WriteAlley(writer, true, storeResult.StockInDefaultAlley.Item1.Name, storeResult.StockInDefaultAlley.Item2);
+                    WriteAlley(writer, true, storeEntry.StockInDefaultAlley.Item1.Name, storeEntry.StockInDefaultAlley.Item2);
                 }
 
                 // Other alleys
-                foreach (KeyValuePair<Alley, int> alleyResult in storeResult.StockInOtherAlleys)
+                foreach (KeyValuePair<Alley, int> alleyResult in storeEntry.StockInOtherAlleys)
                 {
                     WriteAlley(writer, false, alleyResult.Key.Name, alleyResult.Value);
                 }
@@ -44,7 +44,7 @@ namespace McMerchants.Json
 
                 // Bulk
                 int itemCountInBulk = 0;
-                foreach (KeyValuePair<Point, int> bulkResult in storeResult.StockInBulkContainers)
+                foreach (KeyValuePair<Point, int> bulkResult in storeEntry.StockInBulkContainers)
                 {
                     itemCountInBulk += bulkResult.Value;
                 }
@@ -56,17 +56,17 @@ namespace McMerchants.Json
             writer.WriteEndArray();
         }
 
-        protected override void WriteFactoriesDictionary(Utf8JsonWriter writer, IDictionary<FactoryRegion, ICollection<StockAtPosition>> value, JsonSerializerOptions options)
+        protected override void WriteFactoriesDictionary(Utf8JsonWriter writer, ICollection<FactoryItemStockResult> value, JsonSerializerOptions options)
         {
             writer.WriteStartArray();
 
-            foreach (KeyValuePair<FactoryRegion, ICollection<StockAtPosition>> storeResult in value)
+            foreach (var factoryEntry in value)
             {
                 writer.WriteStartObject();
-                writer.WriteString("name", storeResult.Key.Name);
+                writer.WriteString("name", factoryEntry.Factory.Name);
 
                 int countItemsInFactory = 0;
-                foreach (StockAtPosition stackResult in storeResult.Value)
+                foreach (StockAtPosition stackResult in factoryEntry.Stock)
                 {
                     countItemsInFactory += stackResult.Value;
                 }
@@ -78,17 +78,17 @@ namespace McMerchants.Json
             writer.WriteEndArray();
         }
 
-        protected override void WriteTradingDictionary(Utf8JsonWriter writer, IDictionary<TradingRegion, IEnumerable<Trade>> value, JsonSerializerOptions options)
+        protected override void WriteTradingDictionary(Utf8JsonWriter writer, ICollection<TradeItemStockResult> value, JsonSerializerOptions options)
         {
             writer.WriteStartArray();
 
-            foreach (KeyValuePair<TradingRegion, IEnumerable<Trade>> tradingPlace in value)
+            foreach (var tradingPlaceEntry in value)
             {
                 writer.WriteStartObject();
-                writer.WriteString("name", tradingPlace.Key.Name);
+                writer.WriteString("name", tradingPlaceEntry.TradingPlace.Name);
 
                 int countTradesInZone = 0;
-                foreach (Trade trade in tradingPlace.Value)
+                foreach (Trade trade in tradingPlaceEntry.Trades)
                 {
                     countTradesInZone++;
                 }

@@ -57,16 +57,16 @@ namespace NbtApps.Tests.v1_21_10
         public void SearchInAlley_ReturnsAlley()
         {
             var StockService = Host.Services.GetService<StockService>();
-            var results = StockService.GetStockOf("minecraft:honey_block");
+            var results = StockService.GetStockOf("minecraft:honey_block").Results.First().Value;
 
             Assert.AreEqual(0, results.Factories.Count);
             Assert.AreEqual(0, results.Trades.Count);
             Assert.AreEqual(1, results.Stores.Count);
-            Assert.IsNull(results.Stores[0].StockInDefaultAlley);
-            Assert.AreEqual(0, results.Stores[0].StockInBulkContainers.Count);
+            Assert.IsNull(results.Stores.First().StockInDefaultAlley);
+            Assert.AreEqual(0, results.Stores.First().StockInBulkContainers.Count);
 
             int count = 0;
-            foreach (var bulk in results.Stores[0].StockInOtherAlleys)
+            foreach (var bulk in results.Stores.First().StockInOtherAlleys)
             {
                 count += bulk.Value;
             }
@@ -78,16 +78,16 @@ namespace NbtApps.Tests.v1_21_10
         public void SearchOutsideAlley_ReturnsBulk()
         {
             var StockService = Host.Services.GetService<StockService>();
-            var results = StockService.GetStockOf("minecraft:ice");
+            var results = StockService.GetStockOf("minecraft:ice").Results.First().Value;
 
             Assert.AreEqual(0, results.Factories.Count);
             Assert.AreEqual(0, results.Trades.Count);
             Assert.AreEqual(1, results.Stores.Count);
-            Assert.IsNull(results.Stores[0].StockInDefaultAlley);
-            Assert.AreEqual(0, results.Stores[0].StockInOtherAlleys.Count);
+            Assert.IsNull(results.Stores.First().StockInDefaultAlley);
+            Assert.AreEqual(0, results.Stores.First().StockInOtherAlleys.Count);
 
             int count = 0;
-            foreach (var bulk in results.Stores[0].StockInBulkContainers)
+            foreach (var bulk in results.Stores.First().StockInBulkContainers)
             {
                 count += bulk.Value;
             }

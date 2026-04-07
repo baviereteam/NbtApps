@@ -43,13 +43,13 @@ namespace NbtApps.Tests.v1_21_10
         public void SearchRegularItem_Found()
         {
             var StockService = Host.Services.GetService<StockService>();
-            var results = StockService.GetStockOf("minecraft:iron_helmet");
+            var results = StockService.GetStockOf("minecraft:iron_helmet").Results.First().Value;
 
             Assert.AreEqual(0, results.Factories.Count);
             Assert.AreEqual(0, results.Stores.Count);
             Assert.AreEqual(1, results.Trades.Count);
 
-            var trades = results.Trades.First().Value;
+            var trades = results.Trades.First().Trades;
             Assert.AreEqual(1, trades.Count());
 
             var trade = trades.First();
@@ -63,13 +63,13 @@ namespace NbtApps.Tests.v1_21_10
         public void SearchEnchantedItem_Found()
         {
             var StockService = Host.Services.GetService<StockService>();
-            var results = StockService.GetStockOf("minecraft:diamond_boots");
+            var results = StockService.GetStockOf("minecraft:diamond_boots").Results.First().Value;
 
             Assert.AreEqual(0, results.Factories.Count);
             Assert.AreEqual(0, results.Stores.Count);
             Assert.AreEqual(1, results.Trades.Count);
 
-            var trades = results.Trades.First().Value;
+            var trades = results.Trades.First().Trades;
             Assert.AreEqual(1, trades.Count());
 
             var trade = trades.First();
@@ -90,13 +90,13 @@ namespace NbtApps.Tests.v1_21_10
         public void SearchEnchantedBook_Found()
         {
             var StockService = Host.Services.GetService<StockService>();
-            var results = StockService.GetStockOf("enchanted_book:thorns_1");
+            var results = StockService.GetStockOf("enchanted_book:thorns_1").Results.First().Value;
 
             Assert.AreEqual(0, results.Factories.Count);
             Assert.AreEqual(0, results.Stores.Count);
             Assert.AreEqual(1, results.Trades.Count);
 
-            var trades = results.Trades.First().Value;
+            var trades = results.Trades.First().Trades;
             Assert.AreEqual(1, trades.Count());
 
             var trade = trades.First();

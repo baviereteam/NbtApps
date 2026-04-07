@@ -22,11 +22,11 @@ namespace McMerchants.Json
             _mapLinkBuilder = mapLinkBuilder;
         }
 
-        protected override void WriteStoresDictionary(Utf8JsonWriter writer, IList<StoreStockResult> value, JsonSerializerOptions options)
+        protected override void WriteStoresDictionary(Utf8JsonWriter writer, ICollection<StoreItemStockResult> value, JsonSerializerOptions options)
         {
             writer.WriteStartArray();
 
-            foreach (StoreStockResult storeResult in value)
+            foreach (StoreItemStockResult storeResult in value)
             {
                 writer.WriteStartObject();
 
@@ -61,21 +61,21 @@ namespace McMerchants.Json
             writer.WriteEndArray();
         }
 
-        protected override void WriteFactoriesDictionary(Utf8JsonWriter writer, IDictionary<FactoryRegion, ICollection<StockAtPosition>> value, JsonSerializerOptions options)
+        protected override void WriteFactoriesDictionary(Utf8JsonWriter writer, ICollection<FactoryItemStockResult> value, JsonSerializerOptions options)
         {
             writer.WriteStartArray();
 
-            foreach (KeyValuePair<FactoryRegion, ICollection<StockAtPosition>> factoryResult in value)
+            foreach (var factoryResult in value)
             {
                 writer.WriteStartObject();
 
                 writer.WritePropertyName("identity");
-                WriteIdentity(writer, factoryResult.Key);
+                WriteIdentity(writer, factoryResult.Factory);
 
                 writer.WritePropertyName("results");
                 writer.WriteStartArray();
 
-                foreach (StockAtPosition stackResult in factoryResult.Value)
+                foreach (StockAtPosition stackResult in factoryResult.Stock)
                 {
                     writer.WriteStartObject();
                     writer.WriteNumber("x", stackResult.Key.X);
@@ -92,21 +92,21 @@ namespace McMerchants.Json
             writer.WriteEndArray();
         }
 
-        protected override void WriteTradingDictionary(Utf8JsonWriter writer, IDictionary<TradingRegion, IEnumerable<Trade>> value, JsonSerializerOptions options)
+        protected override void WriteTradingDictionary(Utf8JsonWriter writer, ICollection<TradeItemStockResult> value, JsonSerializerOptions options)
         {
             writer.WriteStartArray();
 
-            foreach (KeyValuePair<TradingRegion, IEnumerable<Trade>> tradingPlace in value)
+            foreach (var tradingPlaceResult in value)
             {
                 writer.WriteStartObject();
 
                 writer.WritePropertyName("identity");
-                WriteIdentity(writer, tradingPlace.Key, true);
+                WriteIdentity(writer, tradingPlaceResult.TradingPlace, true);
 
                 writer.WritePropertyName("results");
                 writer.WriteStartArray();
 
-                foreach (Trade trade in tradingPlace.Value)
+                foreach (Trade trade in tradingPlaceResult.Trades)
                 {
                     writer.WriteStartObject();
 
