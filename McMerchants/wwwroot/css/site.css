@@ -513,10 +513,23 @@ content {
     > #spinner {
         margin: auto;
     }
-    
-    .toolbar a + a:before {
+
+    .toolbar a {
+        cursor: pointer;
+    }
+
+    .toolbar > *:not(.hidden) + *:before {
         content: " | ";
         color: var(--text-color);
+    }
+
+    #bom-items > li {
+        margin-bottom: 0.75em;
+    }
+
+    #bom-items.hide-complete li[data-status="complete"],
+    #bom-items.hide-stored li[data-status="available"] {
+        display: none;
     }
 }
 

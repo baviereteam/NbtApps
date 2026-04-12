@@ -2,24 +2,19 @@
 const storedAvailabilityTemplateContent = document.getElementById('bom-avail-stored').content;
 const producedAvailabilityTemplateContent = document.getElementById('bom-avail-produced').content;
 
-const stacksAndItemsToText = (stackSize, count) => {
-    if (Number.isNaN(stackSize) || count < stackSize) {
-        return `${count} items`;
-    }
+const STATUS_COMPLETE = 2, STATUS_STORED = 1, STATUS_MISSING = 0;
+const statusLabels = ['missing', 'available', 'complete'];
 
-    return `(${Math.floor(count / stackSize)} stacks, ${count % stackSize} items)`;
-}
-
-class BomEntry extends HTMLElement {
+class BomEntry extends HTMLLIElement {
     #itemName = null;
     #quantity = null;
     #stackSize = null;
     #availability = null;
+    #status = null;
 
     constructor() {
         super();
-        this.attachShadow({ mode: 'open' });
-        this.shadowRoot.appendChild(document.importNode(bomEntryTemplateContent, true));
+        this.appendChild(document.importNode(bomEntryTemplateContent, true));
     }
 
     static observedAttributes = ["item-name", "quantity", "stack-size", "availability"];
@@ -64,19 +59,24 @@ class BomEntry extends HTMLElement {
     }
 
     updateInfo() {
-        this.shadowRoot.querySelector('.item-name').textContent = this.#itemName;
-        this.shadowRoot.querySelector('.item-count').textContent = this.#quantity;
-        this.shadowRoot.querySelector('.info > .repartition').textContent = this.stacksAndItemsToText(this.#stackSize, this.#quantity);
+        this.querySelector('.item-name').textContent = this.#itemName;
+        this.querySelector('.item-count').textContent = this.#quantity;
+        this.querySelector('.info > .repartition').textContent = this.stacksAndItemsToText(this.#stackSize, this.#quantity);
     }
 
     updateAvailability() {
         let missing = this.#quantity;
+        this.#status = STATUS_COMPLETE;
 
         if (this.#availability.workzone !== null) {
-            const workzoneElement = this.shadowRoot.querySelector('.workzone');
+            const workzoneElement = this.querySelector('.workzone');
             workzoneElement.classList.remove('hidden');
             workzoneElement.querySelector('.count').textContent = this.#availability.workzone;
             missing -= this.#availability.workzone;
+        }
+
+        if (missing > 0) {
+            this.#status = STATUS_STORED;
         }
 
         this.#availability.stores.forEach(store => {
@@ -93,6 +93,10 @@ class BomEntry extends HTMLElement {
             }
         });
 
+        if (missing > 0) {
+            this.#status = STATUS_MISSING;
+        }
+
         this.#availability.traders.forEach(trader => {
             this.addProducedAtLine(trader);
         });
@@ -100,19 +104,25 @@ class BomEntry extends HTMLElement {
         if (missing < 0) {  // if there's more items in storage than we need
             missing = 0;
         }
-        this.shadowRoot.querySelector('.missing > .count').textContent = missing;
+        this.querySelector('.missing > .count').textContent = missing;
+        this.updateStatusIndicator();
+    }
+
+    updateStatusIndicator() {
+        this.dataset.status = statusLabels[this.#status];
+        this.querySelector('.status').dataset.status = statusLabels[this.#status];
     }
 
     addStoredLine(count, location) {
         const newLine = document.importNode(storedAvailabilityTemplateContent, true);
         newLine.querySelector('.count').textContent = count;
         newLine.querySelector('.location').textContent = location;
-        this.shadowRoot.querySelector('.stocks').appendChild(newLine);
+        this.querySelector('.stocks').appendChild(newLine);
     }
     addProducedAtLine(location) {
         const newLine = document.importNode(producedAvailabilityTemplateContent, true);
         newLine.querySelector('.location').textContent = location;
-        this.shadowRoot.querySelector('.stocks').appendChild(newLine);
+        this.querySelector('.stocks').appendChild(newLine);
     }
 
     stacksAndItemsToText(stackSize, count) {
@@ -124,4 +134,4 @@ class BomEntry extends HTMLElement {
     }
 }
 
-customElements.define("bom-entry", BomEntry);
+customElements.define("bom-entry", BomEntry, { extends: 'li' });

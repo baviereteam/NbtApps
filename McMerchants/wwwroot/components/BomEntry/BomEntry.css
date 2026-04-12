@@ -1,8 +1,14 @@
-﻿.stocks {
+﻿.status[data-status="complete"]::before {
+    content: '✔';
+    color: var(--bom-available-color);
+}
+
+.stocks {
     font-size: small;
     margin-top: 0;
     display: flex;
     flex-direction: column;
+    list-style-type: disc;
 
     li {
         margin-top: 0.25em;

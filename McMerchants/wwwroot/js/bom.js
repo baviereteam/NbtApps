@@ -6,9 +6,31 @@
 };
 
 const itemsContainer = document.getElementById('bom-items');
+const hideCompleteCheckbox = document.getElementById('hide-complete');
+const hideStoredCheckbox = document.getElementById('hide-stored');
 
 const loadItemsApi = '/api/bom/{id}/items';
 const computeAvailabilitiesApi = '/api/bom/{id}/available';
+
+const onPageReady = (bomId, workzoneTutorialEnabled) => {
+	const workzone = getWorkzoneQueryParams();
+
+	if (workzone === null) {
+		if (workzoneTutorialEnabled) {
+			showWorkzoneTutorial(bomId);
+		}
+		loadBomItems(bomId);
+	} else {
+		computeAvailabilities(bomId, workzone);
+	}
+
+	document.getElementById('compute').addEventListener('click', () => {
+		computeAvailabilities(bomId, workzone);
+	});
+
+	hideCompleteCheckbox.addEventListener('change', updateFilters);
+	hideStoredCheckbox.addEventListener('change', updateFilters);
+}
 
 const showWorkzoneTutorial = (bomId) => {
     const code = document.createElement('code');
@@ -87,11 +109,22 @@ const handleResponse = (response) => {
 
 const displayBomLines = (lines) => {   
 	lines.forEach(line => {
-		const element = document.createElement('bom-entry');
+		const element = new BomEntry();
 		element.setData(line.itemName, line.requiredQuantity, line.stackSize, line.availability);
-
-		const li = document.createElement('li');
-		li.appendChild(element);
-		itemsContainer.appendChild(li);
+		itemsContainer.appendChild(element);
 	});
+};
+
+const updateFilters = () => {
+	if (hideCompleteCheckbox.checked) {
+		itemsContainer.classList.add('hide-complete');
+	} else {
+		itemsContainer.classList.remove('hide-complete');
+	}
+
+	if (hideStoredCheckbox.checked) {
+		itemsContainer.classList.add('hide-stored');
+	} else {
+		itemsContainer.classList.remove('hide-stored');
+	}
 };

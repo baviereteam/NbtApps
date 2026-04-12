@@ -3,10 +3,11 @@
 }
 
 @model McMerchants.Models.BomDetailsViewModel
+<link rel="stylesheet" href="~/components/BomEntry/BomEntry.css" />
 
 <template id="bom-entry-template">
-	<link rel="stylesheet" href="~/components/BomEntry/BomEntry.css"/>
 	<div class="info">
+		<span class="status"></span>
 		<span class="item-count"></span>
 		<span class="item-name"></span>
 		<span class="repartition"></span>
@@ -34,9 +35,13 @@
 		<div class="toolbar">
 			<a class="hidden">Rename</a>
 			<a class="hidden">Delete</a>
-			<button id="compute">Help me find items</button>
+			<a id="compute" title="Search in stores, factories and trades">Help me find items</a>
 		</div>
 		<h2>Contents</h2>
+		<div class="toolbar">
+			<span><input type="checkbox" id="hide-complete" /><label for="hide-complete">Hide fully completed</label></span>
+			<span><input type="checkbox" id="hide-stored"/><label for="hide-stored">Hide fully available</label></span>
+		</div>
 		<ul id="bom-items">
 		</ul>
 	</div>
@@ -49,20 +54,7 @@
 		if (document.readyState === "complete") {
 			const bomId = @(Model.Bom.Id);
 			const workzoneTutorialEnabled = @(Model.ShowWorkzoneTutorial ? "true" : "false");
-			const workzone = getWorkzoneQueryParams();
-
-			document.getElementById('compute').addEventListener('click', () => {
-				computeAvailabilities(bomId, workzone);
-			});
-
-			if (workzone === null) {
-				if(workzoneTutorialEnabled) { 
-					showWorkzoneTutorial(bomId); 
-				}
-				loadBomItems(bomId);
-			} else {
-				computeAvailabilities(bomId, workzone);
-			}
+			onPageReady(bomId, workzoneTutorialEnabled);
 		}
 	});
 </script>
