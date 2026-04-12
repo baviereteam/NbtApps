@@ -1,4 +1,4 @@
-﻿using McMerchants.Models.Database;
+using McMerchants.Models.Database;
 using McMerchantsLib.Stock;
 using Microsoft.Extensions.Localization;
 using NbtTools.Entities;
@@ -9,7 +9,7 @@ using System.Text.Json;
 
 using StockAtPosition = System.Collections.Generic.KeyValuePair<NbtTools.Geography.Point, int>;
 
-namespace McMerchants.Json
+namespace McMerchants.Json.Stock
 {
     public class PluginApiConverter : StockApiResultConverter
     {

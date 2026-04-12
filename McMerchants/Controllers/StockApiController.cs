@@ -1,4 +1,4 @@
-﻿using McMerchants.Json;
+﻿using McMerchants.Json.Stock;
 using McMerchants.Models.DTO;
 using McMerchantsLib.Stock;
 using Microsoft.AspNetCore.Cors;

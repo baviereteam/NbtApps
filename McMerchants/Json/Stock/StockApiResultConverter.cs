@@ -1,4 +1,4 @@
-﻿using McMerchants.Models.DTO;
+using McMerchants.Models.DTO;
 using McMerchantsLib.Stock;
 using Microsoft.Extensions.Localization;
 using NbtTools.Entities;

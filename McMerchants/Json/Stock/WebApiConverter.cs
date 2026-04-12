@@ -1,6 +1,6 @@
-﻿using Humanizer;
-using McMerchants.Models.Database;
+using Humanizer;
 using McMerchants.Services;
+using McMerchants.Models.Database;
 using McMerchantsLib.Stock;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Localization;
@@ -11,7 +11,7 @@ using System.Text.Json;
 
 using StockAtPosition = System.Collections.Generic.KeyValuePair<NbtTools.Geography.Point, int>;
 
-namespace McMerchants.Json
+namespace McMerchants.Json.Stock
 {
     public class WebApiConverter : StockApiResultConverter
     {
