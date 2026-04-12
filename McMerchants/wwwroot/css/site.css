@@ -1,6 +1,7 @@
 ﻿/* Theming */
 :root {
     --background-color: #FFF;
+    --menu-background-color: #EEE;
     --text-color: #000;
     --searchbar-background-color: #FFF;
     --environmentName: "";
@@ -14,15 +15,21 @@
     --alert-banner-background-color: palevioletred;
     --link-color: blue;
     --visited-link-color: purple;
+    --netherrack: #a75353;
+    --lava: #db8128;
+    --stone: #8f8f8f;
+    --button-shadow-color: #666;
 }
 
 [data-theme="dark"] {
     --background-color: #36393F;
+    --menu-background-color: #46494F;
     --text-color: #EEE;
     --searchbar-background-color: #151515;
     --alert-banner-background-color: darkred;
     --link-color: cornflowerblue;
     --visited-link-color: mediumpurple;
+    --button-shadow-color: #BBB;
 }
 
 [data-env="Development"] {
@@ -45,17 +52,24 @@ html {
     display: flex;
     background-color: var(--background-color);
     color: var(--text-color);
+    height: 100%;
 }
 
 body {
-    margin: auto;
+    margin: 0;
     display: flex;
     flex-direction: column;
     width: 100%;
+    height: 100%;
 }
 
-body > div {
+header, content, footer {
     padding: 1em;
+}
+
+main {
+    display: flex;
+    height: 100%;
 }
 
 a {
@@ -65,6 +79,28 @@ a:visited {
     color: var(--visited-link-color);
 }
 
+.round-button {
+    background: none;
+    margin: 0 15px;
+    border-width: 0px;
+    border-style: solid;
+    border-radius: 50%;
+    width: 2.5em;
+    height: 2.5em;
+    display: flex;
+    background-color: var(--stone);
+    box-shadow: 1px 1px 5px var(--button-shadow-color);
+    border-color: var(--text-color);
+
+    svg {
+        margin: auto;
+        width: 2em;
+        height: 2em;
+        stroke: var(--text-color);
+    }
+}
+
+/* Header */
 #top-bar {
     border-bottom: 1px solid lightgray;
     display: flex;
@@ -95,19 +131,97 @@ a:visited {
     background-color: var(--alert-banner-background-color);
 }
 
+/* Nav */
+nav {
+    display: none;
+    background-color: var(--menu-background-color);
+    padding: 10px;
+
+    h1 {
+        text-transform: capitalize;
+        font-size: small;
+        color: var(--button-shadow-color);
+    }
+
+    ul {
+        margin: 0;
+        list-style-type: none;
+        padding-inline-start: 0;
+    }
+
+    a {
+        display: flex;
+        justify-content: left;
+        align-items: center;
+        padding: 15px;
+        border-width: 0px;
+        background: none;
+        color: var(--text-color);
+        font-size: 16px;
+        text-decoration: none;
+    }
+
+    a:visited {
+        color: var(--text-color);
+    }
+
+    button:hover {
+        color: var(--lava);
+        cursor: pointer;
+    }
+
+    a svg {
+        margin: auto 10px auto 0;
+        width: 2em;
+        height: 2em;
+    }
+}
+
+body.menu-opened nav {
+    display: block;
+}
+
+@media (max-width: 960px) {
+    header .round-button {
+        margin: 0 5px;
+    }
+
+    nav {
+        width: 100%;
+    }
+
+    body.menu-opened content {
+        display: none;
+    }
+
+    nav ul {
+        display: flex;
+        font-size: large;
+        flex-wrap: wrap;
+    }
+
+    nav li {
+        flex-wrap: wrap;
+        width: 100%;
+    }
+
+    nav a {
+        justify-content: center;
+        text-align: center;
+        height: 100%;
+    }
+
+    main.menu-opened nav a svg {
+        margin: 0 0 10px 0;
+    }
+}
+
+/* Content */
+content {
+    flex-grow: 1;
+}
 #details h1 {
     margin-top: 0;
-}
-
-.hidden {
-    display: none;
-}
-
-#buttons {
-    position: fixed;
-    bottom: 0;
-    right: 0;
-    text-align: right;
 }
 
 /* Accordions */
@@ -116,9 +230,11 @@ a:visited {
     color: var(--text-color);
     border: 0;
 }
+
 .accordion-header button:focus {
     border: 2px dashed var(--text-color);
 }
+
 .accordion-content.closed {
     display: none;
     overflow: hidden;
@@ -130,10 +246,10 @@ a:visited {
     vertical-align: middle;
     padding: 10px;
 
-    > div
-    {
+    > div {
         display: flex;
     }
+
     .sprite {
         margin-right: 5px;
     }
@@ -155,11 +271,11 @@ a:visited {
 .stocks-list li {
     padding: 10px 0;
     display: flex;
-}
 
-.stocks-list li > img {
-    margin-right: 10px;
-    max-height: 45px;
+    > img {
+        margin-right: 10px;
+        max-height: 45px;
+    }
 }
 
 .stocks-list h3 {
@@ -173,31 +289,32 @@ a:visited {
 
 .stocks-list .alleys {
     display: flex;
-}
 
-.stocks-list .alleys h4 {
-    font-size: 14px;
-    margin: auto 0;
-    margin-right: 5px;
-}
+    h4 {
+        font-size: 14px;
+        margin: auto 0;
+        margin-right: 5px;
+    }
 
-.stocks-list .alleys ul {
-    display: flex;
-    padding-inline-start: 0;
-    margin-top: 5px;
-}
+    ul {
+        display: flex;
+        padding-inline-start: 0;
+        margin-top: 5px;
 
-.stocks-list .alleys ul li {
-    color: white;
-    padding: 5px;
-    border-radius: 20px;
-    font-weight: bold;
-    margin-right: 5px;
+        li {
+            color: white;
+            padding: 5px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+    }
 }
 
 .stocks-list .mainAlley ul li {
     background-color: var(--stock-mainAlley-badge-background-color);
 }
+
 .stocks-list .otherAlleys ul li {
     background-color: var(--stock-otherAlley-badge-background-color);
 }
@@ -210,6 +327,7 @@ a:visited {
 .stocks-list .otherAlleys ul li.bulk {
     background-color: var(--stock-bulk-badge-background-color);
 }
+
 .stocks-list .otherAlleys ul li.bulk::before,
 .stocks-list .otherAlleys ul li.bulk::after {
     content: '\a0';
@@ -230,6 +348,7 @@ a:visited {
     border-collapse: collapse;
     margin: 10px;
     border: 1px solid var(--text-color);
+
     thead {
         text-align: center;
         border-bottom: 2px solid var(--text-color);
@@ -258,6 +377,7 @@ a:visited {
         }
     }
 }
+
 .stocks-list button.trades-toggle {
     color: white;
     padding: 5px 10px;
@@ -274,13 +394,19 @@ a:visited {
     font-weight: normal;
     color: var(--text-color);
 }
-.stocks-list .identity a {
+
+.identity a {
     font-size: 14px;
     font-weight: normal;
     text-decoration: none;
 }
 
-.stocks-list .identity a + a:before {
+.identity a + a:before {
     content: " | ";
     color: var(--text-color);
+}
+
+/* at the end so it takes precedence on other stuff */
+.hidden {
+    display: none;
 }

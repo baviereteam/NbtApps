@@ -1,0 +1,40 @@
+﻿@{
+    Layout = "_Layout";
+}
+@model ICollection<McMerchants.Models.Database.TradingRegion>
+@inject McMerchants.Services.ItemProviderLinksBuilder linksBuilder
+
+<div>
+    <h1>Trading zones</h1>
+
+    <ul class="stocks-list">
+    @foreach (var tradingZone in Model)
+    {
+        <li class="store">
+            @if (!string.IsNullOrWhiteSpace(tradingZone.Logo))
+            {
+                <img class="storeLogo" src="~/img/stores/@tradingZone.Logo" alt="" />
+            }
+            <div>
+                <h3 class="identity">
+                    <span class="storeName">@tradingZone.Name</span>
+                    <a class="tradesLink"
+                        asp-controller="TradingZone"
+                        asp-action="Details"
+                        asp-route-zoneid="@tradingZone.Id">See all trades here</a>
+
+                    @if (linksBuilder.CanGenerateMapLinks)
+                    {
+                        <a class="mapLink" href="@linksBuilder.GetMapUrlFor(tradingZone)">@linksBuilder.MapLinkTitle</a>
+                    }
+
+                    @if (!string.IsNullOrWhiteSpace(tradingZone.URL))
+                    {
+                        <a class="customLink" href="@tradingZone.URL">@linksBuilder.CustomLinkTitle</a>
+                    }
+                </h3>
+            </div>
+        </li>
+    }
+    </ul>
+</div>

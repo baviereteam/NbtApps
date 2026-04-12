@@ -249,7 +249,7 @@ const createTradingSpotNode = (identity, trades) => {
         tradeTemplate.content.cloneNode(true),
         identity
     );
-    node.querySelector('.tradesLink').href = `/Shop/Details/${identity.id}`;
+    node.querySelector('.tradesLink').href = `/Trading/Details/${identity.id}`;
 
     // Number of trades
     node.querySelector('.itemCount').textContent = trades.length.toString();

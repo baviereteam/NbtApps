@@ -1,0 +1,37 @@
+﻿@{
+    Layout = "_Layout";
+}
+@model ICollection<McMerchants.Models.Database.FactoryRegion>
+@inject McMerchants.Services.ItemProviderLinksBuilder linksBuilder
+
+<div>
+    <h1>Factories</h1>
+
+    <ul class="stocks-list">
+        @foreach (var factory in Model)
+        {
+            <li class="store">
+                @if(!string.IsNullOrWhiteSpace(factory.Logo))
+                {
+                    <img class="storeLogo" src="~/img/stores/@factory.Logo" alt="" />
+                }
+                
+                <div>
+                    <h3 class="identity">
+                        <span class="storeName">@factory.Name</span>
+
+                        @if (linksBuilder.CanGenerateMapLinks)
+                        {
+                            <a class="mapLink" href="@linksBuilder.GetMapUrlFor(factory)">@linksBuilder.MapLinkTitle</a>
+                        }
+
+                        @if (!string.IsNullOrWhiteSpace(factory.URL))
+                        {
+                            <a class="customLink" href="@factory.URL">@linksBuilder.CustomLinkTitle</a>
+                        }
+                    </h3>
+                </div>
+            </li>
+        }
+    </ul>
+</div>

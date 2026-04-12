@@ -1,14 +1,17 @@
-﻿const lightSwitch = document.querySelector('input[name="light-switch"]');
+﻿const lightOnButton = document.querySelector('button#light-on');
+const lightOffButton = document.querySelector('button#light-off');
 
 const changeTheme = function (isDarkTheme) {
     if (isDarkTheme) {
         document.documentElement.dataset.theme = 'dark';
         localStorage.setItem('theme', 'dark');
-        lightSwitch.checked = true;
+        lightOffButton.classList.add('hidden');
+        lightOnButton.classList.remove('hidden');
     } else {
         document.documentElement.dataset.theme = 'light';
         localStorage.setItem('theme', 'light');
-        lightSwitch.checked = false;
+        lightOnButton.classList.add('hidden');
+        lightOffButton.classList.remove('hidden');
     }
 }
 
@@ -28,9 +31,7 @@ const initThemes = function (e) {
     changeTheme(false);
 }
 
-const onLightSwitchChange = function (e) {
-    changeTheme(e.target.checked);
-}
+lightOnButton.addEventListener('click', () => changeTheme(false), false);
+lightOffButton.addEventListener('click', () => changeTheme(true), false);
 
-lightSwitch.addEventListener('change', onLightSwitchChange, false);
 initThemes();

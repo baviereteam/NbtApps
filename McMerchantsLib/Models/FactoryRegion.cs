@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace McMerchants.Models.Database
+﻿namespace McMerchants.Models.Database
 {
     /// <summary>
     /// Represents a place (cuboid) with an item farm.

@@ -1,7 +1,7 @@
 ﻿@using Microsoft.Extensions.Localization;
 @inject IStringLocalizer<NbtTools.Entities.Villager> VillagerJobLocalizer
 
-@model McMerchants.Models.ShopViewModel
+@model McMerchants.Models.TradingZoneViewModel
 
 @{
     Layout = "_Layout";
@@ -9,13 +9,11 @@
 
 @if (!Model.IsComplete)
 {
-    <div id="alert-banner">
-        Some chunks could not be read. The results displayed on this page might be incomplete.
-    </div>
+    <script>showAlert(texts.incompleteSearchErrorMessage);</script>
 }
-    
+
 <div>
-    <h1>@Html.DisplayFor(x => Model.Shop.Name) : Trades</h1>
+    <h1>@Html.DisplayFor(x => Model.Zone.Name) : Trades</h1>
     @foreach (var jobGroup in Model.Villagers)
     {
         <h2 class="accordion-header"><button type="button"></button> @VillagerJobLocalizer[jobGroup.Key] (@Html.DisplayFor(modelItem => jobGroup.Value.Count))</h2>
