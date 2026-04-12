@@ -1,4 +1,5 @@
 using McMerchants.Extensions.DependencyInjection;
+using McMerchants.Json.Bom;
 using McMerchants.Json.Stock;
 using McMerchants.Services;
 using McMerchants.Tasks;
@@ -33,6 +34,8 @@ namespace McMerchants
             services.AddSingleton<ItemProviderLinksBuilder>();
             services.AddSingleton<PluginApiConverter>();
             services.AddSingleton<WebApiConverter>();
+            services.AddSingleton<BomImportResultConverter>();
+            services.AddSingleton<BomItemConverter>();
 
             services.AddCors(options =>
             {
@@ -44,8 +47,7 @@ namespace McMerchants
                 });
             });
 
-            services
-                .AddMvc();
+            services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

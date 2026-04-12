@@ -30,7 +30,9 @@ const showAlert = (message) => {
     alertBanner.classList.remove('hidden');
 }
 
-const showInfo = (message) => {
-    infoBanner.textContent = message;
+const setInfoNodes = (node1, node2) => {
+    infoBanner.textContent = '';
+    // infoBanner.append(nodes[]) does not work, converts the non-text nodes to text ([object HTMLElement]) ??
+    infoBanner.append(node1, node2);
     infoBanner.classList.remove('hidden');
 }

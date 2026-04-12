@@ -1,0 +1,48 @@
+﻿@{
+    Layout = "_Layout";
+}
+
+<div class="bom-import-page">
+    <form id="form">
+        <h1>Create a BOM</h1>
+        <p>Export a BOM to CSV from Litematica, and then import it here.</p>
+        <div id="error" class="hidden"></div>
+
+        <div>
+            <label for="name-field">Project name:</label>
+            <input type="text" id="name-field" />
+        </div>
+
+        <div>
+            <label for="file-field">BOM file (CSV):</label>
+            <input type="file" id="file-field" />
+        </div>
+
+        <div>
+            <button type="button" id="import-button">Send</button>
+        </div>
+    </form>
+
+    <img id="spinner" src="~/img/spinner.gif" alt="Loading..." />
+
+    <div id="results" class="hidden">
+        The following BOM has been imported: <span id="bom-name"></span><br />
+        <span id="rejected-lines-count"></span> lines were rejected:
+        <ul id="rejected-lines"></ul>
+
+        <ul id="actions">
+            <li id="retry-step" class="hidden">You can fix these lines in the file and execute the import again: <button id="retry-button">Retry</button></li>
+            <li><a asp-controller="Bom" asp-action="Details" asp-route-id="0">See the contents</a></li>
+        </ul>
+    </div>
+</div>
+
+<script src="~/js/bom-import.js"></script>
+<script type="text/javascript">
+    document.getElementById("import-button").addEventListener('click', importBom);
+    document.getElementById("retry-button").addEventListener('click', resetForm);
+</script>
+
+<!-- * on finish: show name, show unreadable lines, allow Retry button after they fix the file
+    (same API but provide an ID of the first import, that gets deleted)
+* on confirm import (accepts that the unreadable lines are unread, can't change after) -> redirect to Details page with the ID -->

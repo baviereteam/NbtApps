@@ -1,0 +1,17 @@
+﻿@{
+    Layout = "_Layout";
+}
+@model ICollection<McMerchantsLib.Models.Database.Bom>
+
+<div>
+    <h1>Bills of Materials</h1>
+    <a asp-controller="Bom" asp-action="New">Import a BOM</a>
+    <ul>
+        @foreach (var bom in Model)
+        {
+            <li class="bom">
+                <a asp-controller="Bom" asp-action="Details" asp-route-id="@bom.Id">@bom.Name</a>
+            </li>
+        }
+    </ul>
+</div>
