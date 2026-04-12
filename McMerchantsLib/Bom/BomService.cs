@@ -113,7 +113,7 @@ namespace McMerchantsLib.Bom
         public EnrichedBomDTO GetItemsOf(DbBom bom)
         {
 	        var results = new List<EnrichedBomItem>();
-	        foreach (var rawItem in bom.Items)
+	        foreach (var rawItem in bom.Items.OrderBy(item => item.ItemName))
 	        {
 		        var item = GetItemFromName(rawItem.ItemName);
 		        if (item == null)
@@ -167,8 +167,7 @@ namespace McMerchantsLib.Bom
         private Dictionary<Searchable, EnrichedBomItem> GetItemsAndSearchablesOf(DbBom bom)
         {
             var results = new Dictionary<Searchable, EnrichedBomItem>();
-
-            foreach (var rawItem in bom.Items)
+            foreach (var rawItem in bom.Items.OrderBy(item => item.ItemName))
             {
                 var searchable = GetItemFromName(rawItem.ItemName);
                 if (searchable == null)
