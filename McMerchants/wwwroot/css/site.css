@@ -13,6 +13,7 @@
     --stock-otherAlley-badge-background-color: #fc6303;
     --stock-bulk-badge-background-color: #8f8f8f;
     --alert-banner-background-color: palevioletred;
+    --info-banner-background-color: cornflowerblue;
     --link-color: blue;
     --visited-link-color: purple;
     --netherrack: #a75353;
@@ -27,6 +28,7 @@
     --text-color: #EEE;
     --searchbar-background-color: #151515;
     --alert-banner-background-color: darkred;
+    --info-banner-background-color: mediumblue;
     --link-color: cornflowerblue;
     --visited-link-color: mediumpurple;
     --button-shadow-color: #BBB;
@@ -129,6 +131,10 @@ a:visited {
 #alert-banner {
     text-align: center;
     background-color: var(--alert-banner-background-color);
+}
+#info-banner {
+    text-align: center;
+    background-color: var(--info-banner-background-color);
 }
 
 /* Nav */

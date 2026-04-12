@@ -1,4 +1,7 @@
 ﻿const menuButton = document.getElementById('main-menu-button');
+const spinner = document.getElementById('spinner');
+const alertBanner = document.getElementById('alert-banner');
+const infoBanner = document.getElementById('info-banner');
 
 const setMenuOpened = (open) => {
     if (open) {
@@ -14,7 +17,20 @@ const toggleMenu = () => {
     setMenuOpened(!document.body.classList.contains('menu-opened'))
 }
 
-// init
 const initializeMenu = () => {
     menuButton.addEventListener('click', () => toggleMenu(), false);
+}
+
+const setSpinnerDisplayed = displayed => {
+    spinner.style.display = (displayed ? 'block' : 'none');
+};
+
+const showAlert = (message) => {
+    alertBanner.textContent = message;
+    alertBanner.classList.remove('hidden');
+}
+
+const showInfo = (message) => {
+    infoBanner.textContent = message;
+    infoBanner.classList.remove('hidden');
 }
