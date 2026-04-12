@@ -5,6 +5,7 @@ description: Allows access to a McMerchants instance from the in-game chat.
 author: baviereteam
 website: https://github.com/baviereteam
 api-version: '1.21.10'
+softdepend: [FastAsyncWorldEdit]
 commands:
   mcm:
     description: Search in McMerchants
