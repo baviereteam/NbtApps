@@ -1,7 +1,9 @@
 ﻿using McMerchants.Database;
+using McMerchants.Models;
 using McMerchantsLib.Models.Database;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -10,17 +12,19 @@ namespace McMerchants.Controllers
     [Route("Boms")]
     public class BomController : Controller
     {
-        private readonly McMerchantsDbContext Context;
+        private readonly McMerchantsDbContext _context;
+        private readonly IConfiguration _configuration;
 
-        public BomController(McMerchantsDbContext context)
+        public BomController(McMerchantsDbContext context, IConfiguration configuration)
         {
-            Context = context;
+            _context = context;
+            _configuration = configuration;
         }
 
         [HttpGet]
         public IActionResult List()
         {
-            ICollection<Bom> boms = Context.Boms.Include(bom => bom.Items).ToList();
+            ICollection<Bom> boms = _context.Boms.Include(bom => bom.Items).ToList();
             return View(boms);
         }
 
@@ -35,8 +39,12 @@ namespace McMerchants.Controllers
         [Route("{id:int}")]
         public IActionResult Details(int id) 
         {
-            Bom bom = Context.Boms.Single(bom => bom.Id == id);
-            return View(bom);
+            Bom bom = _context.Boms.Single(bom => bom.Id == id);
+            return View(new BomDetailsViewModel()
+            {
+                Bom = bom,
+                ShowWorkzoneTutorial = _configuration?["Options:ShowBomWorkzoneTutorial"] == true.ToString()
+            });
         }
     }
 }

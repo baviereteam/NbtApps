@@ -5,6 +5,7 @@ using McMerchantsLib.Stock;
 using NbtTools.Database;
 using NbtTools.Items;
 using McMerchants.Database;
+using NbtTools.Geography;
 
 namespace McMerchantsLib.Bom
 {
@@ -13,12 +14,14 @@ namespace McMerchantsLib.Bom
         private readonly NbtDbContext _nbtContext;
         private readonly McMerchantsDbContext _mcmerchantsContext;
         private readonly StockService _stockService;
+        private readonly StoredItemService _storedItemService;
 
-        public BomService(NbtDbContext nbtContext, McMerchantsDbContext mcmContext, StockService stockService)
+        public BomService(NbtDbContext nbtContext, McMerchantsDbContext mcmContext, StockService stockService, StoredItemService storedItemService)
         {
             _nbtContext = nbtContext;
             _mcmerchantsContext = mcmContext;
             _stockService = stockService;
+            _storedItemService = storedItemService;
         }
 
         /// <summary>
@@ -128,18 +131,33 @@ namespace McMerchantsLib.Bom
 	        };
         }
 
-        public EnrichedBomDTO GetAvailabilityOf(DbBom bom)
+        public EnrichedBomDTO GetAvailabilityOf(DbBom bom, Cuboid workzone)
         {
             var dto = new EnrichedBomDTO();
 
             var bomEntries = GetItemsAndSearchablesOf(bom);
             var searchedItems = bomEntries.Keys;
+
+            // search in registered locations
             var searchResults = _stockService.GetStockOf(searchedItems);
             dto.IsComplete = searchResults.IsComplete;
+
+            // search in workzone (if provided)
+            CuboidItemsSearchResult? workzoneQuery = null;
+            if (workzone != null)
+            {
+                workzoneQuery = _storedItemService.FindStoredItems(searchedItems, workzone);
+                dto.IsComplete &= workzoneQuery.IsComplete;
+            }
 
             foreach (var result in searchResults.Results.Where(result => bomEntries.ContainsKey(result.Key)))
             {
                 bomEntries[result.Key].StoredQuantities = result.Value;
+                if (workzoneQuery != null && workzoneQuery.Results.ContainsKey(result.Key))
+                {
+                    var countsForItem = workzoneQuery.Results[result.Key].Values;
+                    bomEntries[result.Key].WorkzoneQuantity = countsForItem.Aggregate(0, (sum, current) => sum + current);
+                }
             }
 
             dto.Items = bomEntries.Values;

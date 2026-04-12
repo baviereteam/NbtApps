@@ -74,9 +74,9 @@ class BomEntry extends HTMLElement {
 
         if (this.#availability.workzone !== null) {
             const workzoneElement = this.shadowRoot.querySelector('.workzone');
-            workzoneElement.removeClass('hidden');
+            workzoneElement.classList.remove('hidden');
             workzoneElement.querySelector('.count').textContent = this.#availability.workzone;
-            missing -= workzone;
+            missing -= this.#availability.workzone;
         }
 
         this.#availability.stores.forEach(store => {

@@ -7,6 +7,7 @@ using McMerchants.Database;
 using McMerchants.Models.DTO;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.EntityFrameworkCore;
+using NbtTools.Geography;
 
 namespace McMerchants.Controllers
 {
@@ -55,14 +56,37 @@ namespace McMerchants.Controllers
 
         [HttpGet]
         [Route("{id:int}/available")]
-        public string GetAvailability(int id)
+        public string GetAvailability(int id, [FromQuery] WorkzoneCoordinatesDTO workzoneCoords)
         {
             var bom = _context.Boms
                 .Include(bom => bom.Items)
                 .Single(bom => bom.Id == id);
 
-            var items = _bomService.GetAvailabilityOf(bom);
+            Cuboid? workzone = GetWorkzoneFromQuery(workzoneCoords);
+            var items = _bomService.GetAvailabilityOf(bom, workzone);
             return JsonSerializer.Serialize(items, _serializerOptions);
+        }
+
+        private static Cuboid? GetWorkzoneFromQuery(WorkzoneCoordinatesDTO dto)
+        {
+            if (
+                dto.Dimension != null
+                && dto.StartX.HasValue
+                && dto.StartY.HasValue
+                && dto.StartZ.HasValue
+                && dto.EndX.HasValue
+                && dto.EndY.HasValue
+                && dto.EndZ.HasValue
+            )
+            {
+                var start = new Point(dto.StartX.Value, dto.StartY.Value, dto.StartZ.Value);
+                var end = new Point(dto.EndX.Value, dto.EndY.Value, dto.EndZ.Value);
+                return new Cuboid(dto.Dimension, start, end);
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

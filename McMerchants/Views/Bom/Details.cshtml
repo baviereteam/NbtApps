@@ -2,7 +2,7 @@
 	Layout = "_Layout";
 }
 
-@model McMerchantsLib.Models.Database.Bom
+@model McMerchants.Models.BomDetailsViewModel
 
 <template id="bom-entry-template">
 	<link rel="stylesheet" href="~/components/BomEntry/BomEntry.css"/>
@@ -30,7 +30,7 @@
 	<img id="spinner" src="~/img/spinner.gif" alt="Loading..."/>
 	
 	<div id="details" class="hidden">
-		<h1>BOM for @Model.Name</h1>
+		<h1>BOM for @Model.Bom.Name</h1>
 		<div class="toolbar">
 			<a class="hidden">Rename</a>
 			<a class="hidden">Delete</a>
@@ -47,13 +47,22 @@
 <script>
 	document.addEventListener('readystatechange', () => {
 		if (document.readyState === "complete") {
-			const bomId = @Model.Id;
+			const bomId = @(Model.Bom.Id);
+			const workzoneTutorialEnabled = @(Model.ShowWorkzoneTutorial ? "true" : "false");
+			const workzone = getWorkzoneQueryParams();
+
 			document.getElementById('compute').addEventListener('click', () => {
-				computeAvailabilities(bomId);
-			})
-			
-			showWorkzoneTutorial(bomId);
-			loadBomItems(bomId);
+				computeAvailabilities(bomId, workzone);
+			});
+
+			if (workzone === null) {
+				if(workzoneTutorialEnabled) { 
+					showWorkzoneTutorial(bomId); 
+				}
+				loadBomItems(bomId);
+			} else {
+				computeAvailabilities(bomId, workzone);
+			}
 		}
 	});
 </script>
