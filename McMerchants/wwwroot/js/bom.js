@@ -8,7 +8,7 @@
 const itemsContainer = document.getElementById('bom-items');
 
 const loadItemsApi = '/api/bom/{id}/items';
-const computeAvailabilitiesApi = '';
+const computeAvailabilitiesApi = '/api/bom/{id}/available';
 
 const showWorkzoneTutorial = (bomId) => {
     const code = document.createElement('code');
@@ -20,7 +20,7 @@ const loadBomItems = (bomId) => {
     return executeBomQuery(loadItemsApi.replace('{id}', bomId));
 }
 const computeAvailabilities = (bomId) => {
-    return executeBomQuery(computeAvailabilitiesApi);
+	return executeBomQuery(computeAvailabilitiesApi.replace('{id}', bomId));
 }
 
 const executeBomQuery = (url) => {
@@ -41,6 +41,8 @@ const executeBomQuery = (url) => {
 };
 
 const handleResponse = (response) => {
+	itemsContainer.textContent = '';
+
 	if (!response.complete) {
 		showAlert(texts.incompleteSearchErrorMessage);
 	}
@@ -48,9 +50,7 @@ const handleResponse = (response) => {
 	displayBomLines(response.items);
 };
 
-const displayBomLines = (lines) => {
-    itemsContainer.textContent = '';
-    
+const displayBomLines = (lines) => {   
 	lines.forEach(line => {
 		const element = document.createElement('bom-entry');
 		element.setData(line.itemName, line.requiredQuantity, line.stackSize, line.availability);

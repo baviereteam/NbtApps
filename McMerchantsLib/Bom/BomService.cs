@@ -127,7 +127,42 @@ namespace McMerchantsLib.Bom
 		        IsComplete = true // there's no stock query here, so it's always complete.
 	        };
         }
-        
+
+        public EnrichedBomDTO GetAvailabilityOf(DbBom bom)
+        {
+            var dto = new EnrichedBomDTO();
+
+            var bomEntries = GetItemsAndSearchablesOf(bom);
+            var searchedItems = bomEntries.Keys;
+            var searchResults = _stockService.GetStockOf(searchedItems);
+            dto.IsComplete = searchResults.IsComplete;
+
+            foreach (var result in searchResults.Results.Where(result => bomEntries.ContainsKey(result.Key)))
+            {
+                bomEntries[result.Key].StoredQuantities = result.Value;
+            }
+
+            dto.Items = bomEntries.Values;
+            return dto;
+        }
+
+        private Dictionary<Searchable, EnrichedBomItem> GetItemsAndSearchablesOf(DbBom bom)
+        {
+            var results = new Dictionary<Searchable, EnrichedBomItem>();
+
+            foreach (var rawItem in bom.Items)
+            {
+                var searchable = GetItemFromName(rawItem.ItemName);
+                if (searchable == null)
+                {
+                    throw new InvalidDataException($"{rawItem.ItemName} is not a known item.");
+                }
+                results.Add(searchable, new EnrichedBomItem(rawItem, searchable));
+            }
+
+            return results;
+        }
+
         private Item? GetItemFromName(string name)
         {
             return _nbtContext.Items.Single(item => item.Name.ToLower() == name.ToLower());

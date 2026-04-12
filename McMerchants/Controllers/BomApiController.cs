@@ -52,5 +52,17 @@ namespace McMerchants.Controllers
 	        var items = _bomService.GetItemsOf(bom);
 	        return JsonSerializer.Serialize(items, _serializerOptions);
         }
+
+        [HttpGet]
+        [Route("{id:int}/available")]
+        public string GetAvailability(int id)
+        {
+            var bom = _context.Boms
+                .Include(bom => bom.Items)
+                .Single(bom => bom.Id == id);
+
+            var items = _bomService.GetAvailabilityOf(bom);
+            return JsonSerializer.Serialize(items, _serializerOptions);
+        }
     }
 }

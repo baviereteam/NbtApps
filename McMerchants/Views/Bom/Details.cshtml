@@ -34,7 +34,7 @@
 		<div class="toolbar">
 			<a class="hidden">Rename</a>
 			<a class="hidden">Delete</a>
-			<button class="hidden" id="compute">Help me find items</button>
+			<button id="compute">Help me find items</button>
 		</div>
 		<h2>Contents</h2>
 		<ul id="bom-items">
@@ -48,6 +48,10 @@
 	document.addEventListener('readystatechange', () => {
 		if (document.readyState === "complete") {
 			const bomId = @Model.Id;
+			document.getElementById('compute').addEventListener('click', () => {
+				computeAvailabilities(bomId);
+			})
+			
 			showWorkzoneTutorial(bomId);
 			loadBomItems(bomId);
 		}
