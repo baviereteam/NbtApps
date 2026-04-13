@@ -18,37 +18,6 @@ class BomEntry extends HTMLLIElement {
         this.querySelector('input[type="checkbox"]').addEventListener('change', this.onCheckboxChecked.bind(this));
     }
 
-    static observedAttributes = ["item-name", "quantity", "stack-size", "availability"];
-
-    attributeChangedCallback(name, oldValue, newValue) {
-        switch (name) {
-            case "item-name":
-                this.#itemName = newValue;
-                this.updateInfo();
-                break;
-            case "stack-size":
-                this.#stackSize = newValue;
-                this.updateInfo();
-                break;
-            case "quantity":
-                this.#quantity = newValue;
-                this.updateInfo();
-                this.updateAvailability();
-                break;
-            case "availability":
-                this.#availability = JSON.parse(newValue);
-                this.updateAvailability();
-                break;
-
-            default:
-                break;
-        }
-
-        if (this.#itemName !== null && this.#quantity !== null && this.#stackSize !== null) {
-            this.updateInfo();
-        }
-    }
-
     onCheckboxChecked(event) {
         if (event.target.checked) {
             this.classList.add('checked');
@@ -78,10 +47,18 @@ class BomEntry extends HTMLLIElement {
         this.#status = STATUS_COMPLETE;
 
         if (this.#availability.workzone !== null) {
+            missing -= this.#availability.workzone;
+
             const workzoneElement = this.querySelector('.workzone');
             workzoneElement.classList.remove('hidden');
             workzoneElement.querySelector('.count').textContent = this.#availability.workzone;
-            missing -= this.#availability.workzone;
+
+            if (missing > 0) {
+                const remainderElement = this.querySelector('.remainder');
+                remainderElement.classList.remove('hidden');
+                remainderElement.querySelector('.count').textContent = missing;
+                remainderElement.querySelector('.repartition').textContent = this.stacksAndItemsToText(this.#stackSize, missing);
+            }
         }
 
         if (missing > 0) {
@@ -114,6 +91,10 @@ class BomEntry extends HTMLLIElement {
             missing = 0;
         }
         this.querySelector('.missing > .count').textContent = missing;
+        if (missing > 0) {
+            this.querySelector('.missing > .repartition').textContent = this.stacksAndItemsToText(this.#stackSize, missing);
+        }
+
         this.updateStatusIndicator();
     }
 
@@ -136,7 +117,7 @@ class BomEntry extends HTMLLIElement {
 
     stacksAndItemsToText(stackSize, count) {
         if (Number.isNaN(stackSize) || count < stackSize) {
-            return `${count} items`;
+            return `(${count} items)`;
         }
 
         return `(${Math.floor(count / stackSize)} stacks, ${count % stackSize} items)`;

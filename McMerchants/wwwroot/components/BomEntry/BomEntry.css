@@ -27,7 +27,7 @@
         white-space: pre;
     }
 
-    .workzone {
+    .workzone, .remainder {
         color: var(--bom-workzone-color);
     }
 
