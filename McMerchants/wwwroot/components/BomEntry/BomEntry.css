@@ -3,6 +3,10 @@
     color: var(--bom-available-color);
 }
 
+.status[data-status="complete"] + input[type="checkbox"] {
+    display: none;
+}
+
 .stocks {
     font-size: small;
     margin-top: 0;

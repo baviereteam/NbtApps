@@ -15,6 +15,7 @@ class BomEntry extends HTMLLIElement {
     constructor() {
         super();
         this.appendChild(document.importNode(bomEntryTemplateContent, true));
+        this.querySelector('input[type="checkbox"]').addEventListener('change', this.onCheckboxChecked.bind(this));
     }
 
     static observedAttributes = ["item-name", "quantity", "stack-size", "availability"];
@@ -47,7 +48,15 @@ class BomEntry extends HTMLLIElement {
             this.updateInfo();
         }
     }
-    
+
+    onCheckboxChecked(event) {
+        if (event.target.checked) {
+            this.classList.add('checked');
+        } else {
+            this.classList.remove('checked');
+        }
+    }
+
     setData(itemName, quantity, stackSize, availability) {
         this.#itemName = itemName;
         this.#quantity = quantity;

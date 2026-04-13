@@ -8,6 +8,7 @@
 const itemsContainer = document.getElementById('bom-items');
 const hideCompleteCheckbox = document.getElementById('hide-complete');
 const hideStoredCheckbox = document.getElementById('hide-stored');
+const hideCheckedCheckbox = document.getElementById('hide-checked');
 
 const loadItemsApi = '/api/bom/{id}/items';
 const computeAvailabilitiesApi = '/api/bom/{id}/available';
@@ -30,6 +31,7 @@ const onPageReady = (bomId, workzoneTutorialEnabled) => {
 
 	hideCompleteCheckbox.addEventListener('change', updateFilters);
 	hideStoredCheckbox.addEventListener('change', updateFilters);
+	hideCheckedCheckbox.addEventListener('change', updateFilters);
 }
 
 const showWorkzoneTutorial = (bomId) => {
@@ -116,15 +118,15 @@ const displayBomLines = (lines) => {
 };
 
 const updateFilters = () => {
-	if (hideCompleteCheckbox.checked) {
-		itemsContainer.classList.add('hide-complete');
-	} else {
-		itemsContainer.classList.remove('hide-complete');
-	}
-
-	if (hideStoredCheckbox.checked) {
-		itemsContainer.classList.add('hide-stored');
-	} else {
-		itemsContainer.classList.remove('hide-stored');
-	}
+	toggleClass('hide-complete', hideCompleteCheckbox.checked);
+	toggleClass('hide-stored', hideStoredCheckbox.checked);
+	toggleClass('hide-checked', hideCheckedCheckbox.checked);
 };
+
+const toggleClass = (className, condition) => {
+	if (condition) {
+		itemsContainer.classList.add(className);
+	} else {
+		itemsContainer.classList.remove(className);
+	}
+	}

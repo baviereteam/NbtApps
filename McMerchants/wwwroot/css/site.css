@@ -528,7 +528,8 @@ content {
     }
 
     #bom-items.hide-complete li[data-status="complete"],
-    #bom-items.hide-stored li[data-status="available"] {
+    #bom-items.hide-stored li[data-status="available"],
+    #bom-items.hide-checked li.checked {
         display: none;
     }
 }

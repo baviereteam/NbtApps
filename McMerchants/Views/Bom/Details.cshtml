@@ -8,6 +8,7 @@
 <template id="bom-entry-template">
 	<div class="info">
 		<span class="status"></span>
+		<input type="checkbox" />
 		<span class="item-count"></span>
 		<span class="item-name"></span>
 		<span class="repartition"></span>
@@ -41,6 +42,7 @@
 		<div class="toolbar">
 			<span><input type="checkbox" id="hide-complete" /><label for="hide-complete">Hide fully completed</label></span>
 			<span><input type="checkbox" id="hide-stored"/><label for="hide-stored">Hide fully available</label></span>
+			<span><input type="checkbox" id="hide-checked"/><label for="hide-checked">Hide checked</label></span>
 		</div>
 		<ul id="bom-items">
 		</ul>
