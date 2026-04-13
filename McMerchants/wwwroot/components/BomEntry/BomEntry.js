@@ -66,7 +66,7 @@ class BomEntry extends HTMLLIElement {
         }
 
         this.#availability.stores.forEach(store => {
-            this.addStoredLine(store.count, store.name);
+            this.addStoredLine(store.count, store.name, store.alleys);
             missing -= store.count;
         });
 
@@ -103,10 +103,15 @@ class BomEntry extends HTMLLIElement {
         this.querySelector('.status').dataset.status = statusLabels[this.#status];
     }
 
-    addStoredLine(count, location) {
+    addStoredLine(count, location, alleys) {
         const newLine = document.importNode(storedAvailabilityTemplateContent, true);
         newLine.querySelector('.count').textContent = count;
         newLine.querySelector('.location').textContent = location;
+
+        if (Array.isArray(alleys) && alleys.length > 0) {
+            newLine.querySelector('.alleys').textContent = `(${alleys.join(" ")})`;
+        }
+
         this.querySelector('.stocks').appendChild(newLine);
     }
     addProducedAtLine(location) {

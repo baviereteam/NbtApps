@@ -28,7 +28,7 @@ namespace McMerchants.Json.Bom
             writer.WriteEndObject();
         }
 
-        private void WriteItems(Utf8JsonWriter writer, ICollection<EnrichedBomItem> bomEntries)
+        private static void WriteItems(Utf8JsonWriter writer, ICollection<EnrichedBomItem> bomEntries)
         {
             writer.WriteStartArray();
 
@@ -41,7 +41,7 @@ namespace McMerchants.Json.Bom
                 writer.WriteNumber("requiredQuantity", bomEntry.RequiredQuantity);
 
                 writer.WritePropertyName("availability");
-	            WriteAvailability(writer, bomEntry);
+                WriteAvailability(writer, bomEntry);
 
                 writer.WriteEndObject();
             }
@@ -49,7 +49,7 @@ namespace McMerchants.Json.Bom
             writer.WriteEndArray();
         }
 
-        private void WriteAvailability(Utf8JsonWriter writer, EnrichedBomItem item)
+        private static void WriteAvailability(Utf8JsonWriter writer, EnrichedBomItem item)
         {
             writer.WriteStartObject();
 
@@ -75,21 +75,22 @@ namespace McMerchants.Json.Bom
             else
             {
 	            writer.WritePropertyName("stores");
-	            WriteStoresDictionary(writer, item.StoredQuantities.Stores);
+                WriteStoresDictionary(writer, item.StoredQuantities.Stores);
 
 	            writer.WritePropertyName("factories");
-	            WriteFactoriesDictionary(writer, item.StoredQuantities.Factories);
+                WriteFactoriesDictionary(writer, item.StoredQuantities.Factories);
 
 	            writer.WritePropertyName("traders");
-	            WriteTradingDictionary(writer, item.StoredQuantities.Trades);
+                WriteTradingDictionary(writer, item.StoredQuantities.Trades);
             }
             
             writer.WriteEndObject();
         }
 
-        private void WriteStoresDictionary(Utf8JsonWriter writer, ICollection<StoreItemStockResult> value)
+        private static void WriteStoresDictionary(Utf8JsonWriter writer, ICollection<StoreItemStockResult> value)
         {
             writer.WriteStartArray();
+            List<string> alleyNames = new List<string>();
 
             foreach (StoreItemStockResult storeResult in value)
             {
@@ -99,18 +100,25 @@ namespace McMerchants.Json.Bom
                 if (storeResult.StockInDefaultAlley != null)
                 {
                     count += storeResult.StockInDefaultAlley.Item2;
+                    alleyNames.Add(storeResult.StockInDefaultAlley.Item1.Name);
                 }
 
                 // Other alleys
                 foreach (KeyValuePair<Alley, int> alleyResult in storeResult.StockInOtherAlleys)
                 {
                     count += alleyResult.Value;
+                    alleyNames.Add(alleyResult.Key.Name);
                 }
 
                 // Bulk
-                foreach (var bulkStock in storeResult.StockInBulkContainers)
+                if (storeResult.StockInBulkContainers.Count > 0)
                 {
-                    count += bulkStock.Value;
+                    alleyNames.Add("bulk");
+
+                    foreach (var bulkStock in storeResult.StockInBulkContainers)
+                    {
+                        count += bulkStock.Value;
+                    }
                 }
 
                 if (count > 0)
@@ -118,6 +126,15 @@ namespace McMerchants.Json.Bom
                     writer.WriteStartObject();
                     writer.WriteString("name", storeResult.Store.Name);
                     writer.WriteNumber("count", count);
+
+                    writer.WritePropertyName("alleys");
+                    writer.WriteStartArray();
+                    foreach(var alley in alleyNames)
+                    {
+                        writer.WriteStringValue(alley);
+                    }
+                    writer.WriteEndArray();
+
                     writer.WriteEndObject();
                 }
             }
@@ -125,7 +142,7 @@ namespace McMerchants.Json.Bom
             writer.WriteEndArray();
         }
 
-        private void WriteFactoriesDictionary(Utf8JsonWriter writer, ICollection<FactoryItemStockResult> value)
+        private static void WriteFactoriesDictionary(Utf8JsonWriter writer, ICollection<FactoryItemStockResult> value)
         {
             writer.WriteStartArray();
 
@@ -147,7 +164,7 @@ namespace McMerchants.Json.Bom
             writer.WriteEndArray();
         }
 
-        private void WriteTradingDictionary(Utf8JsonWriter writer, ICollection<TradeItemStockResult> value)
+        private static void WriteTradingDictionary(Utf8JsonWriter writer, ICollection<TradeItemStockResult> value)
         {
             writer.WriteStartArray();
 
