@@ -6,7 +6,7 @@ namespace McMerchantsLib.Models.Bom;
 
 public class EnrichedBomItem
 {
-	private BomItem _bomItem;
+	private readonly BomItem _bomItem;
 	
 	public EnrichedBomItem(BomItem bomItem, Searchable item)
 	{

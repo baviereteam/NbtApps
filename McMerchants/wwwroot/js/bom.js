@@ -41,7 +41,7 @@ const showWorkzoneTutorial = (bomId) => {
 }
 
 const getWorkzoneQueryParams = () => {
-	const windowQuery = new URLSearchParams(window.location.search);
+	const windowQuery = new URLSearchParams(location.search);
 	const workzoneParams = {
 		dimension: null,
 		startx: null,
