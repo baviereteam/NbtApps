@@ -52,8 +52,8 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
-          ${{ runner.temp }}\scanner\dotnet-sonarscanner begin /k:"baviereteam_NbtApps" /o:"baviereteam" /d:sonar.token=${SONAR_TOKEN} /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml
+          ${{ runner.temp }}\scanner\dotnet-sonarscanner begin /k:"baviereteam_NbtApps" /o:"baviereteam" /d:sonar.token=$SONAR_TOKEN /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml
           dotnet build
           dotnet-coverage collect "dotnet test" -f xml -o "coverage.xml"
-          ${{ runner.temp }}\scanner\dotnet-sonarscanner end /d:sonar.token=${SONAR_TOKEN}
+          ${{ runner.temp }}\scanner\dotnet-sonarscanner end /d:sonar.token=$SONAR_TOKEN
           
