@@ -16,13 +16,29 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+    
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
+
+    - name: Install dotnet-coverage tool
+      run: dotnet tool install -g dotnet-coverage
+    
     - name: Restore dependencies
       run: dotnet restore
+      
     - name: Build
       run: dotnet build --no-restore
+
+    - name: Start sonar-scanner for code coverage
+      run: |
+        dotnet sonarscanner begin /k:"${{ secrets.SONAR_PROJECT_KEY }}"
+        /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+        /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml
+      
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet-coverage collect "dotnet test" -f xml -o "coverage.xml"
+
+    - name: Stop sonar-scanner for code coverage
+      run: dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
