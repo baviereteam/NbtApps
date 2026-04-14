@@ -43,11 +43,11 @@ public class MM5_EnchantedBooks_1_21_4 : TestBase
     {
         var StockService = Host.Services.GetService<StockService>();
 
-        var results = StockService.GetStockOf("enchanted_book:wind_burst_1");
+        var results = StockService.GetStockOf("enchanted_book:wind_burst_1").Results.First().Value;
         Assert.AreEqual(1, results.Stores.Count);
         Assert.AreEqual(0, results.Factories.Count);
         Assert.AreEqual(0, results.Trades.Count);
-        Assert.AreEqual(1, results.Stores[0].StockInBulkContainers.First().Value);
+        Assert.AreEqual(1, results.Stores.First().StockInBulkContainers.First().Value);
     }
 
     [TestMethod]
@@ -55,11 +55,11 @@ public class MM5_EnchantedBooks_1_21_4 : TestBase
     {
         var StockService = Host.Services.GetService<StockService>();
 
-        var results = StockService.GetStockOf("enchanted_book:protection_3");
+        var results = StockService.GetStockOf("enchanted_book:protection_3").Results.First().Value;
         Assert.AreEqual(1, results.Stores.Count);
         Assert.AreEqual(0, results.Factories.Count);
         Assert.AreEqual(0, results.Trades.Count);
-        Assert.AreEqual(1, results.Stores[0].StockInBulkContainers.First().Value);
+        Assert.AreEqual(1, results.Stores.First().StockInBulkContainers.First().Value);
     }
 
     [TestCleanup]

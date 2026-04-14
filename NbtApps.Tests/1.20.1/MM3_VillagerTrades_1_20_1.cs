@@ -42,13 +42,13 @@ namespace NbtApps.Tests.v1_20_1
         public void SearchRegularItem_Found()
         {
             var StockService = Host.Services.GetService<StockService>();
-            var results = StockService.GetStockOf("minecraft:iron_chestplate");
+            var results = StockService.GetStockOf("minecraft:iron_chestplate").Results.First().Value;
 
             Assert.AreEqual(0, results.Factories.Count);
             Assert.AreEqual(0, results.Stores.Count);
             Assert.AreEqual(1, results.Trades.Count);
 
-            var trades = results.Trades.First().Value;
+            var trades = results.Trades.First().Trades;
             Assert.AreEqual(1, trades.Count());
 
             var trade = trades.First();
@@ -62,13 +62,13 @@ namespace NbtApps.Tests.v1_20_1
         public void SearchEnchantedItem_Found()
         {
             var StockService = Host.Services.GetService<StockService>();
-            var results = StockService.GetStockOf("minecraft:diamond_helmet");
+            var results = StockService.GetStockOf("minecraft:diamond_helmet").Results.First().Value;
 
             Assert.AreEqual(0, results.Factories.Count);
             Assert.AreEqual(0, results.Stores.Count);
             Assert.AreEqual(1, results.Trades.Count);
 
-            var trades = results.Trades.First().Value;
+            var trades = results.Trades.First().Trades;
             Assert.AreEqual(1, trades.Count());
 
             var trade = trades.First();

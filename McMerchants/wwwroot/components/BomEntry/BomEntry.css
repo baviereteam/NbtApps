@@ -1,0 +1,55 @@
+﻿.status[data-status="complete"]::before {
+    content: '✔';
+    color: var(--bom-available-color);
+}
+
+.status[data-status="complete"] + input[type="checkbox"] {
+    display: none;
+}
+
+.stocks {
+    font-size: small;
+    margin-top: 0;
+    display: flex;
+    flex-direction: column;
+    list-style-type: disc;
+
+    li {
+        margin-top: 0.25em;
+    }
+
+    .count {
+        font-weight: bold;
+    }
+
+    .repartition::before {
+        content: ' ';
+        white-space: pre;
+    }
+
+    .workzone, .remainder {
+        color: var(--bom-workzone-color);
+    }
+
+    .stored {
+        color: var(--bom-available-color);
+    }
+
+    .produced_at {
+        color: var(--bom-producedat-color);
+    }
+
+    .missing {
+        color: var(--bom-missing-color);
+        order: 1;
+    }
+}
+
+.repartition {
+    font-size: 12px;
+    font-style: italic;
+}
+
+.hidden {
+    display: none;
+}

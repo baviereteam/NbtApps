@@ -1,4 +1,5 @@
 ﻿using McMerchants.Models.Database;
+using McMerchantsLib.Models.Database;
 using Microsoft.EntityFrameworkCore;
 
 namespace McMerchants.Database
@@ -7,11 +8,11 @@ namespace McMerchants.Database
       When executing Entity Framework Core commands, you must set the `project`, `startup-project` and `context` parameters so that:
         * `project` points to the project in which files (migrations, ...) must be read and written,
         * `context` is the name of the DbContext describing the database to operate on,
-        * `startup-project` is the name of the project containing a reference to `Microsoft.EntityFrameworkCore.Design` package.
+        * `startup-project` is the name of the project that can be executed to create the contexts.
 
         For example:
         ```
-        dotnet ef database update --project NbtTools --startup-project McMerchantsLib --context NbtDbContext
+        dotnet ef database update --project NbtTools --startup-project McMerchants --context NbtDbContext
         ```
 
         If the `startup-project` is missing, you will get the following error:
@@ -35,6 +36,8 @@ namespace McMerchants.Database
         public DbSet<FactoryRegion> FactoryRegions { get; set; }
 
         public DbSet<FactoryProduct> FactoryProducts { get; set; }
+
+        public DbSet<Bom> Boms { get; set; }
 
         public McMerchantsDbContext(DbContextOptions<McMerchantsDbContext> options) : base(options)
         {
@@ -134,6 +137,26 @@ namespace McMerchants.Database
                     .HasKey(d => d.Id);
 
                 entity.HasOne(d => d.Alley);
+            });
+
+            modelBuilder.Entity<Bom>(entity =>
+            {
+                entity
+                    .ToTable("bom")
+                    .HasKey(bom => bom.Id);
+
+                entity
+                    .HasMany(bom => bom.Items)
+                    .WithOne(item => item.Bom)
+                    .HasForeignKey(item => item.BomId)
+                    .IsRequired();
+            });
+
+            modelBuilder.Entity<BomItem>(entity =>
+            {
+                entity
+                    .ToTable("bom_item")
+                    .HasKey(item => item.Id);
             });
 
             base.OnModelCreating(modelBuilder);

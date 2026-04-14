@@ -6,12 +6,13 @@ using NbtTools.RegionQuery;
 using SharpNBT;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace NbtTools.Entities
 {
     public class VillagerService
     {
-        private EntitiesQuery RegionQuery;
+        private readonly EntitiesQuery RegionQuery;
         private readonly TradeService TradeService;
 
         public VillagerService(EntitiesQuery regionQuery, TradeService tradeService)
@@ -38,11 +39,12 @@ namespace NbtTools.Entities
             return new QueryResult<Villager>(villagers, dataSource.UnreadableChunks);
         }
 
-        public QueryResult<Trade> GetTradesFor(Cuboid zone, Searchable searchedItem) 
+        public CuboidTradesSearchResult GetTradesFor(Cuboid zone, ICollection<Searchable> searchedItems) 
         {
             var dataSource = RegionQuery.GetData(zone);
             var villagerTags = NbtFilter.GetAllCompoundsWithId(dataSource.Result, "minecraft:villager");
-            var trades = new List<Trade>();
+            var results = new CuboidTradesSearchResult();
+            results.UnreadableChunks = dataSource.UnreadableChunks;
 
             foreach (var villagerTag in villagerTags)
             {
@@ -51,15 +53,15 @@ namespace NbtTools.Entities
                 {
                     foreach (var trade in villager.Trades)
                     {
-                        if (TradeMatchesSearch(trade, searchedItem))
+                        foreach (var search in searchedItems.Where(search => TradeMatchesSearch(trade, search)))
                         {
-                            trades.Add(trade);
+                            results.Add(search, trade);
                         }
                     }
                 }
             }
 
-            return new QueryResult<Trade>(trades, dataSource.UnreadableChunks);
+            return results;
         }
 
         private static bool TradeMatchesSearch(Trade trade, Searchable searchedItem)

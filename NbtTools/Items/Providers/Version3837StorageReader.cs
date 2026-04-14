@@ -1,4 +1,6 @@
 ﻿using SharpNBT;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace NbtTools.Items.Providers
 {
@@ -25,11 +27,13 @@ namespace NbtTools.Items.Providers
         /// <param name="shulkerBox"></param>
         /// <param name="searchedItem"></param>
         /// <returns></returns>
-        internal override int CountItemsInContainedShulkerBox(CompoundTag shulkerBox, Searchable searchedItem)
+        internal override IDictionary<Searchable, int> CountItemsInContainedShulkerBox(CompoundTag shulkerBox, ICollection<Searchable> searchedItems)
         {
+            var results = new Dictionary<Searchable, int>();
+
             if (!shulkerBox.ContainsKey("components"))
             {
-                return 0;
+                return results;
             }
 
             var componentsTag = shulkerBox["components"] as CompoundTag;
@@ -37,7 +41,7 @@ namespace NbtTools.Items.Providers
             // Empty shulker boxes don't have a "minecraft:container".
             if (!componentsTag.ContainsKey("minecraft:container"))
             {
-                return 0;
+                return results;
             }
 
             // List of compound (slot,item)
@@ -45,18 +49,24 @@ namespace NbtTools.Items.Providers
             var containerContents = componentsTag["minecraft:container"] as ListTag;
             if (containerContents == null)
             {
-                return 0;
+                return results;
             }
 
-            int count = 0;
             foreach (var slot in containerContents)
             {
                 var slotTag = slot as CompoundTag;
                 var itemTag = slotTag["item"] as CompoundTag;
-                count += GetCountFromItemSlot(itemTag, searchedItem);
+
+                var searchableThatMatchesThisItem = searchedItems.SingleOrDefault(searchable => ItemTagIs(itemTag, searchable), null);
+                if (searchableThatMatchesThisItem == null)
+                {
+                    continue;
+                }
+
+                results.AddOrIncrement(searchableThatMatchesThisItem, GetCountFromItemTag(itemTag));
             }
 
-            return count;
+            return results;
         }
 
         /// <summary>

@@ -157,6 +157,44 @@ namespace McMerchants.Migrations
                     b.ToTable("default_alley", (string)null);
                 });
 
+            modelBuilder.Entity("McMerchantsLib.Models.Database.Bom", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("bom", (string)null);
+                });
+
+            modelBuilder.Entity("McMerchantsLib.Models.Database.BomItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("BomId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ItemName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("RequiredQuantity")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BomId");
+
+                    b.ToTable("bom_item", (string)null);
+                });
+
             modelBuilder.Entity("McMerchants.Models.Database.FactoryRegion", b =>
                 {
                     b.HasBaseType("McMerchants.Models.Database.ItemProviderRegion");
@@ -209,6 +247,22 @@ namespace McMerchants.Migrations
                         .IsRequired();
 
                     b.Navigation("Alley");
+                });
+
+            modelBuilder.Entity("McMerchantsLib.Models.Database.BomItem", b =>
+                {
+                    b.HasOne("McMerchantsLib.Models.Database.Bom", "Bom")
+                        .WithMany("Items")
+                        .HasForeignKey("BomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Bom");
+                });
+
+            modelBuilder.Entity("McMerchantsLib.Models.Database.Bom", b =>
+                {
+                    b.Navigation("Items");
                 });
 
             modelBuilder.Entity("McMerchants.Models.Database.FactoryRegion", b =>

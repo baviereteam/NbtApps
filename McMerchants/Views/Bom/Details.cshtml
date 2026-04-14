@@ -1,0 +1,63 @@
+﻿@{
+	Layout = "_Layout";
+}
+
+@model McMerchants.Models.BomDetailsViewModel
+<link rel="stylesheet" href="~/components/BomEntry/BomEntry.css" />
+
+<template id="bom-entry-template">
+	<div class="info">
+		<span class="status"></span>
+		<input type="checkbox" />
+		<span class="item-count"></span>
+		<span class="item-name"></span>
+		<span class="repartition"></span>
+	</div>
+
+	<ul class="stocks">
+		<li class="workzone hidden"><span class="count"></span> in your workzone</li>
+		<li class="remainder hidden"><span class="count"></span> to add<span class="repartition"></span></li>
+		<li class="missing"><span class="count"></span> missing<span class="repartition"></span></li>
+	</ul>
+</template>
+
+<template id="bom-avail-stored">
+	<li class="stored"><span class="count"></span> at <span class="location"></span><span class="alleys repartition"></span></li>
+</template>
+
+<template id="bom-avail-produced">
+	<li class="produced_at">Produced or traded at <span class="location"></span></li>
+</template>
+
+<div class="bom-details-page">
+	<img id="spinner" src="~/img/spinner.gif" alt="Loading..."/>
+	
+	<div id="details" class="hidden">
+		<h1>BOM for @Model.Bom.Name</h1>
+		<div class="toolbar">
+			<a class="hidden">Rename</a>
+			<a class="hidden">Delete</a>
+			<a id="compute" title="Search in stores, factories and trades">Help me find items</a>
+		</div>
+		<h2>Contents</h2>
+		<div class="toolbar">
+			<span><input type="checkbox" id="hide-complete" /><label for="hide-complete">Hide fully completed</label></span>
+			<span><input type="checkbox" id="hide-stored"/><label for="hide-stored">Hide fully available</label></span>
+			<span><input type="checkbox" id="hide-checked"/><label for="hide-checked">Hide checked</label></span>
+		</div>
+		<ul id="bom-items">
+		</ul>
+	</div>
+</div>
+
+<script src="~/components/BomEntry/BomEntry.js"></script>
+<script src="~/js/bom.js"></script>
+<script>
+	document.addEventListener('readystatechange', () => {
+		if (document.readyState === "complete") {
+			const bomId = @(Model.Bom.Id);
+			const workzoneTutorialEnabled = @(Model.ShowWorkzoneTutorial ? "true" : "false");
+			onPageReady(bomId, workzoneTutorialEnabled);
+		}
+	});
+</script>

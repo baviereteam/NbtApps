@@ -6,7 +6,8 @@ using NbtTools.Entities;
 using NbtTools.Geography;
 using NbtTools.Items;
 
-using StockAtPosition = System.Collections.Generic.KeyValuePair<NbtTools.Geography.Point, int>;
+using QuantitiesByPosition = System.Collections.Generic.IDictionary<NbtTools.Geography.Point, int>;
+using Trades = System.Collections.Generic.ICollection<NbtTools.Entities.Trading.Trade>;
 
 namespace McMerchantsLib.Stock
 {
@@ -16,6 +17,7 @@ namespace McMerchantsLib.Stock
         private readonly VillagerService VillagerService;
         private readonly McMerchantsDbContext Context;
         private readonly NbtDbContext NbtContext;
+        private readonly IDictionary<Point, int> EmptyStoreResult = new Dictionary<Point, int>();
 
         public StockService(
             StoredItemService storedItemService,
@@ -30,46 +32,77 @@ namespace McMerchantsLib.Stock
             NbtContext = nbtContext;
         }
 
-        public StockQueryResult GetStockOf(string itemId)
+        public StockSearchResults GetStockOf(params string[] ids)
         {
-            var searchedItem = NbtContext.Searchables
-                .Include(searchable => (searchable as Potion).Type)
-                .Single(searchable => searchable.Id == itemId);
+            // Must be a list (or something that implements Contains natively = not an array), or else :
+            // System.TypeLoadException: GenericArguments[1], 'System.ReadOnlySpan`1[System.String]', on 'System.Linq.Expressions.Interpreter.FuncCallInstruction`2[T0,TRet]' violates the constraint of type parameter 'TRet'.
+            var itemIds = ids.ToList(); 
 
-            var results = new StockQueryResult();
+            var searchedItems = NbtContext.Searchables
+                .Include(searchable => (searchable as Potion).Type)
+                .Where(searchable => itemIds.Contains(searchable.Id))
+                .ToList();
+
+            return GetStockOf(searchedItems);
+        }
+
+        public StockSearchResults GetStockOf(ICollection<Searchable> searchedItems)
+        {
+            var results = new StockSearchResults(searchedItems);
 
             IEnumerable<StorageRegion> stores = Context.StorageRegions.Include(s => s.Alleys);
             foreach (var store in stores)
             {
-                var storeQuery = StoredItemService.FindStoredItems(searchedItem, store.Coordinates);
-                results.Stores.Add(SortIntoAlleys(store, itemId, storeQuery.Result));
+                // EACH STORE must be present in the response even if they don't have the item
+                var storeQuery = StoredItemService.FindStoredItems(searchedItems, store.Coordinates);
                 results.IsComplete &= storeQuery.IsComplete;
+                results.InsertStoresForItems(
+                    SplitStoreResultsByItem(store, searchedItems, storeQuery.Results)
+                );
             }
 
-            IEnumerable<FactoryRegion> factories = Context.FactoryProducts.Where(p => p.Item == itemId).Select(p => p.Factory);
+            IEnumerable<FactoryRegion> factories = ListFactoriesProducingOneOf(searchedItems);
             foreach (var factory in factories)
             {
-                var factoryQuery = StoredItemService.FindStoredItems(searchedItem, factory.Coordinates);
-                results.Factories.Add(factory, factoryQuery.Result);
+                var factoryQuery = StoredItemService.FindStoredItems(searchedItems, factory.Coordinates);
                 results.IsComplete &= factoryQuery.IsComplete;
+                results.InsertFactoriesForItems(
+                    SplitFactoryResultsByItem(factory, factoryQuery.Results)
+                );
             }
 
             var tradingPlaces = Context.TradingRegions;
             foreach (var tradingPlace in tradingPlaces)
             {
-                var tradingQuery = VillagerService.GetTradesFor(tradingPlace.Coordinates, searchedItem);
-                results.Trades.Add(tradingPlace, tradingQuery.Result);
+                var tradingQuery = VillagerService.GetTradesFor(tradingPlace.Coordinates, searchedItems);
                 results.IsComplete &= tradingQuery.IsComplete;
+                results.InsertTradingPlacesForItems(
+                    SplitTradingResultsByItem(tradingPlace, tradingQuery.Results)
+                );
             }
 
             return results;
         }
 
-        private StoreStockResult SortIntoAlleys(StorageRegion store, string item, ICollection<StockAtPosition> searchResults)
+        private IDictionary<Searchable, StoreItemStockResult> SplitStoreResultsByItem(StorageRegion store, ICollection<Searchable> searchedItems,  IDictionary<Searchable, QuantitiesByPosition> searchResults)
         {
-            var storeStock = new StoreStockResult(store);
+            var results = new Dictionary<Searchable, StoreItemStockResult>();
 
-            foreach (var result in searchResults)
+            foreach (var searchedItem in searchedItems)
+            {
+                // Stores that don't carry the item must still appear in the results
+                var searchResultForItem = searchResults.ContainsKey(searchedItem) ? searchResults[searchedItem] : EmptyStoreResult;
+                results.Add(searchedItem, SortIntoAlleys(store, searchedItem, searchResultForItem));
+            }
+
+            return results;
+        }
+
+        private StoreItemStockResult SortIntoAlleys(StorageRegion store, Searchable item, QuantitiesByPosition stockOfItem)
+        {
+            var sortedResult = new StoreItemStockResult(store);
+
+            foreach (var result in stockOfItem)
             {
                 if (result.Value > 0)
                 {
@@ -78,15 +111,15 @@ namespace McMerchantsLib.Stock
                         // throws InvalidOperationException if there's no matches
                         Alley alley = store.Alleys.First(alley => IsPointInAlley(result.Key, alley));
 
-                        if (storeStock.StockInOtherAlleys.ContainsKey(alley))
+                        if (sortedResult.StockInOtherAlleys.ContainsKey(alley))
                         {
                             // There was already some stuff in this alley
-                            storeStock.StockInOtherAlleys[alley] += result.Value;
+                            sortedResult.StockInOtherAlleys[alley] += result.Value;
                         }
                         else
                         {
                             // First time we hear about this alley
-                            storeStock.StockInOtherAlleys.Add(
+                            sortedResult.StockInOtherAlleys.Add(
                                 alley,
                                 result.Value
                             );
@@ -96,29 +129,29 @@ namespace McMerchantsLib.Stock
                     catch (InvalidOperationException)
                     {
                         // Store has no alleys, or no alley matches this point
-                        storeStock.StockInBulkContainers.Add(result);
+                        sortedResult.StockInBulkContainers.Add(result);
                     }
                 }
             }
 
             // Move the default alley stuff to the correct spot
-            var defaultAlley = GetDefaultAlleyForItem(store, item);
+            var defaultAlley = GetDefaultAlleyForItem(store, item.Id);
             if (defaultAlley != null)
             {
                 try
                 {
-                    var defaultAlleyResults = storeStock.StockInOtherAlleys.First(alleyEntry => alleyEntry.Key == defaultAlley);
-                    storeStock.StockInDefaultAlley = new Tuple<Alley, int>(defaultAlleyResults.Key, defaultAlleyResults.Value);
-                    storeStock.StockInOtherAlleys.Remove(defaultAlleyResults);
+                    var defaultAlleyResults = sortedResult.StockInOtherAlleys.First(alleyEntry => alleyEntry.Key == defaultAlley);
+                    sortedResult.StockInDefaultAlley = new Tuple<Alley, int>(defaultAlleyResults.Key, defaultAlleyResults.Value);
+                    sortedResult.StockInOtherAlleys.Remove(defaultAlleyResults);
                 }
                 catch (InvalidOperationException)
                 {
                     // There's nothing in the default alley
-                    storeStock.StockInDefaultAlley = new Tuple<Alley, int>(defaultAlley, 0);
+                    sortedResult.StockInDefaultAlley = new Tuple<Alley, int>(defaultAlley, 0);
                 }
             }
 
-            return storeStock;
+            return sortedResult;
         }
 
         private Alley GetDefaultAlleyForItem(StorageRegion store, string id)
@@ -157,6 +190,50 @@ namespace McMerchantsLib.Stock
             }
 
             return false;
+        }
+
+        private IEnumerable<FactoryRegion> ListFactoriesProducingOneOf(ICollection<Searchable> searchedItems)
+        {
+            var searchedItemIds = searchedItems.Select(item => item.Id);
+            return Context.FactoryProducts
+                .Where(p => searchedItemIds.Contains(p.Item))
+                .Select(p => p.Factory);
+        }
+        private static IDictionary<Searchable, FactoryItemStockResult> SplitFactoryResultsByItem(FactoryRegion factory, IDictionary<Searchable, QuantitiesByPosition> searchResults)
+        {
+            var results = new Dictionary<Searchable, FactoryItemStockResult>();
+
+            foreach (var itemResult in searchResults)
+            {
+                results.Add(
+                    itemResult.Key, 
+                    new FactoryItemStockResult
+                    {
+                        Factory = factory,
+                        Stock = itemResult.Value
+                    }
+                );
+            }
+
+            return results;
+        }
+        private static IDictionary<Searchable, TradeItemStockResult> SplitTradingResultsByItem(TradingRegion tradingPlace, IDictionary<Searchable, Trades> searchResults)
+        {
+            var results = new Dictionary<Searchable, TradeItemStockResult>();
+
+            foreach (var itemResult in searchResults)
+            {
+                results.Add(
+                    itemResult.Key,
+                    new TradeItemStockResult
+                    {
+                        TradingPlace = tradingPlace,
+                        Trades = itemResult.Value
+                    }
+                );
+            }
+
+            return results;
         }
     }
 }

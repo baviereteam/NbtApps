@@ -1,35 +1,53 @@
 ﻿/* Theming */
 :root {
-    --background-color: #FFF;
-    --menu-background-color: #EEE;
-    --text-color: #000;
-    --searchbar-background-color: #FFF;
+    /* Environment */
     --environmentName: "";
     --environmentColor: transparent;
     --environmentPadding: 0;
     --environmentFontStyle: none;
-    --stock-mainAlley-badge-background-color: #2fc2c5;
-    --stock-mainAlley-empty-badge-background-color: #a75353;
-    --stock-otherAlley-badge-background-color: #fc6303;
-    --stock-bulk-badge-background-color: #8f8f8f;
-    --alert-banner-background-color: palevioletred;
+    /* BG/FG / Common */
+    --background-color: #FFF;
+    --menu-background-color: #EEE;
+    --text-color: #000;
+    --searchbar-background-color: #FFF;
     --link-color: blue;
     --visited-link-color: purple;
+    --alert-banner-background-color: palevioletred;
+    --info-banner-background-color: cornflowerblue;
+    /* Round buttons */
     --netherrack: #a75353;
     --lava: #db8128;
     --stone: #8f8f8f;
     --button-shadow-color: #666;
+    /* Stock */
+    --stock-mainAlley-badge-background-color: #2fc2c5;
+    --stock-mainAlley-empty-badge-background-color: #a75353;
+    --stock-otherAlley-badge-background-color: #fc6303;
+    --stock-bulk-badge-background-color: #8f8f8f;
+    /* BOM */
+    --bom-workzone-color: darkorange;
+    --bom-available-color: rgb(0, 110, 0);
+    --bom-producedat-color: rgb(36, 49, 255);
+    --bom-missing-color: rgb(250, 31, 31);
 }
 
 [data-theme="dark"] {
+    /* BG/FG / Common */
     --background-color: #36393F;
     --menu-background-color: #46494F;
     --text-color: #EEE;
     --searchbar-background-color: #151515;
     --alert-banner-background-color: darkred;
+    --info-banner-background-color: mediumblue;
     --link-color: cornflowerblue;
     --visited-link-color: mediumpurple;
+    /* Round buttons */
     --button-shadow-color: #BBB;
+    /* BOM */
+    --bom-workzone-color: orange;
+    --bom-available-color: rgb(0, 163, 0);
+    --bom-producedat-color: rgb(136, 149, 255);
+    --bom-missing-color: rgb(205, 107, 107);
 }
 
 [data-env="Development"] {
@@ -130,6 +148,10 @@ a:visited {
     text-align: center;
     background-color: var(--alert-banner-background-color);
 }
+#info-banner {
+    text-align: center;
+    background-color: var(--info-banner-background-color);
+}
 
 /* Nav */
 nav {
@@ -224,6 +246,11 @@ content {
     margin-top: 0;
 }
 
+.repartition {
+    font-size: 12px;
+    font-style: italic;
+}
+
 /* Accordions */
 .accordion-header button {
     background-color: transparent;
@@ -280,11 +307,6 @@ content {
 
 .stocks-list h3 {
     margin: 0 0 5px 0;
-}
-
-.stocks-list .repartition {
-    font-size: 12px;
-    font-style: italic;
 }
 
 .stocks-list .alleys {
@@ -404,6 +426,112 @@ content {
 .identity a + a:before {
     content: " | ";
     color: var(--text-color);
+}
+
+/* BOM */
+.bom-import-page {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    > form, div {
+        margin: 0 auto;
+    }
+
+    > #spinner {
+        margin: auto;
+    }
+
+    #form {
+        max-width: 500px;
+
+        > .hidden {
+            display: none;
+        }
+
+        > div {
+            display: flex;
+            margin-bottom: 1em;
+
+            label {
+                margin-right: 0.5em;
+            }
+
+            input {
+                flex-grow: 1;
+            }
+        }
+
+        #import-button {
+            max-width: 100px;
+            height: 2em;
+            margin: auto;
+        }
+    }
+
+    #results {
+        #bom-name, #rejected-lines-count {
+            font-weight: bold;
+        }
+
+        #rejected-lines {
+            li {
+                margin-bottom: 1em;
+            }
+            p {
+                padding-left: 0.5em;
+                margin: 0;
+            }
+            p::before {
+                content: '➡ ';
+                white-space: normal;
+            }
+        }
+
+        #actions {
+            display: flex;
+            flex-direction: column;
+            margin-top: 2em;
+            list-style-type: none;
+            padding-inline-start: 0;
+
+            button {
+                height: 2em;
+            }
+        }
+    }
+}
+.bom-details-page {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    > .hidden {
+        display: none;
+    }
+
+    > #spinner {
+        margin: auto;
+    }
+
+    .toolbar a {
+        cursor: pointer;
+    }
+
+    .toolbar > *:not(.hidden) + *:before {
+        content: " | ";
+        color: var(--text-color);
+    }
+
+    #bom-items > li {
+        margin-bottom: 0.75em;
+    }
+
+    #bom-items.hide-complete li[data-status="complete"],
+    #bom-items.hide-stored li[data-status="available"],
+    #bom-items.hide-checked li.checked {
+        display: none;
+    }
 }
 
 /* at the end so it takes precedence on other stuff */

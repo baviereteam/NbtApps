@@ -6,8 +6,6 @@ const tradingContainer = document.getElementById('trading-stocks');
 const stockTemplate = document.getElementById('stock');
 const tradeTemplate = document.getElementById('trade');
 const tradeComponentTemplate = document.getElementById('trade-component');
-const spinner = document.getElementById('spinner');
-const alertBanner = document.getElementById('alert-banner');
 
 const texts = {
     otherAlleysWithDefaultAlley: 'Also in:',
@@ -38,10 +36,6 @@ const queryStock = () => {
         });
 };
 
-const setSpinnerDisplayed = displayed => {
-    spinner.style.display = (displayed ? 'block' : 'none');
-};
-
 const handleResponse = (response, stackSize) => {
     if (!response.complete) {
         showAlert(texts.incompleteSearchErrorMessage);
@@ -49,11 +43,6 @@ const handleResponse = (response, stackSize) => {
     fillResults(response.stores, storesContainer, stackSize, parseStore);
     fillResults(response.factories, factoriesContainer, stackSize, parseFactory);
     fillResults(response.traders, tradingContainer, null, parseTrading);
-}
-
-const showAlert = (message) => {
-    alertBanner.textContent = message;
-    alertBanner.classList.remove('hidden');
 }
 
 const fillResults = (results, container, stackSize, itemParsingFunction) => {

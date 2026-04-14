@@ -1,4 +1,4 @@
-﻿using McMerchants.Models.Database;
+using McMerchants.Models.DTO;
 using McMerchantsLib.Stock;
 using Microsoft.Extensions.Localization;
 using NbtTools.Entities;
@@ -9,11 +9,9 @@ using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-using StockAtPosition = System.Collections.Generic.KeyValuePair<NbtTools.Geography.Point, int>;
-
 namespace McMerchants.Json
 {
-    public abstract class StockApiResultConverter : JsonConverter<StockQueryResult>
+    public abstract class StockApiResultConverter : JsonConverter<SingleItemStockResultDTO>
     {
         protected readonly IStringLocalizer<Enchantment> _enchantmentLocalizer;
         protected readonly IStringLocalizer<Villager> _villagerJobLocalizer;
@@ -27,29 +25,29 @@ namespace McMerchants.Json
             _villagerJobLocalizer = villagerJobLocalizer;
         }
 
-        public override StockQueryResult Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override SingleItemStockResultDTO Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             throw new NotImplementedException();
         }
 
-        public override void Write(Utf8JsonWriter writer, StockQueryResult value, JsonSerializerOptions options) {
+        public override void Write(Utf8JsonWriter writer, SingleItemStockResultDTO value, JsonSerializerOptions options) {
             writer.WriteStartObject();
 
             writer.WriteBoolean("complete", value.IsComplete);
 
             writer.WritePropertyName("stores");
-            WriteStoresDictionary(writer, value.Stores, options);
+            WriteStoresDictionary(writer, value.SearchResult.Stores, options);
 
             writer.WritePropertyName("factories");
-            WriteFactoriesDictionary(writer, value.Factories, options);
+            WriteFactoriesDictionary(writer, value.SearchResult.Factories, options);
 
             writer.WritePropertyName("traders");
-            WriteTradingDictionary(writer, value.Trades, options);
+            WriteTradingDictionary(writer, value.SearchResult.Trades, options);
 
             writer.WriteEndObject();
         }
 
-        protected abstract void WriteStoresDictionary(Utf8JsonWriter writer, IList<StoreStockResult> value, JsonSerializerOptions options);
+        protected abstract void WriteStoresDictionary(Utf8JsonWriter writer, ICollection<StoreItemStockResult> value, JsonSerializerOptions options);
         
         protected static void WriteAlley(Utf8JsonWriter writer, bool isDefault, string name, int count) {
             writer.WriteStartObject();
@@ -71,9 +69,9 @@ namespace McMerchants.Json
             writer.WriteEndObject();
         }
 
-        protected abstract void WriteFactoriesDictionary(Utf8JsonWriter writer, IDictionary<FactoryRegion, ICollection<StockAtPosition>> value, JsonSerializerOptions options);
+        protected abstract void WriteFactoriesDictionary(Utf8JsonWriter writer, ICollection<FactoryItemStockResult> value, JsonSerializerOptions options);
 
-        protected abstract void WriteTradingDictionary(Utf8JsonWriter writer, IDictionary<TradingRegion, IEnumerable<Trade>> value, JsonSerializerOptions options);
+        protected abstract void WriteTradingDictionary(Utf8JsonWriter writer, ICollection<TradeItemStockResult> value, JsonSerializerOptions options);
 
         protected void WriteVillager(Utf8JsonWriter writer, Villager villager)
         {

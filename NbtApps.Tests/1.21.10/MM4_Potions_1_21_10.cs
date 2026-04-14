@@ -43,17 +43,17 @@ public class MM4_Potions_1_21_10 : TestBase
     {
         var StockService = Host.Services.GetService<StockService>();
 
-        var results = StockService.GetStockOf("potion:invisibility");
+        var results = StockService.GetStockOf("potion:invisibility").Results.First().Value;
         Assert.AreEqual(1, results.Stores.Count);
         Assert.AreEqual(0, results.Factories.Count);
         Assert.AreEqual(0, results.Trades.Count);
-        Assert.AreEqual(1, results.Stores[0].StockInBulkContainers.First().Value);
+        Assert.AreEqual(1, results.Stores.First().StockInBulkContainers.First().Value);
 
-        results = StockService.GetStockOf("potion:lingering_long_strength");
+        results = StockService.GetStockOf("potion:lingering_long_strength").Results.First().Value;
         Assert.AreEqual(1, results.Stores.Count);
         Assert.AreEqual(0, results.Factories.Count);
         Assert.AreEqual(0, results.Trades.Count);
-        Assert.AreEqual(1, results.Stores[0].StockInBulkContainers.First().Value);
+        Assert.AreEqual(1, results.Stores.First().StockInBulkContainers.First().Value);
     }
 
     [TestMethod]
@@ -61,11 +61,11 @@ public class MM4_Potions_1_21_10 : TestBase
     {
         var StockService = Host.Services.GetService<StockService>();
 
-        var results = StockService.GetStockOf("potion:splash_long_night_vision");
+        var results = StockService.GetStockOf("potion:splash_long_night_vision").Results.First().Value;
         Assert.AreEqual(1, results.Stores.Count);
         Assert.AreEqual(0, results.Factories.Count);
         Assert.AreEqual(0, results.Trades.Count);
-        Assert.AreEqual(2, results.Stores[0].StockInBulkContainers.First().Value);
+        Assert.AreEqual(2, results.Stores.First().StockInBulkContainers.First().Value);
     }
 
     [TestCleanup]

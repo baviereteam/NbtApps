@@ -1,4 +1,5 @@
 ﻿using McMerchants.Database;
+using McMerchantsLib.Bom;
 using McMerchantsLib.Stock;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
@@ -41,6 +42,7 @@ namespace McMerchants.Extensions.DependencyInjection
             }
             
             services.AddTransient<StockService>();
+            services.AddTransient<BomService>();
             return services;
         }
     }
