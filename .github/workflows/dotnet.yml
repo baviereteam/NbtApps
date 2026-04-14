@@ -32,13 +32,16 @@ jobs:
       run: dotnet build --no-restore
 
     - name: Start sonar-scanner for code coverage
+      env:
+        SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
-        dotnet sonarscanner begin /k:"${{ secrets.SONAR_PROJECT_KEY }}"
-        /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+        dotnet sonarscanner begin /k:"$SONAR_PROJECT_KEY"
+        /d:sonar.token="$SONAR_TOKEN"
         /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml
       
     - name: Test
       run: dotnet-coverage collect "dotnet test" -f xml -o "coverage.xml"
 
     - name: Stop sonar-scanner for code coverage
-      run: dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+      run: dotnet sonarscanner end /d:sonar.token="$SONAR_TOKEN"
