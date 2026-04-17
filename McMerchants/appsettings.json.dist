@@ -24,9 +24,16 @@
   "Options": {
     "WebmapUrlPattern": "url_to_your_map_site/with_these_placeholders/{DIMENSION}{X}{Y}{Z}",
     "WebmapLinkTitle": "See on map",
-    "CustomLinkTitle": "Wiki"
+    "CustomLinkTitle": "Wiki",
+    "ShowBomWorkzoneTutorial": false
   },
   "Cors": {
-    "AllowedOrigins": "http://localhost"
+    "AllowedOrigins": "http://localhost,http://my-other-origin:12345"
+  },
+  "DiscordOAuth": {
+    "clientId": "12345",
+    "clientSecret": "abcde",
+    "guildId": "67890",
+    "discordApiBaseUrl": "https://discord.com/api/v10"
   }
 }
