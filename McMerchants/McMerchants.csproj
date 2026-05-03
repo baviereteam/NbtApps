@@ -21,6 +21,8 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="OpenIddict.AspNetCore" Version="7.4.0" />
+    <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="7.4.0" />
   </ItemGroup>
 
   <ItemGroup>
