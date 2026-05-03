@@ -111,6 +111,7 @@ a:visited {
     background-color: var(--stone);
     box-shadow: 1px 1px 5px var(--button-shadow-color);
     border-color: var(--text-color);
+    cursor: pointer;
 
     svg {
         margin: auto;

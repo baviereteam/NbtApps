@@ -40,7 +40,7 @@ public class AuthController : Controller
         return Challenge(properties, OpenIddictClientAspNetCoreDefaults.AuthenticationScheme);
     }
 
-    [HttpGet("login/callback"), HttpPost("login/callback"), IgnoreAntiforgeryToken]
+    [HttpGet("login/callback"), HttpPost("login/callback")]
     public async Task<ActionResult> LogInCallback()
     {
         // Retrieve the authorization data validated by OpenIddict as part of the callback handling.
