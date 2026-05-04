@@ -1,25 +1,25 @@
 ﻿using McMerchants.Database;
-using McMerchants.Models.Database;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace McMerchants.Controllers
 {
+    [Route("Stores")]
     public class StoreController : Controller
     {
-        private readonly McMerchantsDbContext Context;
+        private readonly McMerchantsDbContext _context;
 
         public StoreController(McMerchantsDbContext context)
         {
-            Context = context;
+            _context = context;
         }
 
-        [Route("Stores")]
-        public ActionResult List()
+        [HttpGet]
+        public async Task<IActionResult> List()
         {
-            ICollection<StorageRegion> zones = Context.StorageRegions.ToList();
-            return View(zones);
+            return View(await _context.StorageRegions.ToListAsync());
         }
     }
 }

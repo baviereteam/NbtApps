@@ -542,6 +542,21 @@ content {
     }
 }
 
+/* CRUD pages */
+.crud-details {
+    padding-left: 3em;
+    margin-bottom: 2em;
+
+    th {
+        text-align: right;
+    }
+
+    td {
+        padding-left: 1em;
+        text-align: left;
+    }
+}
+
 /* at the end so it takes precedence on other stuff */
 .hidden {
     display: none;
