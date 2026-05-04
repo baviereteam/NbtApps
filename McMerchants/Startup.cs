@@ -94,7 +94,7 @@ namespace McMerchants
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("InDiscordServer", policy => policy.RequireClaim("IsInGuild"));
+                options.AddPolicy(Program.POLICY_IS_IN_DISCORD_SERVER, policy => policy.RequireClaim("IsInGuild"));
             });
 
             services.AddSingleton<ItemProviderLinksBuilder>();
@@ -139,11 +139,9 @@ namespace McMerchants
                 app.UseHsts();
             }
             app.UseHttpsRedirection();
-            app.UseCors();
             app.UseStaticFiles();
-
             app.UseRouting();
-
+            app.UseCors();
             app.UseAuthentication();
             app.UseAuthorization();
 

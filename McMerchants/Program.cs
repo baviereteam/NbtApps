@@ -7,6 +7,12 @@ namespace McMerchants
 {
     public static class Program
     {
+        /// <summary>
+        /// This authorization policy verifies whether the current user has a claim for being a member of the Discord server
+        /// configured in appsettings.
+        /// </summary>
+        public const string POLICY_IS_IN_DISCORD_SERVER = "InDiscordServer";
+
         public static async Task Main(string[] args)
         {
             await CreateHostBuilder(args).Build().RunWithTasksAsync();
