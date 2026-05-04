@@ -19,8 +19,10 @@ else
             <div>
                 <h3 class="identity">
                     <span class="storeName"></span>
-                    <a class="mapLink">@linksBuilder.MapLinkTitle</a>
-                    <a class="customLink">@linksBuilder.CustomLinkTitle</a>
+                    <span class="toolbar">
+                        <a class="mapLink">@linksBuilder.MapLinkTitle</a>
+                        <a class="customLink">@linksBuilder.CustomLinkTitle</a>
+                    </span>
                 </h3>
 
                 <span class="itemCount"></span> @Model.Item.Name
@@ -57,9 +59,11 @@ else
             <div>
                 <h3 class ="identity">
                     <span class="storeName"></span>
-                    <a class="tradesLink">See all trades here</a>
-                    <a class="mapLink">@linksBuilder.MapLinkTitle</a>
-                    <a class="customLink">@linksBuilder.CustomLinkTitle</a>
+                    <span class="toolbar">
+                        <a class="tradesLink">See all trades here</a>
+                        <a class="mapLink">@linksBuilder.MapLinkTitle</a>
+                        <a class="customLink">@linksBuilder.CustomLinkTitle</a>
+                    </span>
                 </h3>
                 <button class="trades-toggle"><span class="itemCount"></span> trades <span class="icon"></span></button>
                 <div class="trade details closed">

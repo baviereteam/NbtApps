@@ -18,10 +18,12 @@
             <div>
                 <h3 class="identity">
                     <span class="storeName">@tradingZone.Name</span>
-                    <a class="tradesLink"
-                        asp-controller="TradingZone"
-                        asp-action="Details"
-                        asp-route-zoneid="@tradingZone.Id">See all trades here</a>
+
+                    <span class="toolbar">
+                        <a class="tradesLink"
+                            asp-controller="TradingZone"
+                            asp-action="Details"
+                            asp-route-zoneid="@tradingZone.Id">See all trades here</a>
 
                     @if (linksBuilder.CanGenerateMapLinks)
                     {
@@ -32,6 +34,7 @@
                     {
                         <a class="customLink" href="@tradingZone.URL">@linksBuilder.CustomLinkTitle</a>
                     }
+                    </span>
                 </h3>
             </div>
         </li>

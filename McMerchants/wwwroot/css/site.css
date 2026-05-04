@@ -430,13 +430,17 @@ content {
     color: var(--text-color);
 }
 
-.identity a {
+.toolbar a,
+.toolbar button {
+    cursor: pointer;
     font-size: 14px;
     font-weight: normal;
     text-decoration: none;
+    padding: 0;
+    color: var(--link-color);
 }
 
-.identity a + a:before {
+.toolbar > *:not(.hidden) + *:before {
     content: " | ";
     color: var(--text-color);
 }
@@ -525,15 +529,6 @@ content {
 
     > #spinner {
         margin: auto;
-    }
-
-    .toolbar a {
-        cursor: pointer;
-    }
-
-    .toolbar > *:not(.hidden) + *:before {
-        content: " | ";
-        color: var(--text-color);
     }
 
     #bom-items > li {

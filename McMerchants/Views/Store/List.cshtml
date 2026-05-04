@@ -19,6 +19,7 @@
                     <h3 class="identity">
                         <span class="storeName">@store.Name</span>
 
+                        <span class="toolbar">
                         @if (linksBuilder.CanGenerateMapLinks)
                         {
                             <a class="mapLink" href="@linksBuilder.GetMapUrlFor(store)">@linksBuilder.MapLinkTitle</a>
@@ -28,6 +29,7 @@
                         {
                             <a class="customLink" href="@store.URL">@linksBuilder.CustomLinkTitle</a>
                         }
+                        </span>
                     </h3>
                 </div>
             </li>
