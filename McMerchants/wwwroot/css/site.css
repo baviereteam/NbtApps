@@ -9,6 +9,7 @@
     --background-color: #FFF;
     --menu-background-color: #EEE;
     --text-color: #000;
+    --secondary-text-color: #444;
     --searchbar-background-color: #FFF;
     --link-color: blue;
     --visited-link-color: purple;
@@ -36,6 +37,7 @@
     --background-color: #36393F;
     --menu-background-color: #46494F;
     --text-color: #EEE;
+    --secondary-text-color: #BBB;
     --searchbar-background-color: #151515;
     --alert-banner-background-color: darkred;
     --info-banner-background-color: mediumblue;
@@ -330,122 +332,122 @@ content {
     }
 
     li {
-    padding: 10px 0;
-    display: flex;
+        padding: 10px 0;
+        display: flex;
 
-    > img {
-        margin-right: 10px;
-        max-height: 45px;
+        > img {
+            margin-right: 10px;
+            max-height: 45px;
+        }
     }
-}
 
     .alleys {
-    display: flex;
-
-    h4 {
-        font-size: 14px;
-        margin: auto 0;
-        margin-right: 5px;
-    }
-
-    ul {
         display: flex;
-        padding-inline-start: 0;
-        margin-top: 5px;
 
-        li {
-            color: white;
-            padding: 5px;
-            border-radius: 20px;
-            font-weight: bold;
+        h4 {
+            font-size: 14px;
+            margin: auto 0;
             margin-right: 5px;
         }
+
+        ul {
+            display: flex;
+            padding-inline-start: 0;
+            margin-top: 5px;
+
+            li {
+                color: white;
+                padding: 5px;
+                border-radius: 20px;
+                font-weight: bold;
+                margin-right: 5px;
+            }
+        }
     }
-}
 
     .mainAlley ul li {
-    background-color: var(--stock-mainAlley-badge-background-color);
-}
+        background-color: var(--stock-mainAlley-badge-background-color);
+    }
 
     .otherAlleys ul li {
-    background-color: var(--stock-otherAlley-badge-background-color);
-}
+        background-color: var(--stock-otherAlley-badge-background-color);
+    }
 
     .mainAlley ul li.empty {
-    background-color: var(--stock-mainAlley-empty-badge-background-color);
-    text-decoration: line-through;
-}
+        background-color: var(--stock-mainAlley-empty-badge-background-color);
+        text-decoration: line-through;
+    }
 
     .otherAlleys ul li.bulk {
-    background-color: var(--stock-bulk-badge-background-color);
-}
+        background-color: var(--stock-bulk-badge-background-color);
+    }
 
-        .otherAlleys ul li.bulk::before,
-        .otherAlleys ul li.bulk::after {
-    content: '\a0';
-}
+    .otherAlleys ul li.bulk::before,
+    .otherAlleys ul li.bulk::after {
+        content: '\a0';
+    }
 
     button {
-    background: transparent;
-    border: none;
-    color: white;
-    font-weight: bold;
-}
+        background: transparent;
+        border: none;
+        color: white;
+        font-weight: bold;
+    }
 
     .details.closed {
-    display: none;
-}
+        display: none;
+    }
 
     .details table {
-    border-collapse: collapse;
-    margin: 10px;
-    border: 1px solid var(--text-color);
+        border-collapse: collapse;
+        margin: 10px;
+        border: 1px solid var(--text-color);
 
-    thead {
-        text-align: center;
-        border-bottom: 2px solid var(--text-color);
-    }
+        thead {
+            text-align: center;
+            border-bottom: 2px solid var(--text-color);
+        }
 
-    th, td {
-        padding: 5px;
-    }
+        th, td {
+            padding: 5px;
+        }
 
-    td {
-        border-top: 1px solid var(--text-color);
-    }
-}
-
-    .trade.details table {
-    tr > td:last-of-type {
-        text-align: right;
-        padding-left: 30px;
-    }
-
-    td > div {
-        display: flex;
-
-        .sprite {
-            margin-right: 5px;
+        td {
+            border-top: 1px solid var(--text-color);
         }
     }
-}
+
+    .trade.details table {
+        tr > td:last-of-type {
+            text-align: right;
+            padding-left: 30px;
+        }
+
+        td > div {
+            display: flex;
+
+            .sprite {
+                margin-right: 5px;
+            }
+        }
+    }
 
     button.trades-toggle {
-    color: white;
-    padding: 5px 10px;
-    border-radius: 20px;
-    font-weight: bold;
-    margin-right: 5px;
-    background-color: var(--stock-bulk-badge-background-color);
-}
+        color: white;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-weight: bold;
+        margin-right: 5px;
+        background-color: var(--stock-bulk-badge-background-color);
+    }
 
     button.trades-toggle.empty {
-    background-color: transparent;
-    font-size: 16px;
-    padding: 0;
-    font-weight: normal;
-    color: var(--text-color);
-}
+        background-color: transparent;
+        font-size: 16px;
+        padding: 0;
+        font-weight: normal;
+        color: var(--text-color);
+    }
 }
 
 /* BOM */
@@ -559,7 +561,93 @@ content {
         text-align: left;
     }
 }
+.edit {
+    display: flex;
+    flex-direction: column;
 
+    .header {
+        display: flex;
+        padding-bottom: 2em;
+
+        .identity {
+            padding-left: 1em;
+            display: flex;
+            flex-direction: column;
+
+            .type {
+                font-variant-caps: all-small-caps;
+                font-weight: lighter;
+                font-size: small;
+                color: var(--secondary-text-color);
+            }
+
+            .storeName {
+                margin: 0;
+            }
+        }
+    }
+
+    form {
+        margin: auto;
+
+        .validation-summary-errors {
+            border: 1px solid red;
+            background-color: var(--alert-banner-background-color);
+        }
+
+        .fields {
+            th, td {
+                padding-bottom: 0.5em;
+            }
+
+            th {
+                text-align: right;
+                font-weight: normal;
+            }
+
+            th.section {
+                padding-top: 1em;
+                text-align: center;
+                font-weight: bold;
+            }
+
+            td {
+                padding-left: 1em;
+                text-align: left;
+            }
+
+            input, select {
+                min-width: 100%;
+                height: 1.5em;
+                margin: 0.1em;
+                padding: 0.2em 0.4em;
+                border: 1px;
+                box-sizing: content-box;
+            }
+
+            .hint {
+                color: var(--secondary-text-color);
+                font-size: small;
+            }
+        }
+
+        .buttons {
+            margin-top: 1em;
+            display: flex;
+            justify-content: space-between;
+        }
+
+            .buttons input {
+                background: transparent;
+                border: none;
+                color: var(--link-color);
+                cursor: pointer;
+                text-decoration: underline;
+                padding: 0;
+                font-size: inherit;
+            }
+    }
+}
 /* at the end so it takes precedence on other stuff */
 .hidden {
     display: none;

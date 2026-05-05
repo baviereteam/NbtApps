@@ -37,6 +37,7 @@
                         @if (userCanManage)
                         {
                             <button type="button" data-close="Close details" data-open="Details"></button>
+                            <a asp-controller="Store" asp-action="Edit" asp-route-id="@store.Id">Modify</a>
                         }
                         </span>
                     </h3>

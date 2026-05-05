@@ -10,6 +10,6 @@ namespace McMerchants.Models.Database
         public const string TYPE_KEY = "storage";
         public new string Type { get; } = TYPE_KEY;
 
-        public ICollection<Alley> Alleys { get; set; }
+        public ICollection<Alley>? Alleys { get; set; }
     }
 }
