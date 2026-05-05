@@ -5,6 +5,9 @@
     /// </summary>
     public class FactoryRegion : ItemProviderRegion
     {
+        public const string TYPE_KEY = "factory";
+        public new string Type { get; } = TYPE_KEY;
+
         public ICollection<FactoryProduct> Products { get; set; }
     }
 }

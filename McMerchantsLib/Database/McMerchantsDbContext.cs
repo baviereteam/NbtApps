@@ -52,9 +52,9 @@ namespace McMerchants.Database
                 .ToTable("item_provider_regions")
                 .Ignore(region => region.Coordinates)
                 .HasDiscriminator(i => i.Type)
-                .HasValue<StorageRegion>("storage")
-                .HasValue<TradingRegion>("trading")
-                .HasValue<FactoryRegion>("factory");
+                .HasValue<StorageRegion>(StorageRegion.TYPE_KEY)
+                .HasValue<TradingRegion>(TradingRegion.TYPE_KEY)
+                .HasValue<FactoryRegion>(FactoryRegion.TYPE_KEY);
 
             modelBuilder.Entity<ItemProviderRegion>(entity =>
             {

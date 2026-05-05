@@ -7,6 +7,9 @@ namespace McMerchants.Models.Database
     /// </summary>
     public class StorageRegion : ItemProviderRegion
     {
+        public const string TYPE_KEY = "storage";
+        public new string Type { get; } = TYPE_KEY;
+
         public ICollection<Alley> Alleys { get; set; }
     }
 }
