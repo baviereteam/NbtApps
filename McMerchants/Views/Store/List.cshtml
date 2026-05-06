@@ -11,7 +11,7 @@
 <div>
     <h1>Stores</h1>
 
-    <ul class="stocks-list">
+    <ul class="item-providers">
         @foreach (var store in Model)
         {
             <li class="store">
@@ -20,7 +20,7 @@
                     <img class="storeLogo" src="~/img/stores/@store.Logo" alt="" />
                 }
                 <div>
-                    <h3 class="identity accordion-header">
+                    <h2 class="identity accordion-header">
                         <span class="storeName">@store.Name</span>
 
                         <span class="toolbar">
@@ -40,7 +40,7 @@
                             <a asp-controller="Store" asp-action="Edit" asp-route-id="@store.Id">Modify</a>
                         }
                         </span>
-                    </h3>
+                    </h2>
 
                     @if (userCanManage)
                     {

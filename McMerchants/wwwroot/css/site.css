@@ -263,6 +263,8 @@ content {
 
 .toolbar {
     a, button {
+        background: transparent;
+        border: none;
         cursor: pointer;
         font-size: 14px;
         font-weight: normal;
@@ -277,13 +279,14 @@ content {
     }
 }
 
+/* (X stacks, Y items) */
 .repartition {
     font-size: 12px;
     font-style: italic;
 }
 
 /* Accordions */
-.accordion-header button {
+.accordion-header > button {
     background-color: transparent;
     color: var(--text-color);
     border: 0;
@@ -298,39 +301,8 @@ content {
     overflow: hidden;
 }
 
-/* Trades */
-.trades td {
-    text-align: center;
-    vertical-align: middle;
-    padding: 10px;
-
-    > div {
-        display: flex;
-    }
-
-    .sprite {
-        margin-right: 5px;
-    }
-}
-
-.trades ul {
-    margin: 0;
-    text-align: left;
-    font-style: italic;
-}
-
-/* Stocks */
-#spinner {
-    display: none;
-    width: 64px;
-    height: 64px;
-}
-
-.stocks-list {
-    h3 {
-        margin: 0 0 5px 0;
-    }
-
+/* Lists of stores, or factories, or trading zones */
+ul.item-providers {
     li {
         padding: 10px 0;
         display: flex;
@@ -341,6 +313,46 @@ content {
         }
     }
 
+    .identity {
+        margin: 0 0 5px 0;
+
+        .storeName {
+            font-size: 1.2rem;
+        }
+    }
+}
+
+/* Trades */
+.trades {
+    td {
+        text-align: center;
+        vertical-align: middle;
+        padding: 10px;
+
+        > div {
+            display: flex;
+        }
+
+        .sprite {
+            margin-right: 5px;
+        }
+    }
+
+    ul {
+        margin: 0;
+        text-align: left;
+        font-style: italic;
+    }
+}
+
+/* Stocks */
+#spinner {
+    display: none;
+    width: 64px;
+    height: 64px;
+}
+
+.stocks-list {
     .alleys {
         display: flex;
 
@@ -387,7 +399,7 @@ content {
         content: '\a0';
     }
 
-    button {
+    .bulk button {
         background: transparent;
         border: none;
         color: white;
@@ -583,6 +595,7 @@ content {
 
             .storeName {
                 margin: 0;
+                font-size: 1.5rem;
             }
         }
     }
@@ -637,15 +650,15 @@ content {
             justify-content: space-between;
         }
 
-            .buttons input {
-                background: transparent;
-                border: none;
-                color: var(--link-color);
-                cursor: pointer;
-                text-decoration: underline;
-                padding: 0;
-                font-size: inherit;
-            }
+        .buttons input {
+            background: transparent;
+            border: none;
+            color: var(--link-color);
+            cursor: pointer;
+            text-decoration: underline;
+            padding: 0;
+            font-size: inherit;
+        }
     }
 }
 /* at the end so it takes precedence on other stuff */

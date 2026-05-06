@@ -7,7 +7,7 @@
 <div>
     <h1>Factories</h1>
 
-    <ul class="stocks-list">
+    <ul class="item-providers stocks-list">
         @foreach (var factory in Model)
         {
             <li class="store">
@@ -17,7 +17,7 @@
                 }
                 
                 <div>
-                    <h3 class="identity">
+                    <h2 class="identity">
                         <span class="storeName">@factory.Name</span>
 
                         <span class="toolbar">
@@ -31,7 +31,7 @@
                             <a class="customLink" href="@factory.URL">@linksBuilder.CustomLinkTitle</a>
                         }
                         </span>
-                    </h3>
+                    </h2>
                 </div>
             </li>
         }
