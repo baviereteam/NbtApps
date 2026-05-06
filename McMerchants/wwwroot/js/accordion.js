@@ -6,14 +6,25 @@ const initAccordions = () => {
 
     for (const header of accordions) {
         const button = header.getElementsByTagName('button').item(0);
-        button.innerText = buttonCloseText;
-        button.addEventListener('click', (event) => {
-            toggleAccordion(event.target, event.target.parentElement.nextElementSibling);
-        })
+        const content = header.nextElementSibling;
+        if (content != null) {
+            updateButtonText(button, content);
+            button.addEventListener('click', (event) => {
+                toggleAccordion(button, content);
+            })
+        }
     }
 }
 
 const toggleAccordion = (button, content) => {
     content.classList.toggle(classWhenClosed);
-    button.innerText = content.classList.contains(classWhenClosed) ? buttonOpenText : buttonCloseText;
+    updateButtonText(button, content);
+}
+
+const updateButtonText = (button, content) => {
+    if (content.classList.contains(classWhenClosed)) {
+        button.innerText = button.dataset?.open ?? buttonOpenText;
+    } else {
+        button.innerText = button.dataset?.close ?? buttonCloseText;
+    }
 }

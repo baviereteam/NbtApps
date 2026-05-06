@@ -1,13 +1,20 @@
-﻿@{
-    Layout = "_Layout";
-}
+﻿@using Microsoft.AspNetCore.Authorization
 @model ICollection<McMerchants.Models.Database.StorageRegion>
 @inject McMerchants.Services.ItemProviderLinksBuilder linksBuilder
+@inject IAuthorizationService authorization
+
+@{
+    Layout = "_Layout";
+    bool userCanManage = (await authorization.AuthorizeAsync(User, Program.POLICY_IS_IN_DISCORD_SERVER)).Succeeded;
+}
 
 <div>
     <h1>Stores</h1>
+    <span class="toolbar">
+        <a asp-controller="Store" asp-action="Create">Add a new store</a>
+    </span>
 
-    <ul class="stocks-list">
+    <ul class="item-providers">
         @foreach (var store in Model)
         {
             <li class="store">
@@ -16,9 +23,10 @@
                     <img class="storeLogo" src="~/img/stores/@store.Logo" alt="" />
                 }
                 <div>
-                    <h3 class="identity">
+                    <h2 class="identity accordion-header">
                         <span class="storeName">@store.Name</span>
 
+                        <span class="toolbar">
                         @if (linksBuilder.CanGenerateMapLinks)
                         {
                             <a class="mapLink" href="@linksBuilder.GetMapUrlFor(store)">@linksBuilder.MapLinkTitle</a>
@@ -28,7 +36,57 @@
                         {
                             <a class="customLink" href="@store.URL">@linksBuilder.CustomLinkTitle</a>
                         }
-                    </h3>
+                        
+                        @if (userCanManage)
+                        {
+                            <button type="button" data-close="Close details" data-open="Details"></button>
+                            <a asp-controller="Store" asp-action="Edit" asp-route-id="@store.Id">Modify</a>
+                            <a asp-controller="Store" asp-action="Delete" asp-route-id="@store.Id">Delete</a>
+                        }
+                        </span>
+                    </h2>
+
+                    @if (userCanManage)
+                    {
+                        <table class="crud-details accordion-content closed">
+                            <tr>
+                                <th>
+                                    URL (@linksBuilder.CustomLinkTitle)
+                                </th>
+                                <td>
+                                    @Html.DisplayFor(model => store.URL)
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    @Html.DisplayNameFor(model => store.Dimension)
+                                </th>
+                                <td>
+                                    @Html.DisplayFor(model => store.Dimension)
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    Start point
+                                </th>
+                                <td>
+                                    @Html.DisplayFor(model => store.StartX), 
+                                    @Html.DisplayFor(model => store.StartY), 
+                                    @Html.DisplayFor(model => store.StartZ)
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    End point
+                                </th>
+                                <td>
+                                    @Html.DisplayFor(model => store.EndX),
+                                    @Html.DisplayFor(model => store.EndY),
+                                    @Html.DisplayFor(model => store.EndZ)
+                                </td>
+                            </tr>
+                        </table>
+                    }
                 </div>
             </li>
         }

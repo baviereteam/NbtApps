@@ -1,25 +1,193 @@
 ﻿using McMerchants.Database;
+using McMerchants.Models;
 using McMerchants.Models.Database;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace McMerchants.Controllers
 {
+    [Route("Stores")]
     public class StoreController : Controller
     {
-        private readonly McMerchantsDbContext Context;
+        private readonly McMerchantsDbContext _context;
+        private readonly IConfiguration _configuration;
+        private readonly IWebHostEnvironment _environment;
 
-        public StoreController(McMerchantsDbContext context)
+        public StoreController(McMerchantsDbContext context, IConfiguration configuration, IWebHostEnvironment environment)
         {
-            Context = context;
+            _context = context;
+            _configuration = configuration;
+            _environment = environment;
         }
 
-        [Route("Stores")]
-        public ActionResult List()
+        [HttpGet]
+        public async Task<IActionResult> List()
         {
-            ICollection<StorageRegion> zones = Context.StorageRegions.ToList();
-            return View(zones);
+            return View(await _context.StorageRegions.ToListAsync());
+        }
+
+        [HttpGet("Create")]
+        [Authorize(Policy = Program.POLICY_IS_IN_DISCORD_SERVER)]
+        public IActionResult Create()
+        {
+            ViewData["AvailableDimensions"] = GetAvailableDimensions();
+            ViewData["AvailableLogos"] = GetAvailableLogos();
+            ViewData["IsCreate"] = true;
+            return View("CreateOrEdit");
+        }
+
+        [HttpPost("Create")]
+        [ValidateAntiForgeryToken]
+        [Authorize(Policy = Program.POLICY_IS_IN_DISCORD_SERVER)]
+        public async Task<IActionResult> Create([Bind("Name,Logo,Dimension,URL,StartX,StartY,StartZ,EndX,EndY,EndZ")] StorageRegion store)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(store);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(List));
+            }
+
+            ViewData["AvailableDimensions"] = GetAvailableDimensions();
+            ViewData["AvailableLogos"] = GetAvailableLogos();
+            ViewData["IsCreate"] = true;
+            return View("CreateOrEdit", store);
+        }
+
+        [HttpGet("{id:int}/Edit")]
+        [Authorize(Policy = Program.POLICY_IS_IN_DISCORD_SERVER)]
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var store = await _context.StorageRegions.FindAsync(id);
+            if (store == null)
+            {
+                return NotFound();
+            }
+
+            ViewData["AvailableDimensions"] = GetAvailableDimensions();
+            ViewData["AvailableLogos"] = GetAvailableLogos();
+            ViewData["IsCreate"] = false;
+
+            return View("CreateOrEdit", store);
+        }
+
+        [HttpPost("{id:int}/Edit")]
+        [ValidateAntiForgeryToken]
+        [Authorize(Policy = Program.POLICY_IS_IN_DISCORD_SERVER)]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Logo,Dimension,URL,StartX,StartY,StartZ,EndX,EndY,EndZ")] StorageRegion store)
+        {
+            if (id != store.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(store);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!StoreExists(store.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(List));
+            }
+
+            ViewData["AvailableDimensions"] = GetAvailableDimensions();
+            ViewData["AvailableLogos"] = GetAvailableLogos();
+            ViewData["IsCreate"] = false;
+
+            return View("CreateOrEdit", store);
+        }
+
+        [HttpGet("{id:int}/Delete")]
+        [Authorize(Policy = Program.POLICY_IS_IN_DISCORD_SERVER)]
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var store = await _context.StorageRegions
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (store == null)
+            {
+                return NotFound();
+            }
+
+            return View(store);
+        }
+
+        [HttpPost("{id:int}/Delete")]
+        [ValidateAntiForgeryToken]
+        [Authorize(Policy = Program.POLICY_IS_IN_DISCORD_SERVER)]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var store = await _context.StorageRegions.FindAsync(id);
+            if (store != null)
+            {
+                _context.StorageRegions.Remove(store);
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(List));
+        }
+
+        private bool StoreExists(int id)
+        {
+            return _context.StorageRegions.Any(e => e.Id == id);
+        }
+
+        private ICollection<SelectListItem> GetAvailableDimensions()
+        {
+            var mapEntries = _configuration.GetSection("MapPaths").GetChildren();
+            return mapEntries
+                .Select(entry => new SelectListItem() 
+                {
+                    Value = entry.Key,
+                    Text = entry.Key
+                })
+                .ToList();
+        }
+
+        private ICollection<SelectListItem> GetAvailableLogos()
+        {
+            var imagesPath = Path.Combine(_environment.WebRootPath, "img/stores");
+            return Directory
+                .EnumerateFiles(imagesPath, "*.png", SearchOption.TopDirectoryOnly)
+                .Select(path =>
+                {
+                    var fileName = Path.GetFileName(path);
+                    return new SelectListItem()
+                    {
+                        Value = fileName,
+                        Text = fileName
+                    };
+                })
+                .ToList();
         }
     }
 }
