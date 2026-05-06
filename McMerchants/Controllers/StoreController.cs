@@ -122,6 +122,40 @@ namespace McMerchants.Controllers
             return View("CreateOrEdit", store);
         }
 
+        [HttpGet("{id:int}/Delete")]
+        [Authorize(Policy = Program.POLICY_IS_IN_DISCORD_SERVER)]
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var store = await _context.StorageRegions
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (store == null)
+            {
+                return NotFound();
+            }
+
+            return View(store);
+        }
+
+        [HttpPost("{id:int}/Delete")]
+        [ValidateAntiForgeryToken]
+        [Authorize(Policy = Program.POLICY_IS_IN_DISCORD_SERVER)]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var store = await _context.StorageRegions.FindAsync(id);
+            if (store != null)
+            {
+                _context.StorageRegions.Remove(store);
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(List));
+        }
+
         private bool StoreExists(int id)
         {
             return _context.StorageRegions.Any(e => e.Id == id);
