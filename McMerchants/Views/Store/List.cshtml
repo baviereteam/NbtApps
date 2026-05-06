@@ -10,6 +10,9 @@
 
 <div>
     <h1>Stores</h1>
+    <span class="toolbar">
+        <a asp-controller="Store" asp-action="Create">Add a new store</a>
+    </span>
 
     <ul class="item-providers">
         @foreach (var store in Model)

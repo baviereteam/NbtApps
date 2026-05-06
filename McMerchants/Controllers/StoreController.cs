@@ -34,7 +34,34 @@ namespace McMerchants.Controllers
             return View(await _context.StorageRegions.ToListAsync());
         }
 
-        // GET: Store/5/Edit
+        [HttpGet("Create")]
+        [Authorize(Policy = Program.POLICY_IS_IN_DISCORD_SERVER)]
+        public IActionResult Create()
+        {
+            ViewData["AvailableDimensions"] = GetAvailableDimensions();
+            ViewData["AvailableLogos"] = GetAvailableLogos();
+            ViewData["IsCreate"] = true;
+            return View("CreateOrEdit");
+        }
+
+        [HttpPost("Create")]
+        [ValidateAntiForgeryToken]
+        [Authorize(Policy = Program.POLICY_IS_IN_DISCORD_SERVER)]
+        public async Task<IActionResult> Create([Bind("Name,Logo,Dimension,URL,StartX,StartY,StartZ,EndX,EndY,EndZ")] StorageRegion store)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(store);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(List));
+            }
+
+            ViewData["AvailableDimensions"] = GetAvailableDimensions();
+            ViewData["AvailableLogos"] = GetAvailableLogos();
+            ViewData["IsCreate"] = true;
+            return View("CreateOrEdit", store);
+        }
+
         [HttpGet("{id:int}/Edit")]
         [Authorize(Policy = Program.POLICY_IS_IN_DISCORD_SERVER)]
         public async Task<IActionResult> Edit(int? id)
@@ -52,13 +79,11 @@ namespace McMerchants.Controllers
 
             ViewData["AvailableDimensions"] = GetAvailableDimensions();
             ViewData["AvailableLogos"] = GetAvailableLogos();
+            ViewData["IsCreate"] = false;
 
-            return View(store);
+            return View("CreateOrEdit", store);
         }
 
-        // POST: Store/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost("{id:int}/Edit")]
         [ValidateAntiForgeryToken]
         [Authorize(Policy = Program.POLICY_IS_IN_DISCORD_SERVER)]
@@ -92,8 +117,9 @@ namespace McMerchants.Controllers
 
             ViewData["AvailableDimensions"] = GetAvailableDimensions();
             ViewData["AvailableLogos"] = GetAvailableLogos();
+            ViewData["IsCreate"] = false;
 
-            return View(store);
+            return View("CreateOrEdit", store);
         }
 
         private bool StoreExists(int id)

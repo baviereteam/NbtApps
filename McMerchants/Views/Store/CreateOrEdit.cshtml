@@ -1,26 +1,28 @@
-﻿@using Microsoft.AspNetCore.Authorization
-@model McMerchants.Models.Database.ItemProviderRegion
+﻿@model McMerchants.Models.Database.ItemProviderRegion
 @inject McMerchants.Services.ItemProviderLinksBuilder linksBuilder
-@inject IAuthorizationService authorization
 
 @{
     Layout = "_Layout";
-    bool userCanManage = (await authorization.AuthorizeAsync(User, Program.POLICY_IS_IN_DISCORD_SERVER)).Succeeded;
+    var isCreate = (bool)ViewData["IsCreate"];
+
+    string formAction = isCreate ? "Create" : "Edit";
+    string displayedName = isCreate ? "New store..." : Model.Name;
+    string submitValue = isCreate ? "Create" : "Save";
 }
 
 <div class="edit">
     <div class="header">
-        @if (!string.IsNullOrWhiteSpace(Model.Logo))
+        @if (!isCreate && !string.IsNullOrWhiteSpace(Model.Logo))
         {
             <img class="storeLogo" src="~/img/stores/@Model.Logo" alt="" />
         }
         <div class="identity">
             <span class="type">Store</span>
-            <h2 class="storeName">@Model.Name</h2>
+            <h1 class="storeName">@displayedName</h1>
         </div>
     </div>
 
-    <form asp-action="Edit">
+    <form asp-action="@formAction">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <input type="hidden" asp-for="Id" />
 
@@ -133,8 +135,8 @@
         </table>
 
         <div class="buttons">
-            <a asp-action="Index">Back to List</a>
-            <input type="submit" value="Save" class="btn btn-primary" />
+            <a asp-action="List">Back to List</a>
+            <input type="submit" value="@submitValue" class="btn btn-primary" />
         </div>
     </form>
 </div>
