@@ -1,0 +1,104 @@
+﻿using McMerchants.Database;
+using McMerchants.Models.Database;
+using Microsoft.Extensions.DependencyInjection;
+using McMerchantsLib.Stock;
+
+namespace NbtApps.Tests.v26_1_2
+{
+    [TestClass]
+    public class MM2_AlleyBoundaries_26_1_2 : TestBase
+    {
+        private const string TEST_DIMENSION = "test_dimension";
+
+        [TestInitialize]
+        public void Setup()
+        {
+            CreateHost(
+                new Dictionary<string, string>()
+                {
+                    { TEST_DIMENSION, Path.Combine(FixturesDirectory, "CombinedTestMap-26.1.2") }
+                },
+                Path.Combine(FixturesDirectory, "NbtDatabases/nbt_1.21.4.db")
+            );
+
+            var dbContext = Host.Services.GetService<McMerchantsDbContext>();
+
+            // create the test store
+            var store = new StorageRegion()
+            {
+                Name = "Test store",
+                Dimension = TEST_DIMENSION,
+                StartX = -3,
+                StartY = -61,
+                StartZ = 6,
+                EndX = -12,
+                EndY = -55,
+                EndZ = 3
+            };
+            dbContext.StorageRegions.Add(store);
+            store.Alleys =
+            [
+                new Alley()
+                {
+                    Name = "Pink alley",
+                    Direction = Alley.AlleyDirection.Z,
+                    Coordinate = 4,
+                    LowBoundary = -8,
+                    HighBoundary = -5,
+                    StartY = -59,
+                    EndY = -57
+                },
+            ];
+
+            dbContext.SaveChanges();
+        }
+
+        [TestMethod]
+        public void SearchInAlley_ReturnsAlley()
+        {
+            var StockService = Host.Services.GetService<StockService>();
+            var results = StockService.GetStockOf("minecraft:honey_block").Results.First().Value;
+
+            Assert.AreEqual(0, results.Factories.Count);
+            Assert.AreEqual(0, results.Trades.Count);
+            Assert.AreEqual(1, results.Stores.Count);
+            Assert.IsNull(results.Stores.First().StockInDefaultAlley);
+            Assert.AreEqual(0, results.Stores.First().StockInBulkContainers.Count);
+
+            int count = 0;
+            foreach (var bulk in results.Stores.First().StockInOtherAlleys)
+            {
+                count += bulk.Value;
+            }
+
+            Assert.AreEqual(3, count);
+        }
+
+        [TestMethod]
+        public void SearchOutsideAlley_ReturnsBulk()
+        {
+            var StockService = Host.Services.GetService<StockService>();
+            var results = StockService.GetStockOf("minecraft:ice").Results.First().Value;
+
+            Assert.AreEqual(0, results.Factories.Count);
+            Assert.AreEqual(0, results.Trades.Count);
+            Assert.AreEqual(1, results.Stores.Count);
+            Assert.IsNull(results.Stores.First().StockInDefaultAlley);
+            Assert.AreEqual(0, results.Stores.First().StockInOtherAlleys.Count);
+
+            int count = 0;
+            foreach (var bulk in results.Stores.First().StockInBulkContainers)
+            {
+                count += bulk.Value;
+            }
+
+            Assert.AreEqual(6, count);
+        }
+
+        [TestCleanup]
+        public void TearDown()
+        {
+            CloseConnection();
+        }
+    }
+}
