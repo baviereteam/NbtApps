@@ -372,3 +372,6 @@ appsettings.*.json
 /McMerchants/Database/mcmerchants.db
 /McMerchants/wwwroot/css/atlas.css
 /McMerchants/wwwroot/img/atlas.png
+/McMerchants/Mockable
+/McMerchants/Database
+/McMerchantsChatPlugin/.idea
