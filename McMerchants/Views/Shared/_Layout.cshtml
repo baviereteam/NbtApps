@@ -122,9 +122,12 @@
                     }
                 });
 
-                document.getElementById('login-button').addEventListener('click', () => {
-                    window.location.replace('/auth/login');
-                });
+                const loginButton = document.getElementById('login-button');
+                if (loginButton != null) {
+                    loginButton.addEventListener('click', () => {
+                        window.location.replace('/auth/login');
+                    });
+                }
             }
         });
     </script>

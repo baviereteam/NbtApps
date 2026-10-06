@@ -5,6 +5,7 @@
     /// </summary>
     public class TradingRegion : ItemProviderRegion
     {
-        
+        public const string TYPE_KEY = "trading";
+        public new string Type { get; } = TYPE_KEY;
     }
 }

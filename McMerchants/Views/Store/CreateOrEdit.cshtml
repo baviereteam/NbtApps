@@ -1,0 +1,142 @@
+﻿@model McMerchants.Models.Database.ItemProviderRegion
+@inject McMerchants.Services.ItemProviderLinksBuilder linksBuilder
+
+@{
+    Layout = "_Layout";
+    var isCreate = (bool)ViewData["IsCreate"];
+
+    string formAction = isCreate ? "Create" : "Edit";
+    string displayedName = isCreate ? "New store..." : Model.Name;
+    string submitValue = isCreate ? "Create" : "Save";
+}
+
+<div class="edit">
+    <div class="header">
+        @if (!isCreate && !string.IsNullOrWhiteSpace(Model.Logo))
+        {
+            <img class="storeLogo" src="~/img/stores/@Model.Logo" alt="" />
+        }
+        <div class="identity">
+            <span class="type">Store</span>
+            <h1 class="storeName">@displayedName</h1>
+        </div>
+    </div>
+
+    <form asp-action="@formAction">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="Id" />
+
+        @Html.ValidationSummary()
+
+        <table class="fields">
+            <tr>
+                <th>
+                    <label asp-for="Name" class="control-label"></label>
+                </th>
+                <td>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </td>
+            </tr>
+
+            <tr>
+                <th>
+                    <label asp-for="Logo" class="control-label"></label>
+                </th>
+                <td>
+                    @Html.DropDownListFor(m => m.Logo, ViewData["AvailableLogos"] as IEnumerable<SelectListItem>, "-- None --", new {})
+                    <span asp-validation-for="Logo" class="text-danger"></span>
+                    <span class="hint">Not in the list? Upload it first.</span>
+                </td>
+            </tr>
+
+            <tr>
+                <th>
+                    <label asp-for="URL" class="control-label">URL (@linksBuilder.CustomLinkTitle)</label>
+                </th>
+                <td>
+                    <input asp-for="URL" class="form-control" />
+                    <span asp-validation-for="URL" class="text-danger"></span>
+                </td>
+            </tr>
+
+            <tr>
+                <th>
+                    <label asp-for="Dimension" class="control-label"></label>
+                </th>
+                <td>
+                    @Html.DropDownListFor(m => m.Dimension, ViewData["AvailableDimensions"] as IEnumerable<SelectListItem>, "", new { })
+                    <span asp-validation-for="Dimension" class="text-danger"></span>
+                    <span class="hint">Not in the list? Add it to the settings file.</span>
+                </td>
+            </tr>
+
+            <tr>
+                <th colspan="2" class="section">Start point</th>
+            </tr>
+            <tr>
+                <th>
+                    <label asp-for="StartX" class="control-label"></label>
+                </th>
+                <td>
+                    <input asp-for="StartX" class="form-control" />
+                    <span asp-validation-for="StartX" class="text-danger"></span>
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    <label asp-for="StartY" class="control-label"></label>
+                </th>
+                <td>
+                    <input asp-for="StartY" class="form-control" />
+                    <span asp-validation-for="StartY" class="text-danger"></span>
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    <label asp-for="StartZ" class="control-label"></label>
+                </th>
+                <td>
+                    <input asp-for="StartZ" class="form-control" />
+                    <span asp-validation-for="StartZ" class="text-danger"></span>
+                </td>
+            </tr>
+
+            <tr>
+                <th colspan="2" class="section">End point</th>
+            </tr>
+            <tr>
+                <th>
+                    <label asp-for="EndX" class="control-label"></label>
+                </th>
+                <td>
+                    <input asp-for="EndX" class="form-control" />
+                    <span asp-validation-for="EndX" class="text-danger"></span>
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    <label asp-for="EndY" class="control-label"></label>
+                </th>
+                <td>
+                    <input asp-for="EndY" class="form-control" />
+                    <span asp-validation-for="EndY" class="text-danger"></span>
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    <label asp-for="EndZ" class="control-label"></label>
+                </th>
+                <td>
+                    <input asp-for="EndZ" class="form-control" />
+                    <span asp-validation-for="EndZ" class="text-danger"></span>
+                </td>
+            </tr>
+        </table>
+
+        <div class="buttons">
+            <a asp-action="List">Back to List</a>
+            <input type="submit" value="@submitValue" class="btn btn-primary" />
+        </div>
+    </form>
+</div>

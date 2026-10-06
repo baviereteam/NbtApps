@@ -1,0 +1,28 @@
+﻿@model McMerchants.Models.Database.ItemProviderRegion
+
+@{
+    Layout = "_Layout";
+}
+
+<div class="edit">
+    <div class="header">
+        @if (!string.IsNullOrWhiteSpace(Model.Logo))
+        {
+            <img class="storeLogo" src="~/img/stores/@Model.Logo" alt="" />
+        }
+        <div class="identity">
+            <span class="type">Store</span>
+            <h1 class="storeName">@Model.Name</h1>
+        </div>
+    </div>
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+
+        <h2>Are you sure you want to delete this store ?</h2>
+
+        <div class="buttons">
+            <a asp-action="List">No, go back to the list</a>
+            <input type="submit" value="Yes, Delete Forever" />
+        </div>
+    </form>
+</div>
