@@ -131,6 +131,10 @@ a:visited {
     color: black;
     align-items: center;
 
+    label {
+        display: none;
+    }
+
     #search {
         margin: auto;
         width: 100%;
