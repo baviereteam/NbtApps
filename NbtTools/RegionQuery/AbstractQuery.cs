@@ -10,7 +10,6 @@ namespace NbtTools.RegionQuery
 {
     public abstract class AbstractQuery
     {
-        private readonly ChunkNbtReader Reader = new ChunkNbtReader();
         private readonly ILogger<AbstractQuery> Logger;
 
         protected abstract string ElementKey { get; }
@@ -70,7 +69,7 @@ namespace NbtTools.RegionQuery
         {
             var result = new QueryResult<VersionedNbtCompound>();
 
-            var chunkMainTag = Reader.ReadChunk(chunk);
+            var chunkMainTag = ChunkNbtReader.ReadChunk(chunk);
             if (IsValidChunk(chunkMainTag))
             {
                 var dataVersionTag = chunkMainTag["DataVersion"] as NbtInt;

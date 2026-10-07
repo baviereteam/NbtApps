@@ -28,21 +28,27 @@ namespace NbtTools.Entities.Providers
                 if (metadataTag.ContainsKey("Enchantments"))
                 {
                     var enchantmentsTag = metadataTag["Enchantments"] as NbtList;
-                    foreach (NbtCompound enchantment in enchantmentsTag)
+                    foreach (NbtTag t in enchantmentsTag)
                     {
-                        var id = (enchantment["id"] as NbtString).Value;
-                        var lvl = (enchantment["lvl"] as NbtShort).Value;
-                        enchantments.Add(new Enchantment(id, lvl));
+                        if (t is NbtCompound enchantment)
+                        {
+                            var id = (enchantment["id"] as NbtString).Value;
+                            var lvl = (enchantment["lvl"] as NbtShort).Value;
+                            enchantments.Add(new Enchantment(id, lvl));
+                        }
                     }
                 }
                 if (metadataTag.ContainsKey("StoredEnchantments"))
                 {
                     var bookEnchantmentsTag = metadataTag["StoredEnchantments"] as NbtList;
-                    foreach (NbtCompound enchantment in bookEnchantmentsTag)
+                    foreach (NbtTag t in bookEnchantmentsTag)
                     {
-                        var id = (enchantment["id"] as NbtString).Value;
-                        var lvl = (enchantment["lvl"] as NbtShort).Value;
-                        enchantments.Add(new Enchantment(id, lvl));
+                        if (t is NbtCompound enchantment)
+                        {
+                            var id = (enchantment["id"] as NbtString).Value;
+                            var lvl = (enchantment["lvl"] as NbtShort).Value;
+                            enchantments.Add(new Enchantment(id, lvl));
+                        }
                     }
                 }
 

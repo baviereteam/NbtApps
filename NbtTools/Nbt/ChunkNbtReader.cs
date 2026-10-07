@@ -5,9 +5,9 @@ using System.IO;
 
 namespace NbtTools.Nbt
 {
-    public class ChunkNbtReader
+    public static class ChunkNbtReader
     {
-        public NbtCompound ReadChunk(ChunkEntry chunk)
+        public static NbtCompound ReadChunk(ChunkEntry chunk)
         {
             NbtCompound rootTag = null;
 

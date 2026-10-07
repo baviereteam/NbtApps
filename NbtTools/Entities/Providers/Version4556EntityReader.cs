@@ -24,18 +24,24 @@ namespace NbtTools.Entities.Providers
                 if (componentsTag.ContainsKey("minecraft:enchantments"))
                 {
                     var enchantmentsTag = componentsTag["minecraft:enchantments"] as NbtCompound;
-                    foreach (NbtInt enchantmentTag in enchantmentsTag)
+                    foreach (NbtTag tag in enchantmentsTag)
                     {
-                        enchantments.Add(new Enchantment(enchantmentTag.Name, enchantmentTag.Value));
+                        if (tag is NbtInt enchantmentTag)
+                        {
+                            enchantments.Add(new Enchantment(enchantmentTag.Name, enchantmentTag.Value));
+                        }
                     }
                 }
 
                 if (componentsTag.ContainsKey("minecraft:stored_enchantments"))
                 {
                     var bookEnchantmentsTag = componentsTag["minecraft:stored_enchantments"] as NbtCompound;
-                    foreach (NbtInt enchantmentTag in bookEnchantmentsTag)
+                    foreach (NbtTag tag in bookEnchantmentsTag)
                     {
-                        enchantments.Add(new Enchantment(enchantmentTag.Name, enchantmentTag.Value));
+                        if (tag is NbtInt enchantmentTag)
+                        {
+                            enchantments.Add(new Enchantment(enchantmentTag.Name, enchantmentTag.Value));
+                        }
                     }
                 }
 

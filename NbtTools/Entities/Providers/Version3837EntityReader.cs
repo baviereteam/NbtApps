@@ -40,9 +40,12 @@ namespace NbtTools.Entities.Providers
                     var enchantmentsTag = componentsTag["minecraft:enchantments"] as NbtCompound;
 
                     var levelsTag = enchantmentsTag["levels"] as NbtCompound;
-                    foreach (NbtInt enchantmentTag in levelsTag)
+                    foreach (NbtTag tag in levelsTag)
                     {
-                        enchantments.Add(new Enchantment(enchantmentTag.Name, enchantmentTag.Value));
+                        if (tag is NbtInt enchantmentTag)
+                        {
+                            enchantments.Add(new Enchantment(enchantmentTag.Name, enchantmentTag.Value));
+                        }
                     }
                 }
 
@@ -50,9 +53,12 @@ namespace NbtTools.Entities.Providers
                 {
                     var bookEnchantmentsTag = componentsTag["minecraft:stored_enchantments"] as NbtCompound;
                     var levelsTag = bookEnchantmentsTag["levels"] as NbtCompound;
-                    foreach (NbtInt enchantmentTag in levelsTag)
+                    foreach (NbtTag tag in levelsTag)
                     {
-                        enchantments.Add(new Enchantment(enchantmentTag.Name, enchantmentTag.Value));
+                        if (tag is NbtInt enchantmentTag)
+                        {
+                            enchantments.Add(new Enchantment(enchantmentTag.Name, enchantmentTag.Value));
+                        }
                     }
                 }
 
