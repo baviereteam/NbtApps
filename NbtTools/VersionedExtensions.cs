@@ -1,4 +1,4 @@
-﻿using SharpNBT;
+﻿using fNbt;
 using System.Collections.Generic;
 
 namespace NbtTools
@@ -12,8 +12,8 @@ namespace NbtTools
         /// <param name="container"></param>
         /// <param name="key"></param>
         /// <returns>A Versioned<typeparamref name="T"/> containing the child tag with that key, or <c>null</c> if the key was not present in the container tag.</returns>
-        public static Versioned<T> Get<T>(this Versioned<CompoundTag> container, string key)
-            where T : Tag
+        public static Versioned<T> Get<T>(this Versioned<NbtCompound> container, string key)
+            where T : NbtTag
         {
             if (container.Tag.ContainsKey(key))
             {
@@ -28,12 +28,12 @@ namespace NbtTools
         /// </summary>
         /// <param name="versionedTag"></param>
         /// <returns></returns>
-        public static IEnumerable<Versioned<Tag>> Enumerate(this Versioned<ListTag> versionedTag)
+        public static IEnumerable<Versioned<NbtTag>> Enumerate(this Versioned<NbtList> versionedTag)
         {
             var enumerableTag = versionedTag.Tag;
             foreach (var element in enumerableTag)
             {
-                yield return new Versioned<Tag>(element, versionedTag.DataVersion);
+                yield return new Versioned<NbtTag>(element, versionedTag.DataVersion);
             }
         }
         /// <summary>
@@ -41,12 +41,12 @@ namespace NbtTools
         /// </summary>
         /// <param name="versionedTag"></param>
         /// <returns></returns>
-        public static IEnumerable<Versioned<Tag>> Enumerate(this Versioned<CompoundTag> versionedTag)
+        public static IEnumerable<Versioned<NbtTag>> Enumerate(this Versioned<NbtCompound> versionedTag)
         {
             var enumerableTag = versionedTag.Tag;
             foreach (var element in enumerableTag)
             {
-                yield return new Versioned<Tag>(element, versionedTag.DataVersion);
+                yield return new Versioned<NbtTag>(element, versionedTag.DataVersion);
             }
         }
     }

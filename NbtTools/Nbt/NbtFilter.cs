@@ -1,4 +1,4 @@
-﻿using SharpNBT;
+﻿using fNbt;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -6,22 +6,22 @@ namespace NbtTools.Nbt
 {
     public static class NbtFilter
     {
-        public static ICollection<Versioned<CompoundTag>> GetAllCompoundsWithId(ICollection<Versioned<CompoundTag>> rootTags, string id)
+        public static ICollection<Versioned<NbtCompound>> GetAllCompoundsWithId(ICollection<Versioned<NbtCompound>> rootTags, string id)
         {
             return GetAllCompoundsWithId(rootTags, new string[] { id });  
         }
 
-        public static ICollection<Versioned<CompoundTag>> GetAllCompoundsWithId(ICollection<Versioned<CompoundTag>> rootTags, string[] ids)
+        public static ICollection<Versioned<NbtCompound>> GetAllCompoundsWithId(ICollection<Versioned<NbtCompound>> rootTags, string[] ids)
         {
-            var tags = new List<Versioned<CompoundTag>>();
+            var tags = new List<Versioned<NbtCompound>>();
 
             // open all subtags, check id, and only add if it matches
             foreach (var versionedRootTag in rootTags)
             {
-                CompoundTag compoundTag = versionedRootTag.Tag;
-                if (compoundTag != null)
+                NbtCompound NbtCompound = versionedRootTag.Tag;
+                if (NbtCompound != null)
                 {
-                    var idTag = compoundTag["id"] as StringTag;
+                    var idTag = NbtCompound["id"] as NbtString;
 
                     if (idTag != null && ids.Contains(idTag.Value))
                     {

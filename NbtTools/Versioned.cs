@@ -1,4 +1,4 @@
-﻿using SharpNBT;
+﻿using fNbt;
 
 namespace NbtTools
 {
@@ -6,7 +6,7 @@ namespace NbtTools
     /// Binds a DataVersion number to a Tag.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class Versioned<T> where T : Tag
+    public class Versioned<T> where T : NbtTag
     {
         public T Tag { get; }
         public int DataVersion { get; }
@@ -17,7 +17,7 @@ namespace NbtTools
             DataVersion = dataVersion;
         }
 
-        public Versioned<T2> As<T2>() where T2 : Tag
+        public Versioned<T2> As<T2>() where T2 : NbtTag
         {
             if (Tag is T2 convertedTag)
             {

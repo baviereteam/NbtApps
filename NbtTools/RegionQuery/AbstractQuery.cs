@@ -1,17 +1,15 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using fNbt;
+using Microsoft.Extensions.Logging;
 using NbtTools.Geography;
 using NbtTools.Mca;
 using NbtTools.Nbt;
-using SharpNBT;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using VersionedCompoundTag = NbtTools.Versioned<SharpNBT.CompoundTag>;
+using VersionedNbtCompound = NbtTools.Versioned<fNbt.NbtCompound>;
 
 namespace NbtTools.RegionQuery
 {
     public abstract class AbstractQuery
     {
-        private readonly NbtReader Reader = new NbtReader();
         private readonly ILogger<AbstractQuery> Logger;
 
         protected abstract string ElementKey { get; }
@@ -21,12 +19,12 @@ namespace NbtTools.RegionQuery
             Logger = logger;
         }
 
-        public QueryResult<VersionedCompoundTag> GetData(Cuboid zone)
+        public QueryResult<VersionedNbtCompound> GetData(Cuboid zone)
         {
             var chunks = zone.GetAllChunks();
             var regions = chunks.Select(c => c.Region).Distinct();
 
-            var result = new QueryResult<VersionedCompoundTag>();
+            var result = new QueryResult<VersionedNbtCompound>();
 
             foreach (var region in regions)
             {
@@ -37,9 +35,9 @@ namespace NbtTools.RegionQuery
             return result;
         }
 
-        private QueryResult<VersionedCompoundTag> ReadTagsOfRegion(Region region, Cuboid zone)
+        private QueryResult<VersionedNbtCompound> ReadTagsOfRegion(Region region, Cuboid zone)
         {
-            var result = new QueryResult<VersionedCompoundTag>();
+            var result = new QueryResult<VersionedNbtCompound>();
 
             var file = GetFile(zone.Dimension, region.GetFileName());
             var regionChunks = zone.GetAllChunks().Where(c => c.Region.Equals(region));
@@ -67,27 +65,27 @@ namespace NbtTools.RegionQuery
             return result;
         }
 
-        private QueryResult<VersionedCompoundTag> ReadTagsOfChunk(ChunkEntry chunk, Cuboid zone)
+        private QueryResult<VersionedNbtCompound> ReadTagsOfChunk(ChunkEntry chunk, Cuboid zone)
         {
-            var result = new QueryResult<VersionedCompoundTag>();
+            var result = new QueryResult<VersionedNbtCompound>();
 
-            var chunkMainTag = Reader.ReadChunk(chunk);
+            var chunkMainTag = ChunkNbtReader.ReadChunk(chunk);
             if (IsValidChunk(chunkMainTag))
             {
-                var dataVersion = chunkMainTag["DataVersion"] as IntTag;
-                var data = chunkMainTag[ElementKey] as ListTag;
+                var dataVersionTag = chunkMainTag["DataVersion"] as NbtInt;
+                var data = chunkMainTag[ElementKey] as NbtList;
 
                 if (data != null)
                 {
                     foreach (var entity in data)
                     {
-                        var compoundTag = entity as CompoundTag;
+                        var NbtCompound = entity as NbtCompound;
 
                         // Ignore entities that are in the chunk, but outside of the selection
                         // (in chunks containing the selection limits)
-                        if (IsInZone(compoundTag, zone))
+                        if (IsInZone(NbtCompound, zone))
                         {
-                            result.Result.Add(new VersionedCompoundTag(compoundTag, dataVersion));
+                            result.Result.Add(new VersionedNbtCompound(NbtCompound, dataVersionTag.Value));
                         }
                     }
                 }
@@ -98,8 +96,8 @@ namespace NbtTools.RegionQuery
 
         protected abstract McaFile GetFile(string dimension, string fileName);
 
-        protected abstract bool IsInZone(CompoundTag element, Cuboid zone);
+        protected abstract bool IsInZone(NbtCompound element, Cuboid zone);
 
-        protected abstract bool IsValidChunk(CompoundTag chunkMainTag);
+        protected abstract bool IsValidChunk(NbtCompound chunkMainTag);
     }
 }

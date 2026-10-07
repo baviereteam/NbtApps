@@ -1,5 +1,5 @@
 ﻿using NbtTools.Entities.Trading;
-using SharpNBT;
+using fNbt;
 using System;
 using System.Collections.Generic;
 
@@ -9,7 +9,7 @@ namespace NbtTools.Entities.Providers
     // https://misode.github.io/versions/?id=1.20.5&tab=changelog
     internal class Version3837EntityReader : EntityReader
     {
-        public override int GetCountFromItemTag(CompoundTag tag)
+        public override int GetCountFromItemTag(NbtCompound tag)
         {
             //Renamed "Count" → "count".The count now defaults to 1 and will not be present in that case.
             var countTag = tag["count"];
@@ -19,10 +19,10 @@ namespace NbtTools.Entities.Providers
                 return 1;
             }
 
-            return (countTag as IntTag).Value;
+            return (countTag as NbtInt).Value;
         }
 
-        public override ICollection<Enchantment> GetEnchantmentsFromTradeComponent(CompoundTag tradeComponentTag)
+        public override ICollection<Enchantment> GetEnchantmentsFromTradeComponent(NbtCompound tradeComponentTag)
         {
             try
             {
@@ -32,27 +32,33 @@ namespace NbtTools.Entities.Providers
                 {
                     return enchantments;
                 }
-                var componentsTag = tradeComponentTag["components"] as CompoundTag;
+                var componentsTag = tradeComponentTag["components"] as NbtCompound;
 
 
                 if (componentsTag.ContainsKey("minecraft:enchantments"))
                 {
-                    var enchantmentsTag = componentsTag["minecraft:enchantments"] as CompoundTag;
+                    var enchantmentsTag = componentsTag["minecraft:enchantments"] as NbtCompound;
 
-                    var levelsTag = enchantmentsTag["levels"] as CompoundTag;
-                    foreach (IntTag enchantmentTag in levelsTag)
+                    var levelsTag = enchantmentsTag["levels"] as NbtCompound;
+                    foreach (NbtTag tag in levelsTag)
                     {
-                        enchantments.Add(new Enchantment(enchantmentTag.Name, enchantmentTag.Value));
+                        if (tag is NbtInt enchantmentTag)
+                        {
+                            enchantments.Add(new Enchantment(enchantmentTag.Name, enchantmentTag.Value));
+                        }
                     }
                 }
 
                 if (componentsTag.ContainsKey("minecraft:stored_enchantments"))
                 {
-                    var bookEnchantmentsTag = componentsTag["minecraft:stored_enchantments"] as CompoundTag;
-                    var levelsTag = bookEnchantmentsTag["levels"] as CompoundTag;
-                    foreach (IntTag enchantmentTag in levelsTag)
+                    var bookEnchantmentsTag = componentsTag["minecraft:stored_enchantments"] as NbtCompound;
+                    var levelsTag = bookEnchantmentsTag["levels"] as NbtCompound;
+                    foreach (NbtTag tag in levelsTag)
                     {
-                        enchantments.Add(new Enchantment(enchantmentTag.Name, enchantmentTag.Value));
+                        if (tag is NbtInt enchantmentTag)
+                        {
+                            enchantments.Add(new Enchantment(enchantmentTag.Name, enchantmentTag.Value));
+                        }
                     }
                 }
 

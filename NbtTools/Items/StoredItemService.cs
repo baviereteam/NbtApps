@@ -1,7 +1,7 @@
 ﻿using NbtTools.Geography;
 using NbtTools.Items.Providers;
 using NbtTools.RegionQuery;
-using SharpNBT;
+using fNbt;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,7 +47,7 @@ namespace NbtTools.Items
             foreach (var versionedBlockEntity in dataSource.Result)
             {
                 var container = versionedBlockEntity.Tag;
-                var idTag = container["id"] as StringTag;
+                var idTag = container["id"] as NbtString;
 
                 // Check this blockentity is a container for the kind of items we search
                 if (searchContainsBooks)
@@ -66,9 +66,9 @@ namespace NbtTools.Items
                 }
 
                 Point position = new Point(
-                    (container["x"] as IntTag).Value,
-                    (container["y"] as IntTag).Value,
-                    (container["z"] as IntTag).Value
+                    (container["x"] as NbtInt).Value,
+                    (container["y"] as NbtInt).Value,
+                    (container["z"] as NbtInt).Value
                 );
 
                 var storageReader = StorageReaderFactory.GetForVersion(versionedBlockEntity.DataVersion);

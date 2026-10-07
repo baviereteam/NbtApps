@@ -1,4 +1,4 @@
-﻿using SharpNBT;
+﻿using fNbt;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,7 +8,7 @@ namespace NbtTools.Items.Providers
     // https://misode.github.io/versions/?id=1.20.5&tab=changelog
     internal class Version3837StorageReader : StorageReader
     {
-        protected override int GetCountFromItemTag(CompoundTag itemTag)
+        protected override int GetCountFromItemTag(NbtCompound itemTag)
         {
             //Renamed "Count" → "count".The count now defaults to 1 and will not be present in that case.
             var countTag = itemTag["count"];
@@ -18,7 +18,7 @@ namespace NbtTools.Items.Providers
                 return 1;
             }
 
-            return (countTag as IntTag).Value;
+            return (countTag as NbtInt).Value;
         }
 
         /// <summary>
@@ -27,7 +27,7 @@ namespace NbtTools.Items.Providers
         /// <param name="shulkerBox"></param>
         /// <param name="searchedItem"></param>
         /// <returns></returns>
-        internal override IDictionary<Searchable, int> CountItemsInContainedShulkerBox(CompoundTag shulkerBox, ICollection<Searchable> searchedItems)
+        internal override IDictionary<Searchable, int> CountItemsInContainedShulkerBox(NbtCompound shulkerBox, ICollection<Searchable> searchedItems)
         {
             var results = new Dictionary<Searchable, int>();
 
@@ -36,7 +36,7 @@ namespace NbtTools.Items.Providers
                 return results;
             }
 
-            var componentsTag = shulkerBox["components"] as CompoundTag;
+            var componentsTag = shulkerBox["components"] as NbtCompound;
 
             // Empty shulker boxes don't have a "minecraft:container".
             if (!componentsTag.ContainsKey("minecraft:container"))
@@ -46,7 +46,7 @@ namespace NbtTools.Items.Providers
 
             // List of compound (slot,item)
             // where item is a compound (id, count)
-            var containerContents = componentsTag["minecraft:container"] as ListTag;
+            var containerContents = componentsTag["minecraft:container"] as NbtList;
             if (containerContents == null)
             {
                 return results;
@@ -54,8 +54,8 @@ namespace NbtTools.Items.Providers
 
             foreach (var slot in containerContents)
             {
-                var slotTag = slot as CompoundTag;
-                var itemTag = slotTag["item"] as CompoundTag;
+                var slotTag = slot as NbtCompound;
+                var itemTag = slotTag["item"] as NbtCompound;
 
                 var searchableThatMatchesThisItem = searchedItems.SingleOrDefault(searchable => ItemTagIs(itemTag, searchable), null);
                 if (searchableThatMatchesThisItem == null)
@@ -75,27 +75,27 @@ namespace NbtTools.Items.Providers
         /// <param name="itemTag"></param>
         /// <param name="searchedPotion"></param>
         /// <returns></returns>
-        protected override bool IsMatchingPotion(CompoundTag itemTag, Potion searchedPotion)
+        protected override bool IsMatchingPotion(NbtCompound itemTag, Potion searchedPotion)
         {
-            var componentsTag = itemTag["components"] as CompoundTag;
+            var componentsTag = itemTag["components"] as NbtCompound;
             if (componentsTag == null)
             {
                 return false;
             }
 
-            var potionContentsTag = componentsTag["minecraft:potion_contents"] as CompoundTag;
+            var potionContentsTag = componentsTag["minecraft:potion_contents"] as NbtCompound;
             if (potionContentsTag == null)
             {
                 return false;
             }
 
-            var potionTag = potionContentsTag["potion"] as StringTag;
+            var potionTag = potionContentsTag["potion"] as NbtString;
             if (potionTag == null)
             {
                 return false;
             }
 
-            return potionTag == searchedPotion.PotionContents;
+            return potionTag.Value == searchedPotion.PotionContents;
         }
 
         /// <summary>
@@ -104,27 +104,27 @@ namespace NbtTools.Items.Providers
         /// <param name="itemTag"></param>
         /// <param name="searchedBook"></param>
         /// <returns></returns>
-        protected override bool IsMatchingEnchantedBook(CompoundTag itemTag, EnchantedBook searchedBook)
+        protected override bool IsMatchingEnchantedBook(NbtCompound itemTag, EnchantedBook searchedBook)
         {
-            var componentsTag = itemTag["components"] as CompoundTag;
+            var componentsTag = itemTag["components"] as NbtCompound;
             if (componentsTag == null)
             {
                 return false;
             }
 
-            var storedEnchantmentsTag = componentsTag["minecraft:stored_enchantments"] as CompoundTag;
+            var storedEnchantmentsTag = componentsTag["minecraft:stored_enchantments"] as NbtCompound;
             if (storedEnchantmentsTag == null)
             {
                 return false;
             }
 
-            var levelsTag = storedEnchantmentsTag["levels"] as CompoundTag;
+            var levelsTag = storedEnchantmentsTag["levels"] as NbtCompound;
             if (levelsTag == null || !levelsTag.ContainsKey(searchedBook.Enchantment))
             {
                 return false;
             }
 
-            return (levelsTag[searchedBook.Enchantment] as IntTag).Value == searchedBook.Level;
+            return (levelsTag[searchedBook.Enchantment] as NbtInt).Value == searchedBook.Level;
         }
     }
 }
