@@ -1,4 +1,4 @@
-﻿using SharpNBT;
+﻿using fNbt;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -6,9 +6,9 @@ namespace NbtTools.Items.Providers
 {
     public class StorageReader
     {
-        protected virtual int GetCountFromItemTag(CompoundTag itemTag)
+        protected virtual int GetCountFromItemTag(NbtCompound itemTag)
         {
-            return (itemTag["Count"] as ByteTag).Value;
+            return (itemTag["Count"] as NbtByte).Value;
         }
 
         /// <summary>
@@ -27,7 +27,7 @@ namespace NbtTools.Items.Providers
         /// <param name="itemTag"></param>
         /// <param name="searchedPotion"></param>
         /// <returns></returns>
-        protected virtual bool IsMatchingPotion(CompoundTag itemTag, Potion searchedPotion)
+        protected virtual bool IsMatchingPotion(NbtCompound itemTag, Potion searchedPotion)
         {
             return false;   // search for potions is not supported before 1.20.5.
         }
@@ -38,7 +38,7 @@ namespace NbtTools.Items.Providers
         /// <param name="itemTag"></param>
         /// <param name="searchedBook"></param>
         /// <returns></returns>
-        protected virtual bool IsMatchingEnchantedBook(CompoundTag itemTag, EnchantedBook searchedBook)
+        protected virtual bool IsMatchingEnchantedBook(NbtCompound itemTag, EnchantedBook searchedBook)
         {
             return false;   // search for enchanted books is not supported before 1.20.5.
         }
@@ -49,7 +49,7 @@ namespace NbtTools.Items.Providers
         /// <param name="storage"></param>
         /// <param name="searchedItem"></param>
         /// <returns></returns>
-        internal virtual IDictionary<Searchable, int> CountMatchingItemsInContainer(CompoundTag storage, ICollection<Searchable> searchedItems)
+        internal virtual IDictionary<Searchable, int> CountMatchingItemsInContainer(NbtCompound storage, ICollection<Searchable> searchedItems)
         {
             var results = new Dictionary<Searchable, int>();
 
@@ -58,16 +58,16 @@ namespace NbtTools.Items.Providers
                 return results;
             }
 
-            var itemsTag = storage["Items"] as ListTag;
+            var itemsTag = storage["Items"] as NbtList;
 
             // each non-empty slot in the container
-            foreach (Tag t in itemsTag)
+            foreach (NbtTag t in itemsTag)
             {
-                var tag = t as CompoundTag;
-                var itemIdTag = tag["id"] as StringTag;
+                var tag = t as NbtCompound;
+                var itemIdTag = tag["id"] as NbtString;
 
                 // the slot might contain a shulkerbox
-                if (IsShulkerBox(itemIdTag))
+                if (IsShulkerBox(itemIdTag.Value))
                 {
                     var shulkerBoxContentsMatching = CountItemsInContainedShulkerBox(tag, searchedItems);
                     results.AddRange(shulkerBoxContentsMatching);
@@ -94,9 +94,9 @@ namespace NbtTools.Items.Providers
         /// <param name="searchedItem"></param>
         /// <returns></returns>
         /// <exception cref="System.ArgumentException"></exception>
-        internal virtual bool ItemTagIs(CompoundTag itemTag, Searchable searchedItem)
+        internal virtual bool ItemTagIs(NbtCompound itemTag, Searchable searchedItem)
         {
-            var itemIdTag = itemTag["id"] as StringTag;
+            var itemIdTag = itemTag["id"] as NbtString;
             return searchedItem switch 
             {
                 Item _ => itemIdTag.Value == searchedItem.Id,
@@ -113,17 +113,17 @@ namespace NbtTools.Items.Providers
         /// <param name="shulkerBox"></param>
         /// <param name="searchedItems"></param>
         /// <returns></returns>
-        internal virtual IDictionary<Searchable, int> CountItemsInContainedShulkerBox(CompoundTag shulkerBox, ICollection<Searchable> searchedItems)
+        internal virtual IDictionary<Searchable, int> CountItemsInContainedShulkerBox(NbtCompound shulkerBox, ICollection<Searchable> searchedItems)
         {
             var results = new Dictionary<Searchable, int>();
 
-            var tagTag = shulkerBox["tag"] as CompoundTag;
+            var tagTag = shulkerBox["tag"] as NbtCompound;
             if (tagTag == null)
             {
                 return results;
             }
 
-            var blockEntityTag = tagTag["BlockEntityTag"] as CompoundTag;
+            var blockEntityTag = tagTag["BlockEntityTag"] as NbtCompound;
             if (blockEntityTag == null)
             {
                 return results;
@@ -132,23 +132,23 @@ namespace NbtTools.Items.Providers
             return CountMatchingItemsInContainer(blockEntityTag, searchedItems);
         }
 
-        internal virtual ICollection<string> ListItemsIn(CompoundTag storage)
+        internal virtual ICollection<string> ListItemsIn(NbtCompound storage)
         {
             List<string> results = new List<string>();
 
-            var itemsTag = storage["Items"] as ListTag;
+            var itemsTag = storage["Items"] as NbtList;
             if (itemsTag == null)
             {
                 return results;
             }
 
             // each non-empty slot in the container
-            foreach (Tag t in itemsTag)
+            foreach (NbtTag t in itemsTag)
             {
-                var itemTag = t as CompoundTag;
-                var itemIdTag = itemTag["id"] as StringTag;
+                var itemTag = t as NbtCompound;
+                var itemIdTag = itemTag["id"] as NbtString;
 
-                if (IsShulkerBox(itemIdTag))
+                if (IsShulkerBox(itemIdTag.Value))
                 {
                     results.AddRange(ListItemsInShulkerBox(itemTag));
                 }
@@ -161,17 +161,17 @@ namespace NbtTools.Items.Providers
             return results;
         }
 
-        protected virtual ICollection<string> ListItemsInShulkerBox(CompoundTag shulkerBox)
+        protected virtual ICollection<string> ListItemsInShulkerBox(NbtCompound shulkerBox)
         {
             List<string> results = new List<string>();
 
-            var tagTag = shulkerBox["tag"] as CompoundTag;
+            var tagTag = shulkerBox["tag"] as NbtCompound;
             if (tagTag == null)
             {
                 return results;
             }
 
-            var blockEntityTag = tagTag["BlockEntityTag"] as CompoundTag;
+            var blockEntityTag = tagTag["BlockEntityTag"] as NbtCompound;
             if (blockEntityTag == null)
             {
                 return results;

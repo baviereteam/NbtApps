@@ -1,5 +1,5 @@
 ﻿using NbtTools.Entities.Trading;
-using SharpNBT;
+using fNbt;
 using System;
 using System.Collections.Generic;
 
@@ -8,7 +8,7 @@ namespace NbtTools.Entities.Providers
     // 1.21.10
     internal class Version4556EntityReader : Version3837EntityReader
     {
-        public override ICollection<Enchantment> GetEnchantmentsFromTradeComponent(CompoundTag tradeComponentTag)
+        public override ICollection<Enchantment> GetEnchantmentsFromTradeComponent(NbtCompound tradeComponentTag)
         {
             try
             {
@@ -18,13 +18,13 @@ namespace NbtTools.Entities.Providers
                 {
                     return enchantments;
                 }
-                var componentsTag = tradeComponentTag["components"] as CompoundTag;
+                var componentsTag = tradeComponentTag["components"] as NbtCompound;
 
 
                 if (componentsTag.ContainsKey("minecraft:enchantments"))
                 {
-                    var enchantmentsTag = componentsTag["minecraft:enchantments"] as CompoundTag;
-                    foreach (IntTag enchantmentTag in enchantmentsTag)
+                    var enchantmentsTag = componentsTag["minecraft:enchantments"] as NbtCompound;
+                    foreach (NbtInt enchantmentTag in enchantmentsTag)
                     {
                         enchantments.Add(new Enchantment(enchantmentTag.Name, enchantmentTag.Value));
                     }
@@ -32,8 +32,8 @@ namespace NbtTools.Entities.Providers
 
                 if (componentsTag.ContainsKey("minecraft:stored_enchantments"))
                 {
-                    var bookEnchantmentsTag = componentsTag["minecraft:stored_enchantments"] as CompoundTag;
-                    foreach (IntTag enchantmentTag in bookEnchantmentsTag)
+                    var bookEnchantmentsTag = componentsTag["minecraft:stored_enchantments"] as NbtCompound;
+                    foreach (NbtInt enchantmentTag in bookEnchantmentsTag)
                     {
                         enchantments.Add(new Enchantment(enchantmentTag.Name, enchantmentTag.Value));
                     }

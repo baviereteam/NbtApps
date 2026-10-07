@@ -3,7 +3,7 @@ using NbtTools.Geography;
 using NbtTools.Items;
 using NbtTools.Nbt;
 using NbtTools.RegionQuery;
-using SharpNBT;
+using fNbt;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -102,29 +102,29 @@ namespace NbtTools.Entities
             return destination;
         }
 
-        private Villager FromNbtTag(Versioned<CompoundTag> versionedRootTag)
+        private Villager FromNbtTag(Versioned<NbtCompound> versionedRootTag)
         {
             try
             {
                 var rootTag = versionedRootTag.Tag;
-                ListTag positionTag = rootTag["Pos"] as ListTag;
-                double x = (positionTag[0] as DoubleTag).Value;
-                double y = (positionTag[1] as DoubleTag).Value;
-                double z = (positionTag[2] as DoubleTag).Value;
+                NbtList positionTag = rootTag["Pos"] as NbtList;
+                double x = (positionTag[0] as NbtDouble).Value;
+                double y = (positionTag[1] as NbtDouble).Value;
+                double z = (positionTag[2] as NbtDouble).Value;
                 Point position = new Point(x, y, z);
 
-                CompoundTag villagerDataTag = rootTag["VillagerData"] as CompoundTag;
-                int level = (villagerDataTag["level"] as IntTag).Value;
-                string profession = (villagerDataTag["profession"] as StringTag).Value;
-                string type = (villagerDataTag["type"] as StringTag).Value;
+                NbtCompound villagerDataTag = rootTag["VillagerData"] as NbtCompound;
+                int level = (villagerDataTag["level"] as NbtInt).Value;
+                string profession = (villagerDataTag["profession"] as NbtString).Value;
+                string type = (villagerDataTag["type"] as NbtString).Value;
                 var villager = new Villager(profession, level, type, position);
 
                 ICollection<Trade> trades;
                 if (profession != "minecraft:none" && profession != "minecraft:nitwit")
                 {
-                    Versioned<ListTag> recipes = versionedRootTag
-                        .Get<CompoundTag>("Offers")
-                        .Get<ListTag>("Recipes");
+                    Versioned<NbtList> recipes = versionedRootTag
+                        .Get<NbtCompound>("Offers")
+                        .Get<NbtList>("Recipes");
                     trades = TradeService.FromRecipesTag(villager, recipes);
                 }
                 else

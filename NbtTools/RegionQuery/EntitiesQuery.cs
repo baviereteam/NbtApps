@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using NbtTools.Geography;
 using NbtTools.Mca;
-using SharpNBT;
+using fNbt;
 
 namespace NbtTools.RegionQuery
 {
@@ -20,20 +20,20 @@ namespace NbtTools.RegionQuery
             return McaFileFactory.GetEntitiesFile(dimension, fileName);
         }
 
-        protected override bool IsInZone(CompoundTag element, Cuboid zone)
+        protected override bool IsInZone(NbtCompound element, Cuboid zone)
         {
-            var positionTag = element["Pos"] as ListTag;
+            var positionTag = element["Pos"] as NbtList;
 
             Point position = new Point(
-                (positionTag[0] as DoubleTag).Value,
-                (positionTag[1] as DoubleTag).Value,
-                (positionTag[2] as DoubleTag).Value
+                (positionTag[0] as NbtDouble).Value,
+                (positionTag[1] as NbtDouble).Value,
+                (positionTag[2] as NbtDouble).Value
             );
 
             return zone.Contains(position);
         }
 
-        protected override bool IsValidChunk(CompoundTag chunkMainTag)
+        protected override bool IsValidChunk(NbtCompound chunkMainTag)
         {
             return true;
         }

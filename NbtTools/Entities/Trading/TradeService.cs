@@ -1,7 +1,7 @@
 ﻿using NbtTools.Database;
 using NbtTools.Entities.Providers;
 using NbtTools.RegionQuery;
-using SharpNBT;
+using fNbt;
 using System;
 using System.Collections.Generic;
 
@@ -18,24 +18,24 @@ namespace NbtTools.Entities.Trading
             EntityReaderFactory = entityReaderFactory;
         }
 
-        public ICollection<Trade> FromRecipesTag(Villager villager, Versioned<ListTag> recipesTag)
+        public ICollection<Trade> FromRecipesTag(Villager villager, Versioned<NbtList> recipesTag)
         {
             var trades = new List<Trade>();
 
             foreach (var recipe in recipesTag.Enumerate())
             {
-                trades.Add(FromTradeTag(villager, recipe.As<CompoundTag>()));
+                trades.Add(FromTradeTag(villager, recipe.As<NbtCompound>()));
             }
 
             return trades;
         }
 
-        public Trade FromTradeTag(Villager villager, Versioned<CompoundTag> versionedRootTag) {
+        public Trade FromTradeTag(Villager villager, Versioned<NbtCompound> versionedRootTag) {
             try
             {
-                var buy1 = TradeComponentFromTag(versionedRootTag.Get<CompoundTag>("buy"));
-                var buy2 = TradeComponentFromTag(versionedRootTag.Get<CompoundTag>("buyB"));
-                var sell = TradeComponentFromTag(versionedRootTag.Get<CompoundTag>("sell"));
+                var buy1 = TradeComponentFromTag(versionedRootTag.Get<NbtCompound>("buy"));
+                var buy2 = TradeComponentFromTag(versionedRootTag.Get<NbtCompound>("buyB"));
+                var sell = TradeComponentFromTag(versionedRootTag.Get<NbtCompound>("sell"));
 
                 return new Trade(villager, buy1, buy2, sell);
             }
@@ -46,7 +46,7 @@ namespace NbtTools.Entities.Trading
             }
         }
 
-        public TradeComponent? TradeComponentFromTag(Versioned<CompoundTag> versionedRootTag)
+        public TradeComponent? TradeComponentFromTag(Versioned<NbtCompound> versionedRootTag)
         {
             if (versionedRootTag == null)
             {
@@ -55,7 +55,7 @@ namespace NbtTools.Entities.Trading
 
             try
             {
-                var id = (versionedRootTag.Tag["id"] as StringTag).Value;
+                var id = (versionedRootTag.Tag["id"] as NbtString).Value;
                 if (id == "minecraft:air")
                 {
                     return null;

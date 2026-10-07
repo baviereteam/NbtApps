@@ -1,28 +1,23 @@
-﻿using NbtTools.Mca;
-using SharpNBT;
+﻿using fNbt;
+using NbtTools.Mca;
 using System;
 using System.IO;
-using System.IO.Compression;
 
 namespace NbtTools.Nbt
 {
-    public class NbtReader
+    public class ChunkNbtReader
     {
-        public CompoundTag ReadChunk(ChunkEntry chunk)
+        public NbtCompound ReadChunk(ChunkEntry chunk)
         {
-            CompoundTag rootTag = null;
+            NbtCompound rootTag = null;
 
             try
             {
                 using (var stream = new MemoryStream(chunk.Data))
                 {
-                    using (var uncompressor = new ZLibStream(stream, CompressionMode.Decompress))
-                    {
-                        using (var reader = new TagReader(uncompressor, FormatOptions.Java, false))
-                        {
-                            rootTag = reader.ReadTag<CompoundTag>();
-                        }
-                    }
+                    NbtFile file = new NbtFile();
+                    file.LoadFromStream(stream, NbtCompression.ZLib);
+                    rootTag = file.RootTag;
                 }
             }
             catch (Exception e) 

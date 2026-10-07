@@ -1,5 +1,5 @@
 ﻿using NbtTools.Entities.Trading;
-using SharpNBT;
+using fNbt;
 using System.Collections.Generic;
 using System;
 
@@ -7,12 +7,12 @@ namespace NbtTools.Entities.Providers
 {
     public class EntityReader
     {
-        public virtual int GetCountFromItemTag(CompoundTag tag)
+        public virtual int GetCountFromItemTag(NbtCompound tag)
         {
-            return (tag["Count"] as ByteTag).Value;
+            return (tag["Count"] as NbtByte).Value;
         }
 
-        public virtual ICollection<Enchantment> GetEnchantmentsFromTradeComponent(CompoundTag tradeComponentTag)
+        public virtual ICollection<Enchantment> GetEnchantmentsFromTradeComponent(NbtCompound tradeComponentTag)
         {
             try
             {
@@ -23,25 +23,25 @@ namespace NbtTools.Entities.Providers
                     return enchantments;
                 }
 
-                var metadataTag = tradeComponentTag["tag"] as CompoundTag;
+                var metadataTag = tradeComponentTag["tag"] as NbtCompound;
 
                 if (metadataTag.ContainsKey("Enchantments"))
                 {
-                    var enchantmentsTag = metadataTag["Enchantments"] as ListTag;
-                    foreach (CompoundTag enchantment in enchantmentsTag)
+                    var enchantmentsTag = metadataTag["Enchantments"] as NbtList;
+                    foreach (NbtCompound enchantment in enchantmentsTag)
                     {
-                        var id = (enchantment["id"] as StringTag).Value;
-                        var lvl = (enchantment["lvl"] as ShortTag).Value;
+                        var id = (enchantment["id"] as NbtString).Value;
+                        var lvl = (enchantment["lvl"] as NbtShort).Value;
                         enchantments.Add(new Enchantment(id, lvl));
                     }
                 }
                 if (metadataTag.ContainsKey("StoredEnchantments"))
                 {
-                    var bookEnchantmentsTag = metadataTag["StoredEnchantments"] as ListTag;
-                    foreach (CompoundTag enchantment in bookEnchantmentsTag)
+                    var bookEnchantmentsTag = metadataTag["StoredEnchantments"] as NbtList;
+                    foreach (NbtCompound enchantment in bookEnchantmentsTag)
                     {
-                        var id = (enchantment["id"] as StringTag).Value;
-                        var lvl = (enchantment["lvl"] as ShortTag).Value;
+                        var id = (enchantment["id"] as NbtString).Value;
+                        var lvl = (enchantment["lvl"] as NbtShort).Value;
                         enchantments.Add(new Enchantment(id, lvl));
                     }
                 }
