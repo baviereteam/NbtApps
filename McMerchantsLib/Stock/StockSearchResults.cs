@@ -15,6 +15,8 @@ namespace McMerchantsLib.Stock
             {
                 Results.Add(searchedItem, new ItemStockResult());
             }
+
+            IsComplete = true;
         }
 
         public void InsertStoresForItems(IDictionary<Searchable, StoreItemStockResult> itemsInStores)
