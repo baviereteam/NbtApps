@@ -8,6 +8,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.6" />
     <PackageReference Include="Microsoft.Extensions.Localization" Version="10.0.6" />
 	  <PackageReference Include="fNbt" Version="2.1.0" />
+	  <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="3.53.3" />
   </ItemGroup>
 
   <ItemGroup>
